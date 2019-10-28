@@ -9,7 +9,7 @@ public class Listing {
     private Location location;
     private boolean sold;
 
-
+    // need to include image storage
     public Listing (String name, String description, String category, double price, Location l) {
         this.name = name;
         this.description = description;
