@@ -1,4 +1,6 @@
 import android.location.Location;
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
 
 import java.util.LinkedList;
 import java.util.Vector;
@@ -7,23 +9,24 @@ public class User {
 
     private String firstName, lastName, email, phone;
     private LinkedList<Listing> listings, starredListings;
-    private Location location;
-    private Vector<User> friends;
-    private Vector<User> outgoingFriendRequests;
-    private Vector<User> incomingFriendRequests;
+    private Position location;
+    private HashSet<User> friends;
+    private HashSet<User> outgoingFriendRequests;
+    private HashSet<User> incomingFriendRequests;
 
-
-    public User(String firstName, String lastName, Location l, String email, String phone) {
+    public User(String firstName, String lastName, Location location, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.location = l;
+        this.location = new Point(new Position(
+                            location.getLatitude(),
+                            location.getLongitude()));
         this.email = email;
         this.phone = phone;
-        listings = new LinkedList<Listing>();
-        starredListings = new LinkedList<Listing>();
-        friends = new Vector<User>();
-        outgoingFriendRequests = new Vector<User>();
-        incomingFriendRequests = new Vector<User>();
+        this.listings = new LinkedList<Listing>();
+        this.starredListings = new LinkedList<Listing>();
+        this.friends = new HashSet<User>();
+        this.outgoingFriendRequests = new HashSet<User>();
+        this.incomingFriendRequests = new HashSet<User>();
     }
 
     /* update all at once because all data will be present
@@ -33,6 +36,7 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        DatabaseClient.updateUser(this);
     }
 
     // getter methods
@@ -40,7 +44,9 @@ public class User {
     public String getLastName() { return this.lastName; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
-    public LinkedList<Listing> getListings() { return this.listings; }
+    public LinkedList<Listing> getListings() {
+        return DatabaseClient.this.listings;
+    }
     public LinkedList<Listing> getStarredListings() { return this.starredListings; }
     public Location getLocation() { return this.location; }
     public Vector<User> getIncomingFriendRequests() { return this.incomingFriendRequests;}
@@ -57,28 +63,28 @@ public class User {
     public void setLocation(Location l) { this.location = l; }
 
     //add incoming friend request
-    private void addIncomingRequest(User u) {
+    public void addIncomingRequest(User u) {
         this.incomingFriendRequests.add(u);
     }
 
     //add outgoing friend request
-    private void addOutgoingRequest(User u) {
+    public void addOutgoingRequest(User u) {
         this.outgoingFriendRequests.add(u);
     }
 
     // triggered when the person you sent a request to accepts or rejects your offer, or you cancel
-    private void removeOutgoingFriendRequest(User u) {
+    public void removeOutgoingFriendRequest(User u) {
         outgoingFriendRequests.remove(u);
     }
 
     // accept friend requests
-    private void acceptFriendRequest(User u) {
+    public void acceptFriendRequest(User u) {
         this.friends.add(u);
         this.incomingFriendRequests.remove(u);
     }
 
     // rejects a friend request
-    private void rejectFriendRequest(User u) {
+    public void rejectFriendRequest(User u) {
         this.incomingFriendRequests.remove(u);
     }
 
