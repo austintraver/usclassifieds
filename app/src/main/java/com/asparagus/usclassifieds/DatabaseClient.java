@@ -1,33 +1,21 @@
+package com.asparagus.usclassifieds;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-
-import com.mongodb.MongoException;
-import com.mongodb.MongoCommandException;
-import com.mongodb.MongoServerException;
-import com.mongodb.MongoWriteException;
-import com.mongodb.MongoQueryException;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Locale;
 
-import org.bson.Document;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -47,13 +35,13 @@ public final class DatabaseClient {
 
         /* Create a URI to specify the Mongo database location */
         ConnectionString uri = new ConnectionString(
-            String.format(
-                "mongodb+srv://%s:%s@%s:%d",
-                this.username,
-                this.password,
-                this.hostname,
-                this.port
-            )
+                String.format(Locale.US,
+                        "mongodb+srv://%s:%s@%s:%d",
+                        this.username,
+                        this.password,
+                        this.hostname,
+                        this.port
+                )
         );
 
         /* Configure codec registry to include codecs that can handle the
@@ -68,7 +56,7 @@ public final class DatabaseClient {
         CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
             registry, provider);
 
-        /* Configure the mongo client settings, specifying to use
+        /* Configure the MongoDB client settings, specifying to use
         the POJO Codec registry, and the URI generated above */
 
         MongoClientSettings settings = MongoClientSettings.builder()
@@ -91,15 +79,14 @@ public final class DatabaseClient {
 
     void removeUser(User user) {
         /* Remove the user from the collection of users */
-        users.findOne(
-            Filters.eq("email", user.email)
-        ).remove();
+        users.findOneAndDelete(Filters.eq("email", user.email));
     }
 
     void addFriend(User requester, User receiver) {
         listings.updateOne(
-            Filters.eq("email", requester.email),
-        )
+            Filters.eq("email", requester.email);
+        );
+
         // Updates.addToSet("")
         // Add each user's respective USC ID # to each
         // user's set of friends
@@ -122,10 +109,8 @@ public final class DatabaseClient {
     }
 
     void removeListing(Listing listing) {
+        users.findOneAndDelete(Filters.eq('description', listing.description));
         /* Remove the user from the collection of users */
-        listings.findOne(
-            Filters.eq('description', listing.description)
-        ).remove();
     }
 
     LinkedList<Listing> queryListing(Location location, Double radius) {
