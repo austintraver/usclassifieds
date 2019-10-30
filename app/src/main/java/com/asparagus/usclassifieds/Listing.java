@@ -1,4 +1,7 @@
+package com.asparagus.usclassifieds;
+
 import android.location.Location;
+
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
@@ -6,7 +9,7 @@ public class Listing {
 
     public String name, description, category;
     public double price;
-    public Position location;
+    public Point location;
     public boolean sold;
 
     /* TODO include image storage */
@@ -29,7 +32,9 @@ public class Listing {
         this.description = description;
         this.category = category;
         this.price = price;
-        this.location = location;
+        this.location = new Point(new Position(
+                location.getLatitude(),
+                location.getLongitude()));
         this.sold = sold;
     }
 }
