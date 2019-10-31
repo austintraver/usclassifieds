@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.usclassifieds.R;
+import com.asparagus.usclassifieds.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class Profile extends AppCompatActivity {
