@@ -5,12 +5,15 @@ import android.location.Location;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.util.UUID;
+
 public class Listing {
 
     public String name, description, category;
     public double price;
     public Point location;
     public boolean sold;
+    UUID id;
 
     /* TODO include image storage */
     public Listing (String name, String description, String category, double price, Location location) {
@@ -18,6 +21,7 @@ public class Listing {
         this.description = description;
         this.category = category;
         this.price = price;
+        this.id = UUID.randomUUID();
         this.location = new Point(new Position(
                             location.getLatitude(),
                             location.getLongitude()));
