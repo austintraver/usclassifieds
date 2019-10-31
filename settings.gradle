@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='usclassifieds'
+rootProject.name='USClassifieds'
