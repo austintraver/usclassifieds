@@ -84,10 +84,6 @@ public final class DatabaseClient {
         users.findOneAndDelete(Filters.eq("email", user.email));
     }
 
-    void updateUser(User user) {
-        users.findOneAndReplace(Filters.eq("email", user));
-    }
-
     void addFriend(User requester, User receiver) {
 
         // listings.updateOne(Filters.eq("email", requester.email));
