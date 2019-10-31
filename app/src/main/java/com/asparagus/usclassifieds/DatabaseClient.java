@@ -1,5 +1,7 @@
 package com.asparagus.usclassifieds;
 
+import android.location.Location;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
@@ -72,21 +74,19 @@ public final class DatabaseClient {
 
     }
 
+    /* Add the user to the collection of users */
     void addUser(User user) {
-        /* Add the user to the collection of users */
-        users.insert(user);
+        users.insertOne(user);
     }
 
+    /* Remove the user from the collection of users */
     void removeUser(User user) {
-        /* Remove the user from the collection of users */
         users.findOneAndDelete(Filters.eq("email", user.email));
     }
 
     void addFriend(User requester, User receiver) {
-        listings.updateOne(
-            Filters.eq("email", requester.email);
-        );
 
+        // listings.updateOne(Filters.eq("email", requester.email));
         // Updates.addToSet("")
         // Add each user's respective USC ID # to each
         // user's set of friends
@@ -99,21 +99,26 @@ public final class DatabaseClient {
 
     void addListing(Listing listing) {
         /* Add the listing to the collection of listings */
-        listings.insert(listing);
+        listings.insertOne(listing);
     }
 
 
     LinkedList<Listing> listingsBy(User user) {
         /* Given a user, return the listings that
         correspond to his email */
+        LinkedList<Listing> result = new LinkedList<Listing>();
+        listings.find(
+                Filters.eq("user", user.email)
+        ).into(result);
+        return result;
     }
 
     void removeListing(Listing listing) {
-        users.findOneAndDelete(Filters.eq('description', listing.description));
+        users.findOneAndDelete(Filters.eq("description", listing.description));
         /* Remove the user from the collection of users */
     }
 
-    LinkedList<Listing> queryListing(Location location, Double radius) {
+    LinkedList<Listing> listingsNear(Location location, Double radius) {
 
         /* The angular distance of a place north or south of the earth's equator,
         or of a celestial object north or south of the celestial equator */
@@ -123,26 +128,24 @@ public final class DatabaseClient {
         Greenwich, England, or west of the meridian of a celestial object */
         Double longitude = location.getLongitude();
 
-        /* The maximum distance away in meters */
-        Double maximumDistance = radius;
-
-        /* Them minimum distance away in meters */
-        Double minimumDistance = 0.0;
-
         /* The reference point to originate the query from */
         Point referencePoint = new Point(new Position(latitude, longitude));
 
         /* The field name within the collection to filter for */
         String fieldName = "location";
 
-        LinkedList<Listing> result = listings.find(
+        LinkedList<Listing> result = new LinkedList<Listing>();
+
+        listings.find(
             Filters.near(
                 fieldName,
                 referencePoint,
-                maximumDistance,
-                minimumDistance
+                radius,
+                0.0
             )
-        ).limit(100).toArray();
+        ).limit(100).into(result);
+
+        return result;
     }
 
 }
