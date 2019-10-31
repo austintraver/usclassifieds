@@ -1,12 +1,15 @@
-package com.example.usclassifieds;
+package com.asparagus.usclassifieds;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 
+import com.asparagus.usclassifieds.Profile;
+import com.example.usclassifieds.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
