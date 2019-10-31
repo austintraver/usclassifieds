@@ -81,7 +81,7 @@ public final class DatabaseClient {
 
     /* Remove the user from the collection of users */
     void removeUser(User user) {
-        users.findOneAndDelete(Filters.eq("email", user.email));
+        users.findOneAndDelete(Filters.eq("email", user.getEmail()));
     }
 
     void addFriend(User requester, User receiver) {
@@ -108,13 +108,13 @@ public final class DatabaseClient {
         correspond to his email */
         LinkedList<Listing> result = new LinkedList<Listing>();
         listings.find(
-                Filters.eq("user", user.email)
+                Filters.eq("user", user.getEmail())
         ).into(result);
         return result;
     }
 
     void removeListing(Listing listing) {
-        users.findOneAndDelete(Filters.eq("description", listing.description));
+        users.findOneAndDelete(Filters.eq("description", listing.getDescription()));
         /* Remove the user from the collection of users */
     }
 
