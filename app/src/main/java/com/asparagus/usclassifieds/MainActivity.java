@@ -102,5 +102,4 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, RC_SIGN_OUT);        //start Profile Activity, and when activity finishes, request code = 2, which signals sign out
         }
     }
-
 }
