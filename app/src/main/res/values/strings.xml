@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">USClassifieds</string>
     <string name="sign_out">Sign Out</string>
+    <string name="map_button">Map</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

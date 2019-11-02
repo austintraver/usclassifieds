@@ -28,7 +28,6 @@ public class Profile extends AppCompatActivity {
 
         textView = findViewById(R.id.userID);
         textView.setText(intent.getStringExtra("userID"));
-
     }
 
     public void onClick(View v) {
@@ -36,6 +35,12 @@ public class Profile extends AppCompatActivity {
             case R.id.sign_out_button:
                 finish();       //returns to MainActivity.java in onActivityResult() callback with requestCode = RC_SIGN_OUT. which is 2
                 break;
+            case R.id.map_button:
+                Intent intent = new Intent(this, MapsActivity.class);
+                intent.putExtra("lat",34.0224);
+                intent.putExtra("long",-118.2851);
+                startActivity(intent);
+
         }
     }
 }
