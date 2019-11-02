@@ -1,4 +1,4 @@
-package com.example.usclassifieds;
+package com.asparagus.usclassifieds;
 
 import org.junit.Test;
 
