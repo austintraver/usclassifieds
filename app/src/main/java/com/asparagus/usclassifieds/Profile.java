@@ -1,4 +1,4 @@
-package com.example.usclassifieds;
+package com.asparagus.usclassifieds;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.asparagus.usclassifieds.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class Profile extends AppCompatActivity {
