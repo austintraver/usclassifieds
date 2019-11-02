@@ -1,33 +1,23 @@
+package com.asparagus.usclassifieds;
+
+import android.location.Location;
+
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-
-import com.mongodb.MongoException;
-import com.mongodb.MongoCommandException;
-import com.mongodb.MongoServerException;
-import com.mongodb.MongoWriteException;
-import com.mongodb.MongoQueryException;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Locale;
 
-import org.bson.Document;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -47,13 +37,13 @@ public final class DatabaseClient {
 
         /* Create a URI to specify the Mongo database location */
         ConnectionString uri = new ConnectionString(
-            String.format(
-                "mongodb+srv://%s:%s@%s:%d",
-                this.username,
-                this.password,
-                this.hostname,
-                this.port
-            )
+                String.format(Locale.US,
+                        "mongodb+srv://%s:%s@%s:%d",
+                        this.username,
+                        this.password,
+                        this.hostname,
+                        this.port
+                )
         );
 
         /* Configure codec registry to include codecs that can handle the
@@ -62,19 +52,19 @@ public final class DatabaseClient {
         CodecRegistry registry = MongoClientSettings.getDefaultCodecRegistry();
 
         CodecRegistry provider = CodecRegistries.fromProviders(
-            PojoCodecProvider.builder().automatic(true).build()
+                PojoCodecProvider.builder().automatic(true).build()
         );
 
         CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
-            registry, provider);
+                registry, provider);
 
-        /* Configure the mongo client settings, specifying to use
+        /* Configure the MongoDB client settings, specifying to use
         the POJO Codec registry, and the URI generated above */
 
         MongoClientSettings settings = MongoClientSettings.builder()
-            .codecRegistry(pojoCodecRegistry)
-            .applyConnectionString(uri)
-            .build();
+                .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(uri)
+                .build();
 
         this.client = MongoClients.create(settings);
         this.database = this.client.getDatabase("app");
@@ -84,22 +74,19 @@ public final class DatabaseClient {
 
     }
 
+    /* Add the user to the collection of users */
     void addUser(User user) {
-        /* Add the user to the collection of users */
-        users.insert(user);
+        users.insertOne(user);
     }
 
+    /* Remove the user from the collection of users */
     void removeUser(User user) {
-        /* Remove the user from the collection of users */
-        users.findOne(
-            Filters.eq("email", user.email)
-        ).remove();
+        users.findOneAndDelete(Filters.eq("email", user.getEmail()));
     }
 
     void addFriend(User requester, User receiver) {
-        listings.updateOne(
-            Filters.eq("email", requester.email),
-        )
+
+        // listings.updateOne(Filters.eq("email", requester.email));
         // Updates.addToSet("")
         // Add each user's respective USC ID # to each
         // user's set of friends
@@ -112,23 +99,26 @@ public final class DatabaseClient {
 
     void addListing(Listing listing) {
         /* Add the listing to the collection of listings */
-        listings.insert(listing);
+        listings.insertOne(listing);
     }
 
 
     LinkedList<Listing> listingsBy(User user) {
         /* Given a user, return the listings that
         correspond to his email */
+        LinkedList<Listing> result = new LinkedList<Listing>();
+        listings.find(
+                Filters.eq("user", user.getEmail())
+        ).into(result);
+        return result;
     }
 
     void removeListing(Listing listing) {
+        users.findOneAndDelete(Filters.eq("description", listing.getDescription()));
         /* Remove the user from the collection of users */
-        listings.findOne(
-            Filters.eq('description', listing.description)
-        ).remove();
     }
 
-    LinkedList<Listing> queryListing(Location location, Double radius) {
+    LinkedList<Listing> listingsNear(Location location, Double radius) {
 
         /* The angular distance of a place north or south of the earth's equator,
         or of a celestial object north or south of the celestial equator */
@@ -138,26 +128,24 @@ public final class DatabaseClient {
         Greenwich, England, or west of the meridian of a celestial object */
         Double longitude = location.getLongitude();
 
-        /* The maximum distance away in meters */
-        Double maximumDistance = radius;
-
-        /* Them minimum distance away in meters */
-        Double minimumDistance = 0.0;
-
         /* The reference point to originate the query from */
         Point referencePoint = new Point(new Position(latitude, longitude));
 
         /* The field name within the collection to filter for */
         String fieldName = "location";
 
-        LinkedList<Listing> result = listings.find(
-            Filters.near(
-                fieldName,
-                referencePoint,
-                maximumDistance,
-                minimumDistance
-            )
-        ).limit(100).toArray();
+        LinkedList<Listing> result = new LinkedList<Listing>();
+
+//        listings.find(
+//                Filters.near(
+//                        fieldName,
+//                        referencePoint,
+//                        radius,
+//                        0.0
+//                )
+//        ).limit(100).into(result);
+
+        return result;
     }
 
 }
