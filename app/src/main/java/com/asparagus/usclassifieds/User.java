@@ -93,5 +93,5 @@ public class User {
         if (u.getFriends().contains(this)) {
             u.removeFriend(this);
         }
-
+    }
 }
