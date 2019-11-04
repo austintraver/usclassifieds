@@ -13,7 +13,6 @@ public class Listing implements Serializable {
     private UUID listingID;
     private String title, description, category;
     private double price;
-    private Point location;
     private boolean sold;
     private String image;
 
@@ -34,5 +33,4 @@ public class Listing implements Serializable {
     public String getCategory() { return this.category; }
     public double getPrice() { return this.price; }
     public boolean getSold() { return this.sold; }
-    public Point getLocation() { return this.location; }
 }

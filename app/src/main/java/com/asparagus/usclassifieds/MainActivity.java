@@ -1,16 +1,30 @@
 package com.asparagus.usclassifieds;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_START = 2;
     private static final int RC_STOP = 3;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
 //
 //        GlobalHelper.insert();
 //        System.out.println("Inserted successefully");
-
+//        Point tempPoint = new Point(new Position(34,-118));
+//        GlobalHelper.addNewUser("jltanner@usc.edu","John","Tanner","9498128890",tempPoint,"12345678");
+       // System.out.println("users/123456789: " + GlobalHelper.userExists("123456789"));
     }
 
     @Override
@@ -35,6 +51,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         System.out.println("onResume() MAIN ");
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        System.out.println("token: " + token);
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         if(GlobalHelper.getEmail().equals("")) {
             System.out.println("start sign in intent");
@@ -69,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
-
+            GlobalHelper.userExists(GlobalHelper.getUserID());
             //userID and email should already be set here for GlobalHelper
             //TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
             //TODO --> use GlobalHelper.setUser( *** ) here if user is found
@@ -82,4 +118,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
 }
+
