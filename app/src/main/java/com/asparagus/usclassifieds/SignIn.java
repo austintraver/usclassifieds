@@ -56,10 +56,10 @@ public class SignIn extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        if(account != null)
-            updateUI(account);
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+//
+//        if(account != null)
+//            updateUI(account);
     }
 
     @Override
@@ -111,4 +111,6 @@ public class SignIn extends AppCompatActivity {
             finish();
         }
     }
+
+
 }
