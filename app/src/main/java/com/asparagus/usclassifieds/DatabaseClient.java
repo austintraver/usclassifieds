@@ -37,14 +37,16 @@ public final class DatabaseClient implements Serializable {
     public DatabaseClient() {
 
         /* Create a URI to specify the Mongo database location */
-        ConnectionString uri = new ConnectionString(
-                String.format(Locale.US,
-                        "mongodb+srv://%s:%s@%s",
-                        this.username,
-                        this.password,
-                        this.hostname
-                )
-        );
+//        ConnectionString uri = new ConnectionString(
+//                String.format(Locale.US,
+//                        "mongodb+srv://%s:%s@%s",
+//                        this.username,
+//                        this.password,
+//                        this.hostname
+//                )
+//        );
+        ConnectionString uri = new ConnectionString("mongodb+srv://app:app@cluster-oomas.mongodb.net");
+
 
         /* Configure codec registry to include codecs that can handle the
         translation to/from BSON for POJOs */
@@ -144,5 +146,9 @@ public final class DatabaseClient implements Serializable {
                 0.0)
         ).limit(100).into(result);
         return result;
+    }
+
+    public static void main(String[] args) {
+        DatabaseClient db = new DatabaseClient();
     }
 }

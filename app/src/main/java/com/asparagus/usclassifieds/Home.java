@@ -12,7 +12,6 @@ public class Home extends AppCompatActivity {
     private static final int CREATE_LISTING = 101;
     private static final int DASHBOARD = 102;
     public User user;
-    public DatabaseClient dbClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,20 +20,18 @@ public class Home extends AppCompatActivity {
 
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
-        dbClient = (DatabaseClient) intent.getSerializableExtra("dbClient");
-
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.create_listing:
                 Intent create_listing = new Intent(this, edit_listing.class);
-                create_listing.putExtra("dbClient",dbClient);
+                //create_listing.putExtra("dbClient",dbClient);
                 startActivityForResult(create_listing,CREATE_LISTING);
 
             case R.id.dashboard_button:
                 Intent dashboard = new Intent(this, Profile.class);
-                dashboard.putExtra("dbClient",dbClient);
+                //dashboard.putExtra("dbClient",dbClient);
                 dashboard.putExtra("user", user);
                 startActivityForResult(dashboard, DASHBOARD);
         }

@@ -12,7 +12,6 @@ public class Profile extends AppCompatActivity {
 
     private static final int EDIT_COMPLETE = 105;
     public User user;
-    public DatabaseClient dbClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,6 @@ public class Profile extends AppCompatActivity {
 
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
-        dbClient = (DatabaseClient) intent.getSerializableExtra("dbClient");
     }
 
     @Override
@@ -57,7 +55,6 @@ public class Profile extends AppCompatActivity {
                 break;
             case R.id.edit_info:
                 Intent edit = new Intent(this, edit_profile.class);
-                edit.putExtra("dbClient",dbClient);
                 edit.putExtra("user",user);
 
         }

@@ -5,26 +5,24 @@ import android.location.Location;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-public class User {
+public class User implements Serializable {
 
     // email is the identifier
-    private String firstName, lastName, email, phone, address;
+    private String firstName, lastName, email, phone;
     private Point location;
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
 
-    public User(String email, String firstName, String lastName, String phone, String address, Location location) {
+    public User(String email, String firstName, String lastName, String phone, Point location) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
         this.email = email;
-        this.address = address;
+        this.location = location;
         this.phone = phone;
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();
@@ -37,12 +35,11 @@ public class User {
 
     /* update all at once because all data will be present
       in update form (default value is current info) */
-    public void updateInfo(String firstName, String lastName, String email, String phone, String address, Location location) {
+    public void updateInfo(String firstName, String lastName, String phone, Location location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.address = address;
     }
 
     // getter methods
@@ -50,7 +47,6 @@ public class User {
     public String getLastName() { return this.lastName; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
-    public String getAddress() { return this.address; }
     public Point getLocation() { return this.location; }
     public HashSet<String> getFriends() { return this.friends; }
     public HashSet<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}

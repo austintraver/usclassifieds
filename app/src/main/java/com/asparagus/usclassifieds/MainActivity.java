@@ -13,14 +13,15 @@ public class MainActivity extends AppCompatActivity {
     private static String email = "";
     public User user = null;
 
-    public DatabaseClient dbClient = new DatabaseClient();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         System.out.println("onCreate() MAIN ");
+//
+//        GlobalHelper.insert();
+//        System.out.println("Inserted successefully");
 
     }
 
@@ -45,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //}
         else {
             Intent homePageIntent = new Intent(this, Home.class);
-            homePageIntent.putExtra("dbClient",dbClient);
             homePageIntent.putExtra("user", user);
-
         }
 
     }

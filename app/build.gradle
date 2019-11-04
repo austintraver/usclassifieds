@@ -40,6 +40,9 @@ dependencies {
 
     implementation "org.mongodb:mongodb-driver-sync:3.11.1"
     androidTestImplementation "androidx.test:runner:1.1.1"
+
+    implementation "com.google.firebase:firebase-database:19.2.0"
+
 }
 
 apply plugin: 'com.google.gms.google-services'
