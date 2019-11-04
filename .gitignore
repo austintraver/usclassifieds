@@ -8,8 +8,8 @@
  =========================================
 
 *.iml
-local.properties
-.idea
+/.idea
+/local.properties
 .DS_Store
 /build
 /captures

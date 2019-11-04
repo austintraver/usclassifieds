@@ -21,8 +21,8 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.location = new Point(new Position(
-                            location.getLatitude(),
-                            location.getLongitude()));
+                location.getLatitude(),
+                location.getLongitude()));
         this.email = email;
         this.phone = phone;
         this.friends = new HashSet<User>();
@@ -94,6 +94,4 @@ public class User {
             u.removeFriend(this);
         }
     }
-
-
 }

@@ -52,19 +52,19 @@ public final class DatabaseClient {
         CodecRegistry registry = MongoClientSettings.getDefaultCodecRegistry();
 
         CodecRegistry provider = CodecRegistries.fromProviders(
-            PojoCodecProvider.builder().automatic(true).build()
+                PojoCodecProvider.builder().automatic(true).build()
         );
 
         CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
-            registry, provider);
+                registry, provider);
 
         /* Configure the MongoDB client settings, specifying to use
         the POJO Codec registry, and the URI generated above */
 
         MongoClientSettings settings = MongoClientSettings.builder()
-            .codecRegistry(pojoCodecRegistry)
-            .applyConnectionString(uri)
-            .build();
+                .codecRegistry(pojoCodecRegistry)
+                .applyConnectionString(uri)
+                .build();
 
         this.client = MongoClients.create(settings);
         this.database = this.client.getDatabase("app");
@@ -136,14 +136,14 @@ public final class DatabaseClient {
 
         LinkedList<Listing> result = new LinkedList<Listing>();
 
-        listings.find(
-            Filters.near(
-                fieldName,
-                referencePoint,
-                radius,
-                0.0
-            )
-        ).limit(100).into(result);
+//        listings.find(
+//                Filters.near(
+//                        fieldName,
+//                        referencePoint,
+//                        radius,
+//                        0.0
+//                )
+//        ).limit(100).into(result);
 
         return result;
     }

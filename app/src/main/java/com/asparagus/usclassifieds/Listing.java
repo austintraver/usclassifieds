@@ -23,8 +23,8 @@ public class Listing {
         this.price = price;
         this.listingID = UUID.randomUUID();
         this.location = new Point(new Position(
-                            location.getLatitude(),
-                            location.getLongitude()));
+                location.getLatitude(),
+                location.getLongitude()));
         this.sold = false;
     }
 
