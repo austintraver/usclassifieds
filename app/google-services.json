@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "978281847078-e8msm8fms5ji46j39ihf97b4udlslkbk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.asparagus.usclassifieds",
+            "certificate_hash": "98fcf4c9d3bfdd52fa25de6d08abb8994fee1a59"
+          }
+        },
+        {
           "client_id": "978281847078-8f3kd8ulnp5c2rqmkdagd7vnne6c2gkk.apps.googleusercontent.com",
           "client_type": 3
         }
