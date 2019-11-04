@@ -5,10 +5,11 @@ import android.location.Location;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-public class User {
+public class User implements Serializable {
 
     // email is the identifier
     private String firstName, lastName, email, phone;

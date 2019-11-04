@@ -3,4 +3,7 @@
     <string name="sign_out">Sign Out</string>
     <string name="map_button">Map</string>
     <string name="title_activity_maps">Map</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="search__title">Search</string>
+
 </resources>

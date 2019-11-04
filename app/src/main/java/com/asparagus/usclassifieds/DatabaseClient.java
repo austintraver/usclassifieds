@@ -16,6 +16,7 @@ import com.mongodb.client.model.geojson.Position;
 
 import com.mongodb.client.model.Filters;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Locale;
 
@@ -23,7 +24,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
 
-public final class DatabaseClient {
+public final class DatabaseClient implements Serializable {
 
     private String username = "app";
     private String password = "app";

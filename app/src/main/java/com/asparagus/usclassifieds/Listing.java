@@ -5,9 +5,10 @@ import android.location.Location;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Listing {
+public class Listing implements Serializable {
 
     private UUID listingID;
     private String title, description, category;
