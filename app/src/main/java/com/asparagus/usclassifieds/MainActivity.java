@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +14,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
 //
 //        GlobalHelper.insert();
 //        System.out.println("Inserted successefully");
-
+//        Point tempPoint = new Point(new Position(34,-118));
+//        GlobalHelper.addNewUser("jltanner@usc.edu","John","Tanner","9498128890",tempPoint,"12345678");
+       // System.out.println("users/123456789: " + GlobalHelper.userExists("123456789"));
     }
 
     @Override
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
-
+            GlobalHelper.userExists(GlobalHelper.getUserID());
             //userID and email should already be set here for GlobalHelper
             //TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
             //TODO --> use GlobalHelper.setUser( *** ) here if user is found
