@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -33,6 +34,7 @@ public class SignIn extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        GlobalHelper.setGoogleClient(mGoogleSignInClient);
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,9 +72,10 @@ public class SignIn extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        } else if (requestCode == RC_SIGN_OUT) {
-            mGoogleSignInClient.signOut();
         }
+//        else if (requestCode == RC_SIGN_OUT) {
+//            mGoogleSignInClient.signOut();
+//        }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -102,7 +105,8 @@ public class SignIn extends AppCompatActivity {
 //            intent.putExtra("userID", account.getId());
 //            startActivityForResult(intent, RC_SIGN_OUT);        //start Profile Activity, and when activity finishes, request code = 2, which signals sign out
             Intent resultEmail = new Intent();
-            resultEmail.putExtra("email", account.getEmail());
+            GlobalHelper.setEmail(account.getEmail());
+            GlobalHelper.setID(account.getId());
             setResult(Activity.RESULT_OK, resultEmail);
             finish();
         }

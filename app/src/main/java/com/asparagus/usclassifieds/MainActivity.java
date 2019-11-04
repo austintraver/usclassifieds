@@ -9,9 +9,8 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int RC_START = 0;
-    private static String email = "";
-    public User user = null;
+    private static final int RC_START = 2;
+    private static final int RC_STOP = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         System.out.println("onResume() MAIN ");
 
-        if(email.equals("")) {
+        if(GlobalHelper.getEmail().equals("")) {
             System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignIn.class);
             startActivityForResult(signInIntent, RC_START);
-        } //else if(user == null) {
+        } else if(GlobalHelper.getUser() == null) {
             //TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
-        //}
+        }
         else {
             Intent homePageIntent = new Intent(this, Home.class);
-            homePageIntent.putExtra("user", user);
+            startActivityForResult(homePageIntent, RC_STOP);
         }
 
     }
@@ -70,10 +69,16 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
-            email = data.getStringExtra("email");
-            System.out.println("Signed in user in MAIN: " + email);
+
+            //userID and email should already be set here for GlobalHelper
+            //TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
+            //TODO --> use GlobalHelper.setUser( *** ) here if user is found
+
         } else if(resultCode == Activity.RESULT_CANCELED) {
             //TODO --> Sign out and redirect back to sign in activity
+            GlobalHelper.setEmail("");
+            GlobalHelper.setID("");
+            GlobalHelper.signOut();
         }
     }
 

@@ -11,7 +11,6 @@ import android.widget.TextView;
 public class Profile extends AppCompatActivity {
 
     private static final int EDIT_COMPLETE = 105;
-    public User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,6 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("user");
     }
 
     @Override
@@ -34,10 +32,10 @@ public class Profile extends AppCompatActivity {
 
         //TODO 1 --> update profile after changes made
         TextView textView = findViewById(R.id.textView2);
-        textView.setText(user.getFirstName() + " " + user.getLastName());
+        textView.setText(GlobalHelper.getUser().getFirstName() + " " + GlobalHelper.getUser().getLastName());
 
         textView = findViewById(R.id.email);
-        textView.setText(user.getEmail());
+        textView.setText(GlobalHelper.getUser().getEmail());
     }
 
     public void onClick(View v) {
@@ -55,8 +53,7 @@ public class Profile extends AppCompatActivity {
                 break;
             case R.id.edit_info:
                 Intent edit = new Intent(this, edit_profile.class);
-                edit.putExtra("user",user);
-
+                startActivityForResult(edit, EDIT_COMPLETE);
         }
     }
 
@@ -66,7 +63,6 @@ public class Profile extends AppCompatActivity {
 
         if(resultCode == EDIT_COMPLETE) {
             //TODO --> Toast blurb of updated profile information
-            user = (User) data.getSerializableExtra("updated_user");
             return;
         } else if(resultCode == Activity.RESULT_CANCELED) {
             //TODO --> user signed out from the profile page

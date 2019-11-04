@@ -8,15 +8,12 @@ import android.view.View;
 
 public class edit_profile extends AppCompatActivity {
 
-    public User user;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
         Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("user");
     }
 
     public void onClick(View v) {
