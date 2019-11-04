@@ -14,21 +14,23 @@ public class User implements Serializable {
     // email is the identifier
     private String firstName, lastName, email, phone;
     private Point location;
-    private HashSet<User> friends;
-    private HashSet<User> outgoingFriendRequests;
-    private HashSet<User> incomingFriendRequests;
+    private HashSet<String> friends;
+    private HashSet<String> outgoingFriendRequests;
+    private HashSet<String> incomingFriendRequests;
 
-    public User(String email, String firstName, String lastName, String phone, Location location) {
+    public User(String email, String firstName, String lastName, String phone, Point location) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
         this.email = email;
+        this.location = location;
         this.phone = phone;
-        this.friends = new HashSet<User>();
-        this.outgoingFriendRequests = new HashSet<User>();
-        this.incomingFriendRequests = new HashSet<User>();
+        this.friends = new HashSet<String>();
+        this.outgoingFriendRequests = new HashSet<String>();
+        this.incomingFriendRequests = new HashSet<String>();
+    }
+
+    public User(String email) {
+        this.email = email;
     }
 
     /* update all at once because all data will be present
@@ -46,15 +48,15 @@ public class User implements Serializable {
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public Point getLocation() { return this.location; }
-    public HashSet<User> getFriends() { return this.friends; }
-    public HashSet<User> getIncomingFriendRequests() { return this.incomingFriendRequests;}
-    public HashSet<User> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
+    public HashSet<String> getFriends() { return this.friends; }
+    public HashSet<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
+    public HashSet<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
     // add or remove from the incoming or outgoing friend request
-    public void addIncomingFriendRequest(User u) { incomingFriendRequests.add(u); }
-    public void addOutgoingFriendRequest(User u) { outgoingFriendRequests.add(u); }
-    public void removeIncomingFriendRequest(User u) { incomingFriendRequests.remove(u); }
-    public void removeOutgoingFriendRequest(User u) { outgoingFriendRequests.remove(u); }
+    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.email); }
+    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.email); }
+    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.email); }
+    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.email); }
 
     //send outgoing friend request
     public void toggleFriendRequest(User u) {
@@ -84,14 +86,14 @@ public class User implements Serializable {
 
 
     public void addFriend(User u) {
-        friends.add(u);
-        if (!u.getFriends().contains(this)) {
+        friends.add(u.email);
+        if (!u.getFriends().contains(this.email)) {
             u.addFriend(this);
         }
     }
     public void removeFriend(User u) {
-        friends.remove(u);
-        if (u.getFriends().contains(this)) {
+        friends.remove(u.email);
+        if (u.getFriends().contains(this.email)) {
             u.removeFriend(this);
         }
     }

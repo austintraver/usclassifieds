@@ -15,16 +15,17 @@ public class Listing implements Serializable {
     private double price;
     private Point location;
     private boolean sold;
+    private String image;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price, Point location) {
+    public Listing (String title, String description, String category, double price) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.listingID = UUID.randomUUID();
-        this.location = location;
         this.sold = false;
+        this.image = null;
     }
 
     public UUID getListingID() { return this.listingID; }
@@ -34,16 +35,4 @@ public class Listing implements Serializable {
     public double getPrice() { return this.price; }
     public boolean getSold() { return this.sold; }
     public Point getLocation() { return this.location; }
-
-    /* method for updating listing information, if sold then they'll
-       update through this form, updates all at once because all data
-       will be present in update form (default value is current info) */
-    public void updateInfo(String title, String description, String category, double price, Point location, boolean sold) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.location = location;
-        this.sold = sold;
-    }
 }
