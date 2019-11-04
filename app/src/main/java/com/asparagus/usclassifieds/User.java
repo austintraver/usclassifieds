@@ -17,13 +17,11 @@ public class User {
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
 
-    public User(String email, String firstName, String lastName, String phone, Location location) {
+    public User(String email, String firstName, String lastName, String phone, Point location) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
         this.email = email;
+        this.location = location;
         this.phone = phone;
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();

@@ -1,6 +1,7 @@
 package com.asparagus.usclassifieds;
 
 import android.location.Location;
+import android.location.LocationManager;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -27,7 +28,6 @@ public final class DatabaseClient {
     private String username = "app";
     private String password = "app";
     private String hostname = "cluster-oomas.mongodb.net";
-    private Integer port = 27017;
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<User> users;
@@ -38,11 +38,10 @@ public final class DatabaseClient {
         /* Create a URI to specify the Mongo database location */
         ConnectionString uri = new ConnectionString(
                 String.format(Locale.US,
-                        "mongodb+srv://%s:%s@%s:%d",
+                        "mongodb+srv://%s:%s@%s",
                         this.username,
                         this.password,
-                        this.hostname,
-                        this.port
+                        this.hostname
                 )
         );
 
@@ -136,16 +135,13 @@ public final class DatabaseClient {
 
         LinkedList<Listing> result = new LinkedList<Listing>();
 
-//        listings.find(
-//                Filters.near(
-//                        fieldName,
-//                        referencePoint,
-//                        radius,
-//                        0.0
-//                )
-//        ).limit(100).into(result);
-
+        listings.find(
+            Filters.near(
+                fieldName,
+                referencePoint,
+                radius,
+                0.0)
+        ).limit(100).into(result);
         return result;
     }
-
 }

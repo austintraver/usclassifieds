@@ -14,18 +14,18 @@ public class Listing {
     private double price;
     private Point location;
     private boolean sold;
+    private String image;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price, Location location) {
+    public Listing (String title, String description, String category, double price, Point location) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.listingID = UUID.randomUUID();
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
+        this.location = location;
         this.sold = false;
+        this.image = null;
     }
 
     public UUID getListingID() { return this.listingID; }
@@ -35,18 +35,4 @@ public class Listing {
     public double getPrice() { return this.price; }
     public boolean getSold() { return this.sold; }
     public Point getLocation() { return this.location; }
-
-    /* method for updating listing information, if sold then they'll
-       update through this form, updates all at once because all data
-       will be present in update form (default value is current info) */
-    public void updateInfo(String title, String description, String category, double price, Location location, boolean sold) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
-        this.sold = sold;
-    }
 }
