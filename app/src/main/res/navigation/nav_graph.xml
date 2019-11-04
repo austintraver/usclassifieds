@@ -9,5 +9,5 @@
         android:id="@+id/mainActivity"
         android:name="com.example.usclassifieds.MainActivity"
         android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        tools:layout="@layout/activity_sign_in" />
 </navigation>

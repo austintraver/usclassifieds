@@ -2,107 +2,80 @@ package com.asparagus.usclassifieds;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.View;
 
-import com.asparagus.usclassifieds.Profile;
-import com.asparagus.usclassifieds.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "";
-    private static final int RC_SIGN_IN = 1;
-    private static final int RC_SIGN_OUT = 2;
+    private static final int RC_START = 0;
+    private static String email = "";
+    public User user = null;
 
-    public GoogleSignInClient mGoogleSignInClient;
+    public DatabaseClient dbClient = new DatabaseClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+        System.out.println("onCreate() MAIN ");
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.sign_in_button:
-                        signIn();
-                        break;
-                }
-            }
-
-            private void signIn() {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account != null)
-            updateUI(account);
+        System.out.println("onStart() MAIN ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("onResume() MAIN ");
+
+        if(email.equals("")) {
+            System.out.println("start sign in intent");
+            Intent signInIntent = new Intent(this, SignIn.class);
+            startActivityForResult(signInIntent, RC_START);
+        } //else if(user == null) {
+            //TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
+        //}
+        else {
+            Intent homePageIntent = new Intent(this, Home.class);
+            homePageIntent.putExtra("dbClient",dbClient);
+            homePageIntent.putExtra("user", user);
+
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("onPause() MAIN ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("onStop() MAIN ");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        } else if (requestCode == RC_SIGN_OUT) {
-            mGoogleSignInClient.signOut();
+        System.out.println("onActivityResult() MAIN ");
+
+        if(resultCode == Activity.RESULT_OK) {
+            email = data.getStringExtra("email");
+            System.out.println("Signed in user in MAIN: " + email);
+        } else if(resultCode == Activity.RESULT_CANCELED) {
+            //TODO --> Sign out and redirect back to sign in activity
         }
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);    //TODO
-
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-
-            updateUI(null);       //TODO
-        }
-    }
-
-    public void updateUI(GoogleSignInAccount account) {
-        if (account == null) {
-            startActivity(getIntent());
-            return;
-        }
-        else {
-            Intent intent = new Intent(this, Profile.class);
-            intent.putExtra("name",account.getDisplayName());
-            intent.putExtra("email", account.getEmail());
-            intent.putExtra("userID", account.getId());
-            startActivityForResult(intent, RC_SIGN_OUT);        //start Profile Activity, and when activity finishes, request code = 2, which signals sign out
-        }
-    }
 }

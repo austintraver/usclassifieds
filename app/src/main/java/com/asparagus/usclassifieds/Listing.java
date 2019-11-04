@@ -5,9 +5,10 @@ import android.location.Location;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Listing {
+public class Listing implements Serializable {
 
     private UUID listingID;
     private String title, description, category;
@@ -16,15 +17,13 @@ public class Listing {
     private boolean sold;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price, Location location) {
+    public Listing (String title, String description, String category, double price, Point location) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.listingID = UUID.randomUUID();
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
+        this.location = location;
         this.sold = false;
     }
 
@@ -39,14 +38,12 @@ public class Listing {
     /* method for updating listing information, if sold then they'll
        update through this form, updates all at once because all data
        will be present in update form (default value is current info) */
-    public void updateInfo(String title, String description, String category, double price, Location location, boolean sold) {
+    public void updateInfo(String title, String description, String category, double price, Point location, boolean sold) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
-        this.location = new Point(new Position(
-                location.getLatitude(),
-                location.getLongitude()));
+        this.location = location;
         this.sold = sold;
     }
 }
