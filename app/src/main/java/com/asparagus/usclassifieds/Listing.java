@@ -17,13 +17,12 @@ public class Listing {
     private String image;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price, Point location) {
+    public Listing (String title, String description, String category, double price) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.listingID = UUID.randomUUID();
-        this.location = location;
         this.sold = false;
         this.image = null;
     }
