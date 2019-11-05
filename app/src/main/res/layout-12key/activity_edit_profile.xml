@@ -6,22 +6,7 @@
     android:layout_height="match_parent"
     android:background="#1E1E1E"
     tools:context=".edit_profile"
-    tools:ignore="HardcodedText,Autofill">
-
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
-        android:onClick="onClick"
-        android:text="✖"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/update"
-        app:layout_constraintStart_toStartOf="parent" />
+    tools:ignore="ExtraText,HardcodedText">
 
     <EditText
         android:id="@+id/phone_number"
@@ -29,7 +14,6 @@
         android:layout_height="40dp"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:layout_marginTop="30dp"
         android:layout_marginEnd="48dp"
         android:layout_marginRight="48dp"
         android:background="#1AFFFFFF"
@@ -41,17 +25,17 @@
         android:textColorHint="#80FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/first_name" />
+        tools:layout_editor_absoluteY="185dp" />
 
     <EditText
         android:id="@+id/zip_code"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -60,16 +44,19 @@
         android:textColor="@android:color/white"
         android:textColorHint="#80FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/state_code"
-        app:layout_constraintTop_toBottomOf="@+id/street_name" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/state_code" />
 
     <EditText
         android:id="@+id/state_code"
-        android:layout_width="50dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -77,16 +64,20 @@
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
         android:textColorHint="#80FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/city_name"
-        app:layout_constraintTop_toBottomOf="@+id/street_name" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city_name" />
 
     <EditText
         android:id="@+id/city_name"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -94,6 +85,8 @@
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
         android:textColorHint="#80FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/street_number" />
 
@@ -104,8 +97,8 @@
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -141,14 +134,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="✔"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zip_code" />
+
+    <EditText
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:onClick="onClick"
-        android:text="✔"
+        android:text="✖"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancel" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/first_name"
@@ -159,7 +161,7 @@
         android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="24dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -176,12 +178,10 @@
         android:id="@+id/last_name"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
         android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="24dp"
         android:background="#1AFFFFFF"
         android:ems="10"
         android:gravity="center"
@@ -191,25 +191,5 @@
         android:textColorHint="#80FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/first_name"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="150dp"
-        android:background="#1AFFFFFF"
-        android:hint="A little about me..."
-        android:textColorHint="#80FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

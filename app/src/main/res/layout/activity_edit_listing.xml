@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1E1E1E"
-    tools:context=".edit_listing">
+    tools:context=".edit_listing"
+    tools:ignore="Autofill,LabelFor,HardcodedText,ContentDescription">
+
 
     <EditText
         android:id="@+id/title_edit_text"
@@ -30,12 +32,11 @@
         android:layout_width="126dp"
         android:layout_height="44dp"
         android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="188dp"
         android:gravity="center"
         android:text="Title"
         android:textColor="@android:color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +55,7 @@
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -66,12 +67,11 @@
         android:layout_width="126dp"
         android:layout_height="44dp"
         android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="44dp"
         android:gravity="center"
         android:text="Price"
         android:textColor="@android:color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_text_view" />
 
@@ -80,14 +80,12 @@
         android:layout_width="126dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
         android:gravity="center"
         android:text="Description"
         android:textColor="@android:color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_text_view" />
@@ -103,6 +101,7 @@
         android:layout_marginRight="36dp"
         android:background="#1AFFFFFF"
         android:ems="10"
+        android:hint="listing price"
         android:inputType="numberDecimal"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
@@ -116,7 +115,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginRight="28dp"
         android:layout_marginBottom="24dp"
         android:onClick="onClick"
         android:text="Create"
@@ -131,7 +129,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="36dp"
         android:layout_marginBottom="24dp"
         android:text="Cancel"
@@ -146,7 +143,6 @@
         android:layout_width="116dp"
         android:layout_height="89dp"
         android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
         android:layout_marginTop="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -157,7 +153,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
         android:layout_marginTop="52dp"
         android:text="Upload Photo"
         app:layout_constraintStart_toEndOf="@+id/product_image_view"
