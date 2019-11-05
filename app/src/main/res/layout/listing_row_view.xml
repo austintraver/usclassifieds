@@ -35,7 +35,7 @@
             android:textColor="#323232" />
 
         <TextView
-            android:id="@+id/tvPrice"
+            android:id="@+id/tvSinglePrice"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_column="3"
