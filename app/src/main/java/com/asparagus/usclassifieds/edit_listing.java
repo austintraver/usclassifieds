@@ -45,6 +45,7 @@ public class edit_listing extends AppCompatActivity {
         create_button = findViewById(R.id.create_button);
         upload_photo_button = findViewById(R.id.upload_photo_button);
 
+        create_button.setEnabled(false);
         upload_photo_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -68,13 +69,10 @@ public class edit_listing extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-                create_button.setEnabled(false);
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
             }
         });
     }

@@ -62,7 +62,7 @@ public class Home extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_button:
+            case R.id.create_listing:
                 Intent create_listing = new Intent(this, edit_listing.class);
                 startActivityForResult(create_listing, CREATE_LISTING);
                 break;
