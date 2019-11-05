@@ -40,15 +40,11 @@ public class Listing implements Serializable {
     public static ArrayList<Listing> getListings()
     {
         ArrayList<Listing> a = new ArrayList<Listing>();
-
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
-        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("105390386330726279653", "Bike", 420.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("105390386330726279653", "Another Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("118050324720858569859", "Skateboard", 42.00, "A dirty frat boy's skateboard.", null));
+        a.add(new Listing("118050324720858569859", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("118050324720858569859", "Bike", 0.00, "We should test for strings too long", null));
 
         return a;
     }
