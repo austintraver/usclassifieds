@@ -68,7 +68,7 @@ public class edit_listing extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-                // TODO Auto-generated method stub
+                create_button.setEnabled(false);
 
             }
 
