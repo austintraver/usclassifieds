@@ -14,11 +14,22 @@ public class Listing implements Serializable {
     private String ownerID;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price, String owner) {
+    public Listing (String title, String description, String category, String owner, double price) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
+        this.listingID = UUID.randomUUID();
+        this.ownerID = owner;
+        this.sold = false;
+        this.image = null;
+    }
+
+    public Listing (String title, String description, String category, String owner) {
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.price = 0.0;
         this.listingID = UUID.randomUUID();
         this.ownerID = owner;
         this.sold = false;

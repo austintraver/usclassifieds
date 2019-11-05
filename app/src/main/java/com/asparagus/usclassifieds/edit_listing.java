@@ -37,17 +37,17 @@ public class edit_listing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_listing);
 
-//        mStorageRef = FirebaseStorage.getInstance().getReference();
-//        imageView = (ImageView) findViewById(R.id.image);
-//
-//        upload_photo_button = findViewById(R.id.upload_photo_button);
-//        upload_photo_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
-//            }
-//        });
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        imageView = (ImageView) findViewById(R.id.image);
+
+        upload_photo_button = findViewById(R.id.upload_photo_button);
+        upload_photo_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
     }
 
 
@@ -79,6 +79,7 @@ public class edit_listing extends AppCompatActivity {
                 Intent canceled = new Intent();
                 setResult(Activity.RESULT_CANCELED, canceled);
                 finish();
+                break;
 
             case R.id.create_listing:
                 TextView textView = findViewById(R.id.textView9);
@@ -96,6 +97,7 @@ public class edit_listing extends AppCompatActivity {
                 Intent newListingAdded = new Intent();
                 setResult(Activity.RESULT_OK, newListingAdded);
                 finish();
+                break;
         }
     }
 }
