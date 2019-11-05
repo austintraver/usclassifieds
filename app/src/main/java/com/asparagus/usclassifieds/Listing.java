@@ -1,6 +1,8 @@
 package com.asparagus.usclassifieds;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Listing implements Serializable {
@@ -33,4 +35,21 @@ public class Listing implements Serializable {
     public String getDescription() { return this.description; }
     public double getPrice() { return this.price; }
     public boolean getSold() { return this.sold; }
+    public static ArrayList<Listing> getListings()
+    {
+        ArrayList<Listing> a = new ArrayList<Listing>();
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
+        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+        return a;
+    }
 }
