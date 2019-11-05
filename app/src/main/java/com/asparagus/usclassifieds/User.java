@@ -39,6 +39,7 @@ public class User implements Serializable {
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
+    private String clientToken;
 
     public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip) {
         this.userID = userID;
@@ -77,6 +78,8 @@ public class User implements Serializable {
         return result;
     }
 
+
+
     public User() {
         //required for calls to Firebase
     }
@@ -105,6 +108,7 @@ public class User implements Serializable {
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public HashSet<String> getFriends() { return this.friends; }
+    public String getClientToken() { return this.clientToken; }
     public HashSet<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
     public HashSet<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
@@ -113,6 +117,7 @@ public class User implements Serializable {
     public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.email); }
     public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.email); }
     public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.email); }
+    public void setClientToken(String token) { this.clientToken = token; }
 
     //send outgoing friend request
     public void toggleFriendRequest(User u) {

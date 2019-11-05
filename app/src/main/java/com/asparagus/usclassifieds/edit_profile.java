@@ -44,7 +44,7 @@ public class edit_profile extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.update:
                 User updatedUser = new User(GlobalHelper.getEmail(), first.getText().toString(), last.getText().toString(), phone.getText().toString(), GlobalHelper.getUserID(), sNum.getText().toString(), sName.getText().toString(), city.getText().toString(), state.getText().toString(), zip.getText().toString());
-                
+
 
                 FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(updatedUser);
 //                Intent update_user = new Intent();

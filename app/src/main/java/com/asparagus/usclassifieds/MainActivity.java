@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+//import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -25,6 +28,10 @@ import org.json.JSONObject;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URLEncoder;
 
 //import static com.asparagus.usclassifieds.GlobalHelper.valueEventListener;
@@ -39,6 +46,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+//       File file = new File("./firebase-admin-key.json");
+//       try {
+//           FileInputStream serviceAccount =
+//                   new FileInputStream(file);
+//           FirebaseOptions options = new FirebaseOptions.Builder()
+//                   .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//                   .setDatabaseUrl("https://usclassifieds-c83d5.firebaseio.com")
+//                   .build();
+//
+//           FirebaseApp.initializeApp(options);
+//       } catch (FileNotFoundException fnfe) {
+//           fnfe.printStackTrace();
+//       } catch (IOException ioe) {
+//           ioe.printStackTrace();
+//       }
+
+
 
         System.out.println("onCreate() MAIN ");
 //
@@ -80,25 +106,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         System.out.println("onResume() MAIN ");
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        System.out.println("token: " + token);
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
 
         if(GlobalHelper.getEmail().equals("")) {
 
@@ -117,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
             Intent homePageIntent = new Intent(this, Home.class);
             startActivityForResult(homePageIntent, RC_STOP);
         }
+
+
     }
 
     @Override
@@ -148,6 +158,31 @@ public class MainActivity extends AppCompatActivity {
             GlobalHelper.setID("");
             GlobalHelper.signOut();
         }
+
+        //used to get client token and set that for logged in user
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        System.out.println("token: " + token);
+
+                        /* sets the client ID on logged in user, will be used to send notifications on
+                         database updates for friend requests */
+                        GlobalHelper.getUser().setClientToken(token);
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /* the class below is used to handle asynchronous callouts. it might make more sense to move this to the global file later,
