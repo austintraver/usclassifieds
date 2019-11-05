@@ -27,7 +27,7 @@ import com.mongodb.client.model.geojson.Position;
 
 import java.net.URLEncoder;
 
-import static com.asparagus.usclassifieds.GlobalHelper.valueEventListener;
+//import static com.asparagus.usclassifieds.GlobalHelper.valueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,14 +50,22 @@ public class MainActivity extends AppCompatActivity {
 //
 //        GlobalHelper.addNewUser("jltanner@usc.edu","John","Tanner","9498128890","12345678");
 //        System.out.println("users/123456789: " + GlobalHelper.userExists("123456789"));
+
        //i needed to pass the context this into the user object when i was testing a different method, so right now we don't *need* the context variable.
         //however, if the async extended class ends up not working, we may need to keep it here, so i'm leaving it for safety reasons right now
-//        String address = "1279 West 37th Place, Los Angeles, CA, 90007";
-//        User u = new User("cpyle@usc.edu", "Charlie", "Pyle", "1234567890", this, address, "1234312");
-//        System.out.println("past user");
+
+        /*
+
+        these lines of code handle geoencoding. uncomment them to test what's returned from
+        different addresses or users
+
+        String address = "1279 West 37th Place, Los Angeles, CA, 90007";
+        User u = new User("cpyle@usc.edu", "Charlie", "Pyle", "1234567890", this, address, "1234312");
 
         //below is the async class that handles HTTP requests
-        //new GetCoordinates().execute(address);
+        new GetCoordinates().execute(address);
+
+         */
     }
 
     @Override
@@ -162,18 +170,17 @@ public class MainActivity extends AppCompatActivity {
             try{
                 String address = strings[0];
                 String middle = URLEncoder.encode(address,"UTF-8");
-                String key = "&key=AIzaSyDfuYE5Tc8sY6t42ZWr9A7K1xEhS6U9rnI";
-                System.out.println("addy: " + address);
+                String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
                 HttpDataHandler http = new HttpDataHandler();
                 String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + middle + key;
-                System.out.println("full url: " + url);
                 response = http.getHTTPData(url);
                 System.out.println("resp is: " + response);
                 return response;
             }
             catch (Exception ex)
             {
-
+                System.out.println("error in background exception: ");
+                ex.printStackTrace();
             }
             return null;
         }
@@ -183,15 +190,18 @@ public class MainActivity extends AppCompatActivity {
             try{
                 JSONObject jsonObject = new JSONObject(s);
 
-                String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                        .getJSONObject("location").get("lat").toString();
-                String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                        .getJSONObject("location").get("lng").toString();
-                System.out.println("latitude and longitude" + lat + " " + lng);
-                //txtCoord.setText(String.format("Coordinates : %s / %s ",lat,lng));
+                if (jsonObject != null) {
+                    String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lat").toString();
+                    String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lng").toString();
+                    System.out.println("latitude and longitude" + lat + " " + lng);
 
-                if(dialog.isShowing())
-                    dialog.dismiss();
+                    if(dialog.isShowing())
+                        dialog.dismiss();
+                }
+
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
