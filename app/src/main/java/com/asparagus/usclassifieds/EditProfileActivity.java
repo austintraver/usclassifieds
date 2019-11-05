@@ -121,6 +121,7 @@ public class EditProfileActivity extends Activity {
                 finish();
                 break;
             case R.id.cancel:
+                setResult(400);
                 finish();
                 break;
         }

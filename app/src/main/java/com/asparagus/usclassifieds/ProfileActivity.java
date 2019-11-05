@@ -88,6 +88,7 @@ public class ProfileActivity extends Activity {
             return;
         } else if(resultCode == Activity.RESULT_CANCELED) {
             //TODO --> user signed out from the profile page
+            System.out.println("Signing out now!");
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
