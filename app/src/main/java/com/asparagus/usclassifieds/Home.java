@@ -22,13 +22,15 @@ public class Home extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_listing:
+            case R.id.create_button:
                 Intent create_listing = new Intent(this, edit_listing.class);
-                startActivityForResult(create_listing,CREATE_LISTING);
+                startActivityForResult(create_listing, CREATE_LISTING);
+                break;
 
             case R.id.dashboard_button:
                 Intent dashboard = new Intent(this, Profile.class);
                 startActivityForResult(dashboard, DASHBOARD);
+                break;
         }
     }
 
