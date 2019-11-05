@@ -7,15 +7,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class edit_profile extends AppCompatActivity {
 
@@ -107,20 +120,67 @@ public class edit_profile extends AppCompatActivity {
         String s1 = first.getText().toString();
         String s2 = last.getText().toString();
 
-        String number_ = sNum.getText().toString() + " ";
-        String street_ = sName.getText().toString() + " ";
-        String city_ = city.getText().toString() + " ";
-        String state_ = state.getText().toString() + " ";
+        String number_ = sNum.getText().toString();
+        String street_ = sName.getText().toString();
+        String city_ = city.getText().toString();
+        String state_ = state.getText().toString();
         String zip_ = zip.getText().toString();
 
-        String address = number_ + street_ + city_ + state_ + zip_;
-        // TODO: validate address
+
 
         if(s1.trim().isEmpty() || s2.trim().isEmpty() || number_.trim().isEmpty() || street_.trim().isEmpty() || city_.trim().isEmpty() || state_.trim().isEmpty() || zip_.trim().isEmpty())
         {
             update.setEnabled(false);
         } else {
-            update.setEnabled(true);
+            try {
+                String address = number_ + " " + street_ + " " + city_ + " " + state_;
+                address = address.replaceAll(" ", "+");
+                String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
+                String request = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + key;
+
+
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                Log.i("RESPONSE", response);
+
+                                // TODO: CHECK IF RESPONSE SIZE IS 1 AND DELETE LOGS
+                                // TODO: Turn the response into JSON obj and ensure size == 1
+
+
+                                int size = 0;
+
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (jsonObject != null) {
+                                        size = ((JSONArray) jsonObject.get("results")).length();
+                                    }
+                                } catch (JSONException je) {
+                                    return;
+                                }
+
+                                update.setEnabled(size == 1);
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("ERROR", "REQUEST FAILED");
+                                update.setEnabled(false);
+                            }
+                        });
+
+                RequestQueue queue = Volley.newRequestQueue(this);
+                queue.add(stringRequest);
+
+            } catch (Exception e) {
+                update.setEnabled(false);
+            }
+
+
         }
     }
 }
