@@ -1,8 +1,16 @@
 package com.asparagus.usclassifieds;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.location.Location;
 import android.util.JsonReader;
+import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.api.Response;
 import com.google.android.gms.common.util.IOUtils;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
@@ -27,41 +35,85 @@ public class User implements Serializable {
 
     // email is the identifier
     private String firstName, lastName, email, phone, userID, address;
+    Context context; //context used for geo encoding in maps
     private Double latitude, longitude;
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
 
-    public User(String email, String firstName, String lastName, String phone, String address, String userID) {
+    public User(String email, String firstName, String lastName, String phone, Context context, String address, String userID) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.context = context;
         this.address = address;
         this.phone = phone;
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();
         this.incomingFriendRequests = new HashSet<String>();
+        //System.out.println("before setLoc");
+        //setLoc();
     }
 
-    public static void setLoc() {
+    public void setLoc() {
+        //final TextView textView = (TextView) findViewById(R.id.text);
+        // Instantiate the RequestQueue.l
+
+        /* temporarily commented all of this out because I'm trying to handle setloc in the
+        *** HttpDataHandler class. I've mirrored that off of some functionality online and
+        * have everything including the response interpretation written up, but my emulator's internet
+        * isn't working, so I'm not able to make any queries online. please disregard this method
+        * for the time being and refer to http data handler
+
+
+        System.out.println("in setLoc");
+        RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
+        queue.start();
+        //
         String base_url = "https://maps.googleapis.com/maps/api/geocode/json?address=";
         String key = "&key=AIzaSyDfuYE5Tc8sY6t42ZWr9A7K1xEhS6U9rnI";
         String middle = "";
+        String url = "";
         try {
-            middle = URLEncoder.encode("address","UTF-8");
-            URL url = new URL(base_url + middle + key);
-            URLConnection request = url.openConnection();
-            request.connect();
-            //JsonReader jr = new JsonReader();
+            middle = URLEncoder.encode(address,"UTF-8");
+            url = base_url + middle + key;
+            // url = new URL(base_url + middle + key);
 
         } catch(UnsupportedEncodingException exec) {
             System.out.println(exec.getMessage());
-        } catch(MalformedURLException mal) {
-            System.out.println(mal.getMessage());
-        } catch(IOException ioe) {
-            System.out.println(ioe.getMessage());
-        }
+        } //catch(MalformedURLException mal) {
+           //System.out.println(mal.getMessage()); }
+//         catch(IOException ioe) {
+//            System.out.println(ioe.getMessage());
+//        }
+        System.out.println("url is: " + url);
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        //textView.setText("Response is: "+ response.substring(0,500));
+                        System.out.println("Response is: "+ response.substring(0,500));
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //textView.setText("That didn't work!");
+                System.out.println("Error is: "+ error.getMessage());
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+        //System.out.println("queue size is: " + ;)
+
+
+        */
+
     }
 
     public Map<String,Object> toMap() {
