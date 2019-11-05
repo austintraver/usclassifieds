@@ -119,7 +119,7 @@ public class edit_listing extends AppCompatActivity {
                 String description = description_edit_text.getText().toString();
 
                 // TODO: Put user in
-                Listing new_listing = new Listing("username", title, price, description);
+                Listing new_listing = new Listing("username", title, price, description, bitmap);
                 Intent newListingAdded = new Intent();
                 setResult(Activity.RESULT_OK, newListingAdded);
                 finish();

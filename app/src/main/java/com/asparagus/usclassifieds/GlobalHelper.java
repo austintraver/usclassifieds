@@ -1,6 +1,8 @@
 package com.asparagus.usclassifieds;
 
 import android.app.Application;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +14,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
 
 public class GlobalHelper extends Application {
 

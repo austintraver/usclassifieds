@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class edit_profile extends AppCompatActivity {
 
@@ -18,6 +22,7 @@ public class edit_profile extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         Intent intent = getIntent();
+
         first = findViewById(R.id.first_name);
         last = findViewById(R.id.last_name);
         phone = findViewById(R.id.phone_number);
@@ -44,9 +49,11 @@ public class edit_profile extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.update:
                 User updatedUser = new User(GlobalHelper.getEmail(), first.getText().toString(), last.getText().toString(), phone.getText().toString(), GlobalHelper.getUserID(), sNum.getText().toString(), sName.getText().toString(), city.getText().toString(), state.getText().toString(), zip.getText().toString());
-
-
+                System.out.println("creating a new/updated user");
+//                Map<String, Object> userUpdates = new HashMap<>();
+//                userUpdates.put("")
                 FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(updatedUser);
+
 //                Intent update_user = new Intent();
 //                setResult(105,update_user);
 //                update_user.putExtra("updated_user",updatedUser);

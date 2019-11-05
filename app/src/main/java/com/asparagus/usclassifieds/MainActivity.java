@@ -188,60 +188,6 @@ public class MainActivity extends AppCompatActivity {
     /* the class below is used to handle asynchronous callouts. it might make more sense to move this to the global file later,
     * but i have it here right now for convenience
     * */
-    private class GetCoordinates extends AsyncTask<String,Void,String> {
-        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.setMessage("Please wait....");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String response;
-            try{
-                String address = strings[0];
-                String middle = URLEncoder.encode(address,"UTF-8");
-                String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
-                HttpDataHandler http = new HttpDataHandler();
-                String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + middle + key;
-                response = http.getHTTPData(url);
-                System.out.println("resp is: " + response);
-                return response;
-            }
-            catch (Exception ex)
-            {
-                System.out.println("error in background exception: ");
-                ex.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            try{
-                JSONObject jsonObject = new JSONObject(s);
-
-                if (jsonObject != null) {
-                    String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                            .getJSONObject("location").get("lat").toString();
-                    String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                            .getJSONObject("location").get("lng").toString();
-                    System.out.println("latitude and longitude" + lat + " " + lng);
-
-                    if(dialog.isShowing())
-                        dialog.dismiss();
-                }
-
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
 

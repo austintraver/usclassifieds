@@ -1,5 +1,7 @@
 package com.asparagus.usclassifieds;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -10,18 +12,18 @@ public class Listing implements Serializable {
     private String title, description;
     private double price;
     private boolean sold;
-    private String image;
+    private Bitmap image;
     private String ownerID;
 
     /* TODO include image storage */
-    public Listing (String owner, String title, double price, String description) {
+    public Listing (String owner, String title, double price, String description, Bitmap image) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.listingID = UUID.randomUUID();
         this.ownerID = owner;
         this.sold = false;
-        this.image = null;
+        this.image = image;
     }
 
     public Listing() {

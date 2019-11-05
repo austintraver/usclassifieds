@@ -3,6 +3,7 @@ package com.asparagus.usclassifieds;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.widget.TextView;
 
@@ -12,9 +13,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.Response;
 import com.google.android.gms.common.util.IOUtils;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mongodb.client.model.geojson.Point;
 import com.mongodb.client.model.geojson.Position;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -34,8 +39,7 @@ import java.util.Map;
 public class User implements Serializable {
 
     // email is the identifier
-    private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode;
-    private Double latitude, longitude;
+    private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude;
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
@@ -52,9 +56,13 @@ public class User implements Serializable {
         this.state = state;
         this.zipCode = zip;
         this.phone = phone;
+        this.latitude = "";
+        this.longitude = "";
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();
         this.incomingFriendRequests = new HashSet<String>();
+
+        new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
     }
 
     public Map<String,Object> toMap() {
@@ -71,9 +79,9 @@ public class User implements Serializable {
         result.put("phone",phone);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
-        result.put("friends",friends);
-        result.put("outgoing", outgoingFriendRequests);
-        result.put("incoming", incomingFriendRequests);
+//        result.put("friends",friends);
+//        result.put("outgoing", outgoingFriendRequests);
+//        result.put("incoming", incomingFriendRequests);
 
         return result;
     }
@@ -96,7 +104,18 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
+
+    public void setLatitude(String lat) {
+        this.latitude = lat;
+    }
+
+    public void setLongitude(String lng) {
+        this.longitude = lng;
+    }
+
     // getter methods
+    public String getLatitude() { return this.latitude; }
+    public String getLongitude() { return this.longitude; }
     public String getStreetNumber() { return this.streetNumber; }
     public String getStreetName() { return this.streetName; }
     public String getCity() { return this.city; }
@@ -156,6 +175,65 @@ public class User implements Serializable {
         friends.remove(u.email);
         if (u.getFriends().contains(this.email)) {
             u.removeFriend(this);
+        }
+    }
+
+    public class GetCoordinates extends AsyncTask<String,Void,String> {
+        //ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            dialog.setMessage("Please wait....");
+//            dialog.setCanceledOnTouchOutside(false);
+//            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String response;
+            try{
+                String address = strings[0];
+                String middle = URLEncoder.encode(address,"UTF-8");
+                String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
+                HttpDataHandler http = new HttpDataHandler();
+                String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + middle + key;
+                response = http.getHTTPData(url);
+                System.out.println("resp is: " + response);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                System.out.println("error in background exception: ");
+                ex.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            try{
+                JSONObject jsonObject = new JSONObject(s);
+
+                if (jsonObject != null) {
+                    String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lat").toString();
+                    String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                            .getJSONObject("location").get("lng").toString();
+                    System.out.println("latitude and longitude" + lat + " " + lng);
+                    GlobalHelper.getUser().setLatitude(lat);
+                    GlobalHelper.getUser().setLongitude(lng);
+                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("latitude").setValue(lat);
+                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("longitude").setValue(lng);
+//                    if(dialog.isShowing())
+//                        dialog.dismiss();
+                }
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
