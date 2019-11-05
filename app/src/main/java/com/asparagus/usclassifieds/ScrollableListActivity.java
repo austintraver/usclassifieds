@@ -28,11 +28,12 @@ public class ScrollableListActivity extends AppCompatActivity {
 
     private void populateList()
     {
-        ArrayList<Listing> listings = Listing.getListings();
+       // ArrayList<Listing> listings = Listing.getListings();
         // Create adapter to convert into views
-        ListingAdapter adapter = new ListingAdapter(this,listings);
+        //ListingAdapter adapter = new ListingAdapter(this,listings);
         // Attach adapter to a list of views
-        ListView listView = findViewById(R.id.lvListings);
-        listView.setAdapter(adapter);
+
+       // ListView listView = findViewById(R.id.lvListings);
+        //listView.setAdapter(adapter);
     }
 }

@@ -36,7 +36,7 @@ public class Home extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == CREATE_LISTING) {
+        if(requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
             //TODO --> Toast blurb of created listing success
         } else if(resultCode == Activity.RESULT_CANCELED) {
             //TODO --> user signed out from the profile page
