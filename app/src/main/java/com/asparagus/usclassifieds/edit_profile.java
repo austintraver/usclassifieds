@@ -60,7 +60,6 @@ public class edit_profile extends AppCompatActivity {
 
         first.addTextChangedListener(textWatcher);
         last.addTextChangedListener(textWatcher);
-        phone.addTextChangedListener(textWatcher);
         sNum.addTextChangedListener(textWatcher);
         sName.addTextChangedListener(textWatcher);
         city.addTextChangedListener(textWatcher);
@@ -108,7 +107,6 @@ public class edit_profile extends AppCompatActivity {
 
         String s1 = first.getText().toString();
         String s2 = last.getText().toString();
-        String s3 = phone.getText().toString();
 
         String number_ = sNum.getText().toString() + " ";
         String street_ = sName.getText().toString() + " ";
@@ -119,7 +117,7 @@ public class edit_profile extends AppCompatActivity {
         String address = number_ + street_ + city_ + state_ + zip_;
         // TODO: validate address and phone number
 
-        if(s1.trim().isEmpty() || s2.trim().isEmpty() || s3.trim().isEmpty() || number_.trim().isEmpty() || street_.trim().isEmpty() || city_.trim().isEmpty() || state_.trim().isEmpty() || zip_.trim().isEmpty())
+        if(s1.trim().isEmpty() || s2.trim().isEmpty() || number_.trim().isEmpty() || street_.trim().isEmpty() || city_.trim().isEmpty() || state_.trim().isEmpty() || zip_.trim().isEmpty())
         {
             update.setEnabled(false);
         } else {
