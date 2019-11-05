@@ -39,13 +39,13 @@ import java.util.Map;
 public class User implements Serializable {
 
     // email is the identifier
-    private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude;
+    private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude, description;
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
     private String clientToken;
 
-    public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip) {
+    public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip, String description) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,11 +58,12 @@ public class User implements Serializable {
         this.phone = phone;
         this.latitude = "";
         this.longitude = "";
+        this.description = description;
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();
         this.incomingFriendRequests = new HashSet<String>();
-
         new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
+
     }
 
     public Map<String,Object> toMap() {
@@ -79,14 +80,13 @@ public class User implements Serializable {
         result.put("phone",phone);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
+        result.put("description", description);
 //        result.put("friends",friends);
 //        result.put("outgoing", outgoingFriendRequests);
 //        result.put("incoming", incomingFriendRequests);
 
         return result;
     }
-
-
 
     public User() {
         //required for calls to Firebase
@@ -104,16 +104,18 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
+//    public void updateLoc() {
+//    }
 
     public void setLatitude(String lat) {
         this.latitude = lat;
     }
-
     public void setLongitude(String lng) {
         this.longitude = lng;
     }
 
     // getter methods
+    public String getDescription() { return this.description; }
     public String getLatitude() { return this.latitude; }
     public String getLongitude() { return this.longitude; }
     public String getStreetNumber() { return this.streetNumber; }
@@ -223,8 +225,15 @@ public class User implements Serializable {
                     System.out.println("latitude and longitude" + lat + " " + lng);
                     GlobalHelper.getUser().setLatitude(lat);
                     GlobalHelper.getUser().setLongitude(lng);
-                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("latitude").setValue(lat);
-                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("longitude").setValue(lng);
+
+                    Map<String, Object> userValues = GlobalHelper.getUser().toMap();
+                    Map<String, Object> userUpdates = new HashMap<>();
+                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
+//                    userUpdates.put("/users/" + GlobalHelper.getUser(), userValues);
+//                    FirebaseDatabase.getInstance().getReference().updateChildren(userUpdates);
+
+//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("latitude").setValue(lat);
+//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("longitude").setValue(lng);
 //                    if(dialog.isShowing())
 //                        dialog.dismiss();
                 }

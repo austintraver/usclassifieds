@@ -39,6 +39,7 @@ import java.net.URLEncoder;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_START = 2;
+    private static final int RC_START2 = 4;
     private static final int RC_STOP = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         else if(GlobalHelper.getUser() == null) {
 
             System.out.println("In second if statement: " + GlobalHelper.getUser());
+            Intent createUserIntent = new Intent(this, edit_profile.class);
+            startActivityForResult(createUserIntent, RC_START2);
             //TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
-
+            System.out.println("User successfully logged in!!!");
             //TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
             //TODO --> use GlobalHelper.setUser( *** ) here if user is found
 
@@ -159,30 +162,7 @@ public class MainActivity extends AppCompatActivity {
             GlobalHelper.signOut();
         }
 
-        //used to get client token and set that for logged in user
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        System.out.println("token: " + token);
-
-                        /* sets the client ID on logged in user, will be used to send notifications on
-                         database updates for friend requests */
-                        GlobalHelper.getUser().setClientToken(token);
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     /* the class below is used to handle asynchronous callouts. it might make more sense to move this to the global file later,
