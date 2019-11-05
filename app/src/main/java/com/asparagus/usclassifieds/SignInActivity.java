@@ -1,7 +1,6 @@
 package com.asparagus.usclassifieds;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class SignIn extends AppCompatActivity {
+public class SignInActivity extends Activity {
 
     private static final String TAG = "";
     private static final int RC_SIGN_IN = 1;

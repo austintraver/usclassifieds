@@ -1,7 +1,5 @@
 package com.asparagus.usclassifieds;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,13 +7,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -23,7 +21,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class edit_listing extends AppCompatActivity {
+public class EditListingActivity extends Activity {
     private StorageReference mStorageRef;
     private ImageView product_image_view;
     private Button upload_photo_button, cancel_button, create_button;
@@ -64,8 +62,7 @@ public class edit_listing extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
@@ -101,9 +98,9 @@ public class edit_listing extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cancel:
+            case R.id.cancel_button:
                 Intent canceled = new Intent();
-                setResult(Activity.RESULT_CANCELED, canceled);
+                setResult(400, canceled);
                 finish();
                 break;
 

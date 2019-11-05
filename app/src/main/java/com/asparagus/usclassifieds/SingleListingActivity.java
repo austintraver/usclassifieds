@@ -1,12 +1,11 @@
 package com.asparagus.usclassifieds;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class single_listing extends AppCompatActivity {
+public class SingleListingActivity extends Activity {
 
     Listing listing;
 
@@ -37,9 +36,9 @@ public class single_listing extends AppCompatActivity {
         }
         else
         {
-            TextView tvSTitle = (TextView) findViewById(R.id.tvSingleTitle);
-            TextView tvSDesc = (TextView) findViewById(R.id.tvSingleDesc);
-            TextView tvSPrice = (TextView) findViewById(R.id.tvSinglePrice);
+            TextView tvSTitle = findViewById(R.id.tvSingleTitle);
+            TextView tvSDesc = findViewById(R.id.tvSingleDesc);
+            TextView tvSPrice = findViewById(R.id.tvSinglePrice);
             tvSTitle.setText(listing.getTitle());
             tvSDesc.setText(listing.getDescription());
             tvSPrice.setText(String.format("$%.2f",listing.getPrice()));

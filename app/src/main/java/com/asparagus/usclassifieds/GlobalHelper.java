@@ -40,10 +40,6 @@ public class GlobalHelper extends Application {
         return;
     }
 
-    public static GoogleSignInClient getGoogleClient() {
-        return mGoogleSignInClient;
-    }
-
     public static void setGoogleClient(GoogleSignInClient client) {
         mGoogleSignInClient = client;
     }
@@ -76,26 +72,6 @@ public class GlobalHelper extends Application {
         userID = id;
         System.out.println("UserID set to: " + userID);
         return;
-    }
-
-    public static void userExists(String userID) {
-//        mDatabase.child("users").child("105390386330726279653").child("firstName").setValue("Cameron");
-////        mDatabase.child("users").child("105390386330726279653").child("lastName").setValue("Durham");
-////        mDatabase.child("users").child("105390386330726279653").child("email").setValue("cdurham@usc");
-////        Point tempPoint = new Point(new Position(34,-118));
-////        mDatabase.child("users").child("105390386330726279653").child("location").setValue(tempPoint);
-////        mDatabase.child("users").child("105390386330726279653").child("userID").setValue("105390386330726279653");
-//          mDatabase.child("users").child("105390386330726279653").child("phone").setValue("9499119111");
-//          mDatabase.child("users").child("105390386330726279653").child("address").setValue("1279 W 37 Place, Los Angeles, CA, 90007");
-
-
-        //System.out.println("Query result: " + mDatabase.child("users").child("12345678").child("email")); //.equalTo(userID));
-
-//        Query query = FirebaseDatabase.getInstance().getReference("users").child(userID);
-//        query.addListenerForSingleValueEvent(valueEventListener);
-
-        //System.out.println("New query: " + query);
-        //return mDatabase.child("users").child(userID).equals(userID);
     }
 
     public static ValueEventListener valueEventListener = new ValueEventListener() {

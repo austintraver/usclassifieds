@@ -103,9 +103,6 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-//    public void updateLoc() {
-//    }
-
     public void setLatitude(String lat) {
         this.latitude = lat;
     }

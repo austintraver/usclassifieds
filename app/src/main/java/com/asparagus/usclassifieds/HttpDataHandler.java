@@ -10,18 +10,17 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-//handles REST endpoints
+// Handles REST endpoints
 public class HttpDataHandler {
 
     public HttpDataHandler() {
-
+        // TODO
     }
 
-    public String getHTTPData(String requestURL)
-    {
+    public String getHTTPData(String requestURL) {
         URL url;
         String response = "";
-        try{
+        try {
             url = new URL(requestURL);
             System.out.println("url details " + url);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -33,13 +32,15 @@ public class HttpDataHandler {
             conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
             int responseCode = conn.getResponseCode();
-            System.out.println("connection details " + conn.getResponseCode());
-            if(responseCode == HttpsURLConnection.HTTP_OK)
-            {
+            System.out.println("Connection details " + conn.getResponseCode());
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while((line = br.readLine()) != null)
-                    response+=line;
+                BufferedReader br = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream())
+                );
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
             }
             else
                 response = "";

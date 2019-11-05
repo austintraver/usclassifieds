@@ -12,14 +12,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ListingAdapter extends ArrayAdapter<Listing> {
-    public ListingAdapter (Context context, ArrayList<Listing> listings)
-    {
+    public ListingAdapter(Context context, ArrayList<Listing> listings) {
         super(context, 0, listings);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listing_row_view, parent, false);
@@ -37,13 +35,11 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         bTitle.setTag(listing);
         bTitle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 System.out.println("Clicked View " + view.getId());
                 Listing listing= (Listing) view.getTag();
                 System.out.println("Listing data is " + listing.getTitle());
-;
-                Intent intent = new Intent(view.getContext(), single_listing.class);
+                Intent intent = new Intent(view.getContext(), SingleListingActivity.class);
                 intent.putExtra("listing",listing);
                 view.getContext().startActivity(intent);
             }

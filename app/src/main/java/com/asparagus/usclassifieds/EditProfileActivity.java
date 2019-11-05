@@ -1,7 +1,5 @@
 package com.asparagus.usclassifieds;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,11 +28,11 @@ import java.util.Map;
 
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
-public class edit_profile extends AppCompatActivity {
+public class EditProfileActivity extends Activity {
 
     private Button update;
 
-    private static EditText first, last, phone, sNum, sName, city, state, zip, desc;
+    private EditText first, last, phone, sNum, sName, city, state, zip, desc;
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -61,15 +59,16 @@ public class edit_profile extends AppCompatActivity {
 
         Intent intent = getIntent();
         update = findViewById(R.id.update);
-        first = findViewById(R.id.first_name);
-        last = findViewById(R.id.last_name);
-        phone = findViewById(R.id.phone_number);
-        sNum = findViewById(R.id.street_number);
-        sName = findViewById(R.id.street_name);
-        city = findViewById(R.id.city_name);
-        state = findViewById(R.id.state_code);
-        zip = findViewById(R.id.zip_code);
-        desc = findViewById(R.id.description);
+
+        first = findViewById(R.id.edit_first_name);
+        last = findViewById(R.id.edit_last_name);
+        phone = findViewById(R.id.edit_phone_number);
+        sNum = findViewById(R.id.edit_street_number);
+        sName = findViewById(R.id.edit_street_name);
+        city = findViewById(R.id.edit_city_name);
+        state = findViewById(R.id.edit_state_code);
+        zip = findViewById(R.id.edit_zip_code);
+        desc = findViewById(R.id.edit_description);
 
         first.addTextChangedListener(textWatcher);
         last.addTextChangedListener(textWatcher);
@@ -97,7 +96,19 @@ public class edit_profile extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.update:
                 System.out.println("In Onclick for update/create user!");
-                User updatedUser = new User(GlobalHelper.getEmail(), first.getText().toString(), last.getText().toString(), phone.getText().toString(), GlobalHelper.getUserID(), sNum.getText().toString(), sName.getText().toString(), city.getText().toString(), state.getText().toString(), zip.getText().toString(), desc.getText().toString());
+                User updatedUser = new User(
+                    GlobalHelper.getEmail(),
+                    first.getText().toString(),
+                    last.getText().toString(),
+                    phone.getText().toString(),
+                    GlobalHelper.getUserID(),
+                    sNum.getText().toString(),
+                    sName.getText().toString(),
+                    city.getText().toString(),
+                    state.getText().toString(),
+                    zip.getText().toString(),
+                    desc.getText().toString()
+                );
                 GlobalHelper.setUser(updatedUser);
                 System.out.println("creating a new/updated user: " + updatedUser);
 

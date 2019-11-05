@@ -13,24 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-        <activity android:name=".edit_listing" />
+        <activity android:name=".EditListingActivity" />
         <activity
-            android:name=".single_listing"
-            android:parentActivityName=".Home">
+            android:name=".SingleListingActivity"
+            android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Home" />
+                android:value=".HomeActivity" />
         </activity>
-        <activity android:name=".edit_profile" />
+        <activity android:name=".EditProfileActivity" />
         <activity
-            android:name=".SignIn"
+            android:name=".SignInActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".Home"
+            android:name=".HomeActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -63,16 +63,16 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:parentActivityName=".Profile">
+            android:parentActivityName=".ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Profile" />
+                android:value=".ProfileActivity" />
         </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <activity
-            android:name=".Profile"
+            android:name=".ProfileActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
