@@ -28,6 +28,7 @@ public class edit_listing extends AppCompatActivity {
     private ImageView product_image_view;
     private Button upload_photo_button, cancel_button, create_button;
     private EditText price_edit_text, title_edit_text, description_edit_text;
+    private TextView upload_text_view;
     public static final int GET_FROM_GALLERY = 101;
     private Bitmap bitmap = null;
 
@@ -37,7 +38,8 @@ public class edit_listing extends AppCompatActivity {
         setContentView(R.layout.activity_edit_listing);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        product_image_view = (ImageView) findViewById(R.id.product_image_view);
+        product_image_view = findViewById(R.id.product_image_view);
+        upload_text_view = findViewById(R.id.upload_text_view);
         title_edit_text = findViewById(R.id.title_edit_text);
         price_edit_text = findViewById(R.id.price_edit_text);
         description_edit_text = findViewById(R.id.description_edit_text);
@@ -58,12 +60,7 @@ public class edit_listing extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if(s.toString().trim().length()==0){
-                    create_button.setEnabled(false);
-                } else {
-                    create_button.setEnabled(true);
-                }
+                checkRequiredFields();
             }
 
             @Override
@@ -90,6 +87,8 @@ public class edit_listing extends AppCompatActivity {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                 product_image_view.setImageBitmap(bitmap);
+                upload_text_view.setText("Upload Complete!");
+                checkRequiredFields();
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -122,6 +121,19 @@ public class edit_listing extends AppCompatActivity {
                 setResult(Activity.RESULT_OK, newListingAdded);
                 finish();
                 break;
+        }
+    }
+
+    private void checkRequiredFields(){
+
+        String s1 = upload_text_view.getText().toString();
+        String s2 = title_edit_text.getText().toString();
+
+        if(s1.trim().isEmpty() || s2.trim().isEmpty())
+        {
+            create_button.setEnabled(false);
+        } else {
+            create_button.setEnabled(true);
         }
     }
 }

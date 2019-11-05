@@ -156,4 +156,13 @@
         app:layout_constraintStart_toEndOf="@+id/product_image_view"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/upload_text_view"
+        android:layout_width="120dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="80dp"
+        android:textColor="#009688"
+        app:layout_constraintStart_toEndOf="@+id/product_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/upload_photo_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
@@ -16,14 +19,35 @@ import java.util.Map;
 
 public class edit_profile extends AppCompatActivity {
 
+    private Button update;
+
     private static EditText first, last, phone, sNum, sName, city, state, zip, desc;
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            checkRequiredFields();
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    };
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
         Intent intent = getIntent();
-
+        update = findViewById(R.id.update);
         first = findViewById(R.id.first_name);
         last = findViewById(R.id.last_name);
         phone = findViewById(R.id.phone_number);
@@ -34,6 +58,16 @@ public class edit_profile extends AppCompatActivity {
         zip = findViewById(R.id.zip_code);
         desc = findViewById(R.id.description);
 
+        first.addTextChangedListener(textWatcher);
+        last.addTextChangedListener(textWatcher);
+        phone.addTextChangedListener(textWatcher);
+        sNum.addTextChangedListener(textWatcher);
+        sName.addTextChangedListener(textWatcher);
+        city.addTextChangedListener(textWatcher);
+        state.addTextChangedListener(textWatcher);
+        zip.addTextChangedListener(textWatcher);
+
+        update.setEnabled(false);
         if(GlobalHelper.getUser() != null) {
             first.setText(GlobalHelper.getUser().getFirstName());
             last.setText(GlobalHelper.getUser().getLastName());
@@ -66,6 +100,30 @@ public class edit_profile extends AppCompatActivity {
             case R.id.cancel:
                 finish();
                 break;
+        }
+    }
+
+
+    private void checkRequiredFields(){
+
+        String s1 = first.getText().toString();
+        String s2 = last.getText().toString();
+        String s3 = phone.getText().toString();
+
+        String number_ = sNum.getText().toString() + " ";
+        String street_ = sName.getText().toString() + " ";
+        String city_ = city.getText().toString() + " ";
+        String state_ = state.getText().toString() + " ";
+        String zip_ = zip.getText().toString();
+
+        String address = number_ + street_ + city_ + state_ + zip_;
+        // TODO: validate address and phone number
+
+        if(s1.trim().isEmpty() || s2.trim().isEmpty() || s3.trim().isEmpty() || number_.trim().isEmpty() || street_.trim().isEmpty() || city_.trim().isEmpty() || state_.trim().isEmpty() || zip_.trim().isEmpty())
+        {
+            update.setEnabled(false);
+        } else {
+            update.setEnabled(true);
         }
     }
 }
