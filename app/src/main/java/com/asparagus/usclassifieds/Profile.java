@@ -54,6 +54,7 @@ public class Profile extends AppCompatActivity {
             case R.id.edit_info:
                 Intent edit = new Intent(this, edit_profile.class);
                 startActivityForResult(edit, EDIT_COMPLETE);
+                break;
         }
     }
 
