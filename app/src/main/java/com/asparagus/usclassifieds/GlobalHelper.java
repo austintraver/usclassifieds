@@ -4,17 +4,14 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.database.Query;
 import com.mongodb.client.model.geojson.Point;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.mongodb.client.model.geojson.Position;
 
 public class GlobalHelper extends Application {
 
@@ -22,11 +19,15 @@ public class GlobalHelper extends Application {
     private static String email = "";
     private static String userID = "";
     public static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    public static Boolean userQueryDone = false;
 
     public static GoogleSignInClient mGoogleSignInClient;
 
-
     public static void signOut() {
+        user = null;
+        email = "";
+        userID = "";
+        userQueryDone = false;
         mGoogleSignInClient.signOut();
         return;
     }
@@ -53,7 +54,7 @@ public class GlobalHelper extends Application {
 
     public static void setUser(User newUser) {
         user = newUser;
-        System.out.println("User set with name: " + user.getFirstName() + user.getLastName());
+        System.out.println("User set with name: " + user.getFirstName() + " " + user.getLastName());
         return;
     }
 
@@ -76,13 +77,15 @@ public class GlobalHelper extends Application {
 ////        Point tempPoint = new Point(new Position(34,-118));
 ////        mDatabase.child("users").child("105390386330726279653").child("location").setValue(tempPoint);
 ////        mDatabase.child("users").child("105390386330726279653").child("userID").setValue("105390386330726279653");
-            mDatabase.child("users").child("105390386330726279653").child("phone").setValue("9499119111");
-            mDatabase.child("users").child("105390386330726279653").child("address").setValue("1279 W 37 Place, Los Angeles, CA, 90007");
+//          mDatabase.child("users").child("105390386330726279653").child("phone").setValue("9499119111");
+//          mDatabase.child("users").child("105390386330726279653").child("address").setValue("1279 W 37 Place, Los Angeles, CA, 90007");
 
 
         //System.out.println("Query result: " + mDatabase.child("users").child("12345678").child("email")); //.equalTo(userID));
-        Query query = FirebaseDatabase.getInstance().getReference("users").child(userID);
-        query.addListenerForSingleValueEvent(valueEventListener);
+
+//        Query query = FirebaseDatabase.getInstance().getReference("users").child(userID);
+//        query.addListenerForSingleValueEvent(valueEventListener);
+
         //System.out.println("New query: " + query);
         //return mDatabase.child("users").child(userID).equals(userID);
     }
@@ -91,7 +94,7 @@ public class GlobalHelper extends Application {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if(dataSnapshot.exists()) {
-                System.out.println(dataSnapshot.getValue(User.class));
+                GlobalHelper.setUser(dataSnapshot.getValue(User.class));
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     System.out.println("User snapshot key: " + userSnapshot.getKey());
                     System.out.println("User snapshot value: " + userSnapshot.getValue());
@@ -107,41 +110,4 @@ public class GlobalHelper extends Application {
             System.out.println("onCancelled called for event listener");
         }
     };
-
-
-
-
-
-    public static void addNewUser(String email, String first, String last, String phone, Point loc, String userID) {
-        Boolean key = mDatabase.child("users").child(userID).child("email").toString().equals("");
-        //System.out.println("users/" + userID + ": " + key);
-    }
-
-
-    //public static void
-    //public static void insert(){
-
-//        mDatabase.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                String value = dataSnapshot.getValue(String.class);
-//                System.out.println("Value is: " + value);
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//                //Log.w(TAG, “Failed to read value.“, error.toException());
-//            }
-//        });
-
-//        mDatabase.setValue("John Tanner");
-//        mDatabase.setValue("Charlie Pyle");
-    //mDatabase.child("users").child("cpyle").setValue("Charlie Pyle");
-
-    //mDatabase.child("users").child("jltanner@usc").child("name").setValue("John Tanner");
-        //mDatabase.child("user").child("cpyle@usc").child("name").setValue("Charlie Pyle");
-
-   // }
 }

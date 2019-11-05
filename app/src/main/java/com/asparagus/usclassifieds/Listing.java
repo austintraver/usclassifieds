@@ -1,30 +1,32 @@
 package com.asparagus.usclassifieds;
 
-import android.location.Location;
-
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Position;
-
 import java.io.Serializable;
 import java.util.UUID;
 
 public class Listing implements Serializable {
 
+    //TODO --> why UUID
     private UUID listingID;
     private String title, description, category;
     private double price;
     private boolean sold;
     private String image;
+    private String ownerID;
 
     /* TODO include image storage */
-    public Listing (String title, String description, String category, double price) {
+    public Listing (String title, String description, String category, double price, String owner) {
         this.title = title;
         this.description = description;
         this.category = category;
         this.price = price;
         this.listingID = UUID.randomUUID();
+        this.ownerID = owner;
         this.sold = false;
         this.image = null;
+    }
+
+    public Listing() {
+        //default constructor needed for Firebase instantiation
     }
 
     public UUID getListingID() { return this.listingID; }

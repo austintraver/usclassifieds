@@ -5,10 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Position;
-
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,17 +38,22 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onResume() MAIN ");
 
         if(GlobalHelper.getEmail().equals("")) {
+
             System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignIn.class);
             startActivityForResult(signInIntent, RC_START);
-        } else if(GlobalHelper.getUser() == null) {
+
+        }
+        else if(GlobalHelper.getUser() == null) {
+
+            System.out.println("In second if statement: " + GlobalHelper.getUser());
             //TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
+            System.out.println("Start home page intent: " + GlobalHelper.getUser());
             Intent homePageIntent = new Intent(this, Home.class);
             startActivityForResult(homePageIntent, RC_STOP);
         }
-
     }
 
     @Override
@@ -74,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
-            GlobalHelper.userExists(GlobalHelper.getUserID());
-            //userID and email should already be set here for GlobalHelper
+
             //TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
             //TODO --> use GlobalHelper.setUser( *** ) here if user is found
 
@@ -86,5 +86,4 @@ public class MainActivity extends AppCompatActivity {
             GlobalHelper.signOut();
         }
     }
-
 }
