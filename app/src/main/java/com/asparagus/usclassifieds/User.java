@@ -63,15 +63,14 @@ public class User implements Serializable {
         this.outgoingFriendRequests = new HashSet<String>();
         this.incomingFriendRequests = new HashSet<String>();
         new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
-
     }
 
     public Map<String,Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("userID", userID);
         result.put("email",email);
-        result.put("first",firstName);
-        result.put("last",lastName);
+        result.put("firstName",firstName);
+        result.put("lastName",lastName);
         result.put("streetNumber",streetNumber);
         result.put("streetName",streetName);
         result.put("city",city);
@@ -113,6 +112,8 @@ public class User implements Serializable {
     public void setLongitude(String lng) {
         this.longitude = lng;
     }
+    public void setFirstName(String fn) { this.firstName = fn; }
+    public void setLastName(String ln) { this.lastName = ln; }
 
     // getter methods
     public String getDescription() { return this.description; }
