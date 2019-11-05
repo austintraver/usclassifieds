@@ -56,7 +56,7 @@ public class Home extends AppCompatActivity {
     {
         ArrayList<Listing> listings = Listing.getListings();
         ListingAdapter adapter = new ListingAdapter(this, listings);
-        ListView lv = (ListView) findViewById(R.id.lvListings);
+        ListView lv = (ListView) findViewById(R.id.lvListing);
         lv.setAdapter(adapter);
     }
 

@@ -40,18 +40,16 @@ public class Listing implements Serializable {
     public static ArrayList<Listing> getListings()
     {
         ArrayList<Listing> a = new ArrayList<Listing>();
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
-        a.add(new Listing("Bike", "A shiny sorority girl's bike.", "Transport", 123.45, "Kelsey"));
-        a.add(new Listing("Skateboard", "A dirty frat boy's bike.", "Transport", 69.69, "Chad"));
+
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+        a.add(new Listing("Chad", "Bike", 42.00, "A dirty frat boy's bike.", null));
+
         return a;
     }
 }
