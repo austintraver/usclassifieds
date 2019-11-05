@@ -5,12 +5,13 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.asparagus.usclassifieds"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -42,7 +43,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
 
-
     implementation "org.mongodb:mongodb-driver-sync:3.11.1"
     androidTestImplementation "androidx.test:runner:1.2.0"
     implementation 'com.google.maps.android:android-maps-utils:0.5'
@@ -52,7 +52,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     //implementation 'com.google.firebase:firebase-admin:6.1.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    implementation 'com.firebase:firebase-client-android:2.4.0'
 
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

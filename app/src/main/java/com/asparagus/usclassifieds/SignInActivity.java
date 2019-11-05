@@ -116,6 +116,7 @@ public class SignInActivity extends Activity {
             return;
         }
         else {
+            //TODO --> make sure email is @usc.edu only
             final Intent resultEmail = new Intent();
             GlobalHelper.setEmail(account.getEmail());
             GlobalHelper.setID(account.getId());

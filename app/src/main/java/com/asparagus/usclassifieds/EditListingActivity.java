@@ -1,6 +1,7 @@
 package com.asparagus.usclassifieds;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,12 +15,23 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class EditListingActivity extends Activity {
     private StorageReference mStorageRef;
@@ -29,6 +41,7 @@ public class EditListingActivity extends Activity {
     private TextView upload_text_view;
     public static final int GET_FROM_GALLERY = 101;
     private Bitmap bitmap = null;
+    private Uri selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +89,9 @@ public class EditListingActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         //Detects request codes
         if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
+            selectedImage = data.getData();
             bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
@@ -87,10 +99,8 @@ public class EditListingActivity extends Activity {
                 upload_text_view.setText("Upload Complete!");
                 checkRequiredFields();
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -112,8 +122,7 @@ public class EditListingActivity extends Activity {
                 }
                 String description = description_edit_text.getText().toString();
 
-                // TODO: Put user in
-                Listing new_listing = new Listing("username", title, price, description, bitmap);
+                uploadImage(GlobalHelper.getUserID(), title, price, description);
                 Intent newListingAdded = new Intent();
                 setResult(Activity.RESULT_OK, newListingAdded);
                 finish();
@@ -131,6 +140,47 @@ public class EditListingActivity extends Activity {
             create_button.setEnabled(false);
         } else {
             create_button.setEnabled(true);
+        }
+    }
+
+    private void uploadImage(String owner, String title, double price, String description) {
+
+        if(selectedImage != null)
+        {
+//            final ProgressDialog progressDialog = new ProgressDialog(this);
+//            progressDialog.setTitle("Uploading...");
+//            progressDialog.show();
+
+            UUID uuid = UUID.randomUUID();
+            StorageReference ref = mStorageRef.child("images/"+ GlobalHelper.getUserID() + "/" + uuid.toString());
+            Listing newListing = new Listing(owner, title, price, description, "images/"+ GlobalHelper.getUserID() + "/" + uuid.toString());
+
+            Map<String, Object> listingValues = newListing.toMap();
+            FirebaseDatabase.getInstance().getReference("listings").child("available").child(GlobalHelper.getUserID()).setValue(listingValues);
+
+            ref.putFile(selectedImage)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            progressDialog.dismiss();
+                            Toast.makeText(EditListingActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+//                            progressDialog.dismiss();
+                            Toast.makeText(EditListingActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+//                                    .getTotalByteCount());
+//                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
         }
     }
 }
