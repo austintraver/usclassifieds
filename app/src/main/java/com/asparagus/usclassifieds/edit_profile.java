@@ -102,7 +102,6 @@ public class edit_profile extends AppCompatActivity {
         }
     }
 
-
     private void checkRequiredFields(){
 
         String s1 = first.getText().toString();
@@ -115,7 +114,7 @@ public class edit_profile extends AppCompatActivity {
         String zip_ = zip.getText().toString();
 
         String address = number_ + street_ + city_ + state_ + zip_;
-        // TODO: validate address and phone number
+        // TODO: validate address
 
         if(s1.trim().isEmpty() || s2.trim().isEmpty() || number_.trim().isEmpty() || street_.trim().isEmpty() || city_.trim().isEmpty() || state_.trim().isEmpty() || zip_.trim().isEmpty())
         {
