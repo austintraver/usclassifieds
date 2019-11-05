@@ -6,4 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".single_listing">
 
+    <TextView
+        android:id="@+id/tvSingleTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Single Bike"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/tvSingleDesc"
+        android:layout_width="376dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:text="Single Description"
+        app:layout_constraintTop_toBottomOf="@+id/tvSingleTitle"
+        tools:layout_editor_absoluteX="15dp" />
+
+    <TextView
+        android:id="@+id/tvSinglePrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="80.00"
+        app:layout_constraintStart_toEndOf="@+id/tvSingleTitle"
+        tools:layout_editor_absoluteY="17dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

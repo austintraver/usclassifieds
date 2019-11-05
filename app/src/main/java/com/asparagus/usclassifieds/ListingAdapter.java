@@ -12,7 +12,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ListingAdapter extends ArrayAdapter<Listing> {
-    public ListingAdapter (Context context, ArrayList<Listing> listings) { super(context, 0, listings); }
+    public ListingAdapter (Context context, ArrayList<Listing> listings)
+    {
+        super(context, 0, listings);
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
@@ -27,7 +30,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         // Grab view object from listing_row_view to insert listing data
         Button bTitle = convertView.findViewById(R.id.bTitle);
         TextView tvDescription = convertView.findViewById(R.id.tvDescription);
-        TextView tvPrice = convertView.findViewById(R.id.tvPrice);
+        TextView tvPrice = convertView.findViewById(R.id.tvSinglePrice);
 
         // Convert listing object data into viewable text
         bTitle.setText(listing.getTitle());
@@ -36,11 +39,13 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
             @Override
             public void onClick(View view)
             {
-                int position = (Integer) view.getTag();
-                Listing listing = getItem(position);
-//                Intent intent = new Intent(this, single_listing.class);
-//                intent.putExtra("listing",listing);
-
+                System.out.println("Clicked View " + view.getId());
+                Listing listing= (Listing) view.getTag();
+                System.out.println("Listing data is " + listing.getTitle());
+;
+                Intent intent = new Intent(view.getContext(), single_listing.class);
+                intent.putExtra("listing",listing);
+                view.getContext().startActivity(intent);
             }
         });
         tvDescription.setText(listing.getDescription());
@@ -49,4 +54,5 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         // Return completed view to render on screen
         return convertView;
     }
+
 }

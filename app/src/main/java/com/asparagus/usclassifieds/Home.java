@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class Home extends AppCompatActivity {
 
@@ -18,6 +21,7 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         Intent intent = getIntent();
+        populateListings();
     }
 
     public void onClick(View v) {
@@ -45,4 +49,14 @@ public class Home extends AppCompatActivity {
             finish();
         }
     }
+
+    private void populateListings()
+    {
+        ArrayList<Listing> listings = Listing.getListings();
+        ListingAdapter adapter = new ListingAdapter(this, listings);
+        ListView lv = (ListView) findViewById(R.id.lvListings);
+        lv.setAdapter(adapter);
+    }
+
+
 }
