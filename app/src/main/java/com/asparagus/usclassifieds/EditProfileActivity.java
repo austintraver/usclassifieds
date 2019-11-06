@@ -121,6 +121,7 @@ public class EditProfileActivity extends Activity {
                 finish();
                 break;
             case R.id.cancel:
+                setResult(400);
                 finish();
                 break;
         }
@@ -155,7 +156,6 @@ public class EditProfileActivity extends Activity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
                                 Log.i("RESPONSE", response);
 
                                 // TODO: CHECK IF RESPONSE SIZE IS 1 AND DELETE LOGS

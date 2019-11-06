@@ -66,20 +66,20 @@ public class User implements Serializable {
     }
 
     public Map<String,Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("userID", userID);
-        result.put("email",email);
-        result.put("firstName",firstName);
-        result.put("lastName",lastName);
-        result.put("streetNumber",streetNumber);
-        result.put("streetName",streetName);
-        result.put("city",city);
-        result.put("state",state);
-        result.put("zipCode",zipCode);
-        result.put("phone",phone);
-        result.put("latitude", latitude);
-        result.put("longitude", longitude);
-        result.put("description", description);
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("userID", userID);
+            result.put("email",email);
+            result.put("firstName",firstName);
+            result.put("lastName",lastName);
+            result.put("streetNumber",streetNumber);
+            result.put("streetName",streetName);
+            result.put("city",city);
+            result.put("state",state);
+            result.put("zipCode",zipCode);
+            result.put("phone",phone);
+            result.put("latitude", latitude);
+            result.put("longitude", longitude);
+            result.put("description", description);
 //        result.put("friends",friends);
 //        result.put("outgoing", outgoingFriendRequests);
 //        result.put("incoming", incomingFriendRequests);
@@ -225,15 +225,7 @@ public class User implements Serializable {
                     GlobalHelper.getUser().setLongitude(lng);
 
                     Map<String, Object> userValues = GlobalHelper.getUser().toMap();
-                    Map<String, Object> userUpdates = new HashMap<>();
                     FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
-//                    userUpdates.put("/users/" + GlobalHelper.getUser(), userValues);
-//                    FirebaseDatabase.getInstance().getReference().updateChildren(userUpdates);
-
-//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("latitude").setValue(lat);
-//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).child("longitude").setValue(lng);
-//                    if(dialog.isShowing())
-//                        dialog.dismiss();
                 }
 
 

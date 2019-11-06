@@ -6,17 +6,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_START = 2;
     private static final int RC_START2 = 4;
     private static final int RC_STOP = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static FirebaseAuth mAuth;  //TODO
+    private static FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance(); //TODO
 
         /*
         File file = new File("./firebase_key.json");
@@ -92,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
             // TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                System.out.println("Firebase user is not authenticated.");
+            } else {
+                mAuth.signInAnonymously();
+            }
+
             System.out.println("Start home page intent: " + GlobalHelper.getUser());
             Intent homePageIntent = new Intent(this, HomeActivity.class);
             startActivityForResult(homePageIntent, RC_STOP);
