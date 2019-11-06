@@ -85,17 +85,18 @@ return new Promise((resolve, reject) => {
 
 
 /**
- * Requested whenever we create a user in the database. This will store our user in the backend and is used
+ * Requested whenever we handle user changes in the database. This will store our user in the backend and is used
  * for convenience when we need to manage users. 
  * */ 
 
 
 exports.createUser = functions.database.ref('/users/{userid}')
   .onWrite(async (change, context) => {
-    console.log('in create user');
+    
+    const userid = context.params.userid;
     if (change.after.val()) {
+      console.log('in create user');
       
-      const userid = context.params.userid;
 
       const getUserParamsPromise = admin.database()
           .ref(`/users/${userid}`).once('value');
@@ -121,29 +122,19 @@ exports.createUser = functions.database.ref('/users/{userid}')
           return console.log('Error creating new user:', error);
         });
     }
-});
-
-/**
- * Triggered whenever a user is deleted from the database.
- * */
-
-exports.deleteUser = functions.database.ref('/users/{userid}')
-    .onWrite(async (change, context) => {
-  // Grab the text parameter.
-  const requid = context.params.userid;
-  
-
-console.log('in delete user');
-  if (!change.after.val()) {
-    admin.auth().deleteUser(requid)
-    .then(() => {
-      // See the UserRecord reference doc for the contents of userRecord.
-      return console.log('Successfully deleted user:', requid);
-    })
-    .catch(error => {
-      return console.log('Error deleting user:', error);
-    });
-  }
+    else {
+      console.log('in delete user');
+      if (!change.after.val()) {
+        admin.auth().deleteUser(userid)
+        .then(() => {
+          // See the UserRecord reference doc for the contents of userRecord.
+          return console.log('Successfully deleted user:', userid);
+        })
+        .catch(error => {
+          return console.log('Error deleting user:', error);
+        });
+      }
+    }
 });
 
 
