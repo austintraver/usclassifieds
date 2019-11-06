@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="204dp"
         android:text="Single Bike"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,10 +32,19 @@
         android:id="@+id/tvSinglePrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="224dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginTop="204dp"
         android:text="80.00"
         android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/tvSingleTitle"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivSingleListing"
+        android:layout_width="219dp"
+        android:layout_height="178dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSingleTitle"
+        tools:layout_editor_absoluteX="96dp"
+        tools:src="@tools:sample/backgrounds/scenic[1]" />
 </androidx.constraintlayout.widget.ConstraintLayout>
