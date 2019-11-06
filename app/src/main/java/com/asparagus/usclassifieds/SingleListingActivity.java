@@ -11,11 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -51,10 +49,10 @@ public class SingleListingActivity extends Activity {
         }
         else
         {
-            TextView tvSTitle = findViewById(R.id.tvSingleTitle);
-            TextView tvSDesc = findViewById(R.id.tvSingleDesc);
-            TextView tvSPrice = findViewById(R.id.tvSinglePrice);
-            final ImageView ivSListing = findViewById(R.id.ivSingleListing);
+            TextView tvSTitle = findViewById(R.id.detail_title);
+            TextView tvSDesc = findViewById(R.id.detail_description);
+            TextView tvSPrice = findViewById(R.id.detail_price);
+            final ImageView ivSListing = findViewById(R.id.listing_image);
             // Load ImageView with photo from firebase per starter code from
             // https://firebase.google.com/docs/storage/android/download-files
             FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
