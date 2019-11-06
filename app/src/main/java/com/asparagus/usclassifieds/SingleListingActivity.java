@@ -52,8 +52,7 @@ public class SingleListingActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.other_user_button:
-                if(listing.getOwnerID() != GlobalHelper.getUserID()) {
-
+                if(!listing.getOwnerID().equals(GlobalHelper.getUserID())) {
                     Query query = FirebaseDatabase.getInstance().getReference("users").child(listing.getOwnerID());
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -69,8 +68,6 @@ public class SingleListingActivity extends Activity {
                             System.out.println("onCancelled called for event listener");
                         }
                     });
-
-
                 }
                 break;
         }
