@@ -4,12 +4,84 @@ const functions = require('firebase-functions');
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
 
+// let Promise = require('promise');
+const algoliasearch = require('algoliasearch');
+
 var serviceAccount = require("./serviceKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://usclassifieds-c83d5.firebaseio.com"
 });
+
+
+exports.syncListingToAlgolia = functions.database.ref('/listings/{listingid}')
+  .onWrite(async (change, context) => {
+    console.log('add listing from database');
+    const listingid = context.params.listingid;
+    
+    if (change.after.val()) {
+          const getListingParamsPromise = admin.database()
+        .ref(`/listings/${listingid}`).once('value');
+
+      const results = await Promise.all([getListingParamsPromise]);
+
+      listingSnapshot = results[0];
+      const data = {
+        objectID: listingid,
+        description: listingSnapshot.child("description").val(), 
+        latitude: listingSnapshot.child("latitude").val(),
+        longitude: listingSnapshot.child("longitude").val(),
+        ownerEmail: listingSnapshot.child("ownerEmail").val(),
+        ownerID: listingSnapshot.child("ownerID").val(),
+        ownerName: listingSnapshot.child("ownerName").val(),
+        price: listingSnapshot.child("price").val(),
+        sold: listingSnapshot.child("sold").val(),
+        storageReference: listingSnapshot.child("storageReference").val(),
+        title: listingSnapshot.child("title").val()
+  };
+return addToAlgolia(data, 'listings')
+ .then(res => console.log('SUCCESS ALGOLIA listing ADD', res))
+ .catch(err => console.log('ERROR ALGOLIA listing ADD', err));
+    }
+    else if (!change.after.val()) {
+      return removeFromAlgolia(listingid, 'listings')
+    .then(res => console.log('SUCCESS ALGOLIA listing remove', res))
+    .catch(err => console.log('ERROR ALGOLIA listing remove', err));
+    }
+    return (console.log('cant decide if add or remove'))
+});
+
+// helper functions for create, edit and delete in Firestore to replicate this in Algolia
+function addToAlgolia(object, indexName) {
+ console.log('GETS IN addToAlgolia')
+ console.log('object', object)
+ console.log('indexName', indexName)
+ const ALGOLIA_ID = 'VTODAQDVW5';
+ const ALGOLIA_ADMIN_KEY = 'a06f0b0003ffe4d67f6fe6d89fa05f9a';
+ const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
+ const index = client.initIndex(indexName);
+return new Promise((resolve, reject) => {
+  index.addObject(object)
+  .then(res => {  resolve(res); return console.log('res GOOD', res);})
+  .catch(err => {  reject(err); return console.log('err BAD', err);});
+ });
+}
+
+function removeFromAlgolia(objectID, indexName) {
+ const ALGOLIA_ID = 'VTODAQDVW5';
+ const ALGOLIA_ADMIN_KEY = 'a06f0b0003ffe4d67f6fe6d89fa05f9a';
+ const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
+ const index = client.initIndex(indexName);
+return new Promise((resolve, reject) => {
+  index.deleteObject(objectID)
+  .then(res => {  resolve(res); return console.log('res GOOD', res); })
+  .catch(err => {  reject(err); return console.log('err BAD', err);});
+ });
+}
+
+
+
 
 
 /**
