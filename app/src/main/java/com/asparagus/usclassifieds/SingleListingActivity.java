@@ -46,6 +46,7 @@ public class SingleListingActivity extends Activity {
                     intent.putExtra("other_user", listing.getOwnerID());
                     startActivity(intent);
                 }
+                break;
         }
     }
 
