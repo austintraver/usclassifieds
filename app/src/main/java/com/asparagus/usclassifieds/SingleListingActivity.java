@@ -15,6 +15,11 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.FileNotFoundException;
@@ -38,13 +43,34 @@ public class SingleListingActivity extends Activity {
 
     }
 
+    private void sendToOtherPage(User u) {
+        Intent intent = new Intent(this, OtherProfileActivity.class);
+        intent.putExtra("other_user", u);
+        startActivity(intent);
+    }
+
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.other_user_button:
                 if(listing.getOwnerID() != GlobalHelper.getUserID()) {
-                    Intent intent = new Intent(this, OtherProfileActivity.class);
-                    intent.putExtra("other_user", listing.getOwnerID());
-                    startActivity(intent);
+
+                    Query query = FirebaseDatabase.getInstance().getReference("users").child(listing.getOwnerID());
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                User other = dataSnapshot.getValue(User.class);
+                                sendToOtherPage(other);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            System.out.println("onCancelled called for event listener");
+                        }
+                    });
+
+
                 }
                 break;
         }
