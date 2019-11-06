@@ -15,7 +15,9 @@
     running the sample again.</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="school">USC</string>
-    
+    <string name="friend_button">Add Friend</string>
+    <string name="view_listings">View Listings</string>
+
     <string-array name="search_choices">
         <item>Username</item>
         <item>Title</item>
