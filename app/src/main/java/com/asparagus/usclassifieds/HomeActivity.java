@@ -103,6 +103,17 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             case R.id.search_button:
                 System.out.println("clicking search button with value: " + selection);
                 break;
+
+            case R.id.map_view:
+//                Intent mapIntent = new Intent(this, MapsActivity.class);
+//                mapIntent.putExtra("lat",34.0224);
+//                mapIntent.putExtra("long",-118.2851);
+//                startActivity(mapIntent);
+                break;
+
+            case R.id.list_view:
+                //TODO -->
+                break;
         }
     }
 
@@ -117,10 +128,27 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
+        } else if(requestCode == DASHBOARD && resultCode == 25) {
+            fillArrray("thisUser");
+            populateListings();
         }
     }
 
-    private void populateListings(String select) {
+    private void fillArrray(String select) {    //search based on different listings
+        if(select == "thisUser") {
+
+        } else if (select == "Username") {
+
+
+        } else if (select == "Title") {
+
+        } else {        //select == "Tags"
+            System.out.println("select should be Tags: select = " + select);
+        }
+
+    }
+
+    private void populateListings() {
         //select can be one of three things = { Username, Title, Tags }
         //These are the three options for search parameters
         ArrayList<Listing> listings = Listing.getListings();

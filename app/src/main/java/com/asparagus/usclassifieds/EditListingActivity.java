@@ -167,7 +167,7 @@ public class EditListingActivity extends Activity {
                     );
 
             Map<String, Object> listingValues = newListing.toMap();
-            FirebaseDatabase.getInstance().getReference("listings").child("available").child(GlobalHelper.getUserID()).child(uuid.toString()).setValue(listingValues);
+            FirebaseDatabase.getInstance().getReference("listings").child(uuid.toString()).setValue(listingValues);
 
             ref.putFile(selectedImage)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
