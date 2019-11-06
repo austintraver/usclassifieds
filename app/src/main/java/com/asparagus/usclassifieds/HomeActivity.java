@@ -122,6 +122,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
             case R.id.search_button:
                 System.out.println("clicking search button with value: " + selection);
+                fillArray(selection);
                 break;
 
             case R.id.map_view:
@@ -215,8 +216,13 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
     private void fillArray(String select) {    //search based on different listings
         GlobalHelper.searchedListings.clear();
+        String query = "";
 
-        String query = search_bar.getText().toString();
+        if(search_bar != null && search_bar.getText().toString().equals("")) {
+            query = search_bar.getText().toString();
+        }
+
+
         System.out.println("Finding results with query string: " + query);
         if(select == "thisUser") {
 

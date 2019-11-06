@@ -151,11 +151,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                getLocationPermissions();
 //            }
             mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(GlobalHelper.getUser().getFirstName() + " " + GlobalHelper.getUser().getLastName()));
-            for (Listing l : GlobalHelper.searchedListings) {
-                Double tempLat = Double.parseDouble(l.getLatitude());
-                Double tempLng = Double.parseDouble(l.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(new LatLng(tempLat,tempLng)).title(l.getTitle()));
-            }
+//            for (Listing l : GlobalHelper.searchedListings) {
+//                Double tempLat = Double.parseDouble(l.getLatitude());
+//                Double tempLng = Double.parseDouble(l.getLongitude());
+//                mMap.addMarker(new MarkerOptions().position(new LatLng(tempLat,tempLng)).title(l.getTitle()));
+//            }
             mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
         }

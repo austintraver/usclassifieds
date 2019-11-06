@@ -31,19 +31,21 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class User implements Serializable {
 
     // email is the identifier
     private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude, description;
-    private HashSet<String> friends;
-    private HashSet<String> outgoingFriendRequests;
-    private HashSet<String> incomingFriendRequests;
-    private HashSet <String> notificationTokens;
+    private ArrayList<String> friends;
+    private ArrayList<String> outgoingFriendRequests;
+    private ArrayList<String> incomingFriendRequests;
+    private ArrayList <String> notificationTokens;
 
     public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip, String description) {
         this.userID = userID;
@@ -59,10 +61,10 @@ public class User implements Serializable {
         this.latitude = "";
         this.longitude = "";
         this.description = description;
-        this.friends = new HashSet<String>();
-        this.outgoingFriendRequests = new HashSet<String>();
-        this.incomingFriendRequests = new HashSet<String>();
-        this.notificationTokens = new HashSet<String>();
+        this.friends = new ArrayList<>();
+        this.outgoingFriendRequests = new ArrayList<>();
+        this.incomingFriendRequests = new ArrayList<>();
+        this.notificationTokens = new ArrayList<>();
         new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
     }
 
@@ -81,10 +83,18 @@ public class User implements Serializable {
             result.put("latitude", latitude);
             result.put("longitude", longitude);
             result.put("description", description);
-            result.put("friends",friends);
-            result.put("outgoingFriendRequests", outgoingFriendRequests);
-            result.put("incomingFriendRequests", incomingFriendRequests);
-            result.put("notificationTokens", incomingFriendRequests);
+            List<String> F = new ArrayList<String>(friends);
+            F.add(userID);
+            result.put("friends",F);
+            List<String> O = new ArrayList<String>(outgoingFriendRequests);
+            O.add(userID);
+            result.put("outgoingFriendRequests", O);
+            List<String> I = new ArrayList<String>(incomingFriendRequests);
+            I.add(userID);
+            result.put("incomingFriendRequests", I);
+            List<String> N = new ArrayList<String>(notificationTokens);
+            N.add(userID);
+            result.put("notificationTokens", N);
 
         return result;
     }
@@ -128,10 +138,10 @@ public class User implements Serializable {
     public String getLastName() { return this.lastName; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
-    public HashSet<String> getFriends() { return this.friends; }
-    public HashSet<String> getNotificationTokens() { return this.notificationTokens; }
-    public HashSet<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
-    public HashSet<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
+    public ArrayList<String> getFriends() { return this.friends; }
+    public ArrayList<String> getNotificationTokens() { return this.notificationTokens; }
+    public ArrayList<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
+    public ArrayList<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
     // add or remove from the incoming or outgoing friend request
     public void addFriend(User user) { friends.add(user.getUserID()); }
@@ -141,7 +151,7 @@ public class User implements Serializable {
     public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.getUserID()); }
     public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.getUserID()); }
     //public void setClientToken(String token) { this.clientToken = token; }
-    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new HashSet<String>(); notificationTokens.add(token); }
+    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new ArrayList<>(); notificationTokens.add(token); }
     public void removeNotificationToken(String token) { notificationTokens.remove(token); }
 
     //send outgoing friend request
