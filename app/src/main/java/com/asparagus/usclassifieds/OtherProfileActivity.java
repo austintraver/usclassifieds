@@ -6,14 +6,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class OtherProfileActivity extends Activity {
 
+    private String user;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference("");
+    DatabaseReference usersRef = ref.child("users");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
 
         Intent intent = getIntent();
+        user = intent.getStringExtra("other_user");
+
     }
 
     @Override
@@ -108,10 +121,35 @@ public class OtherProfileActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.friend_button:
-                /*
-                TODO
 
-                 */
+                Map< String,String> reqType =
+                        new HashMap<>();
+                reqType.put(user,"request");
+                HashMap<String, Object> result = new HashMap<>();
+                result.put(GlobalHelper.getUserID(), reqType);
+
+
+
+
+                //Map<String, Map<String, String>> request = new HashMap<,<>>((GlobalHelper.getUserID(), reqType);
+                // if not friend
+                if (!GlobalHelper.getUser().getFriends().contains(user)) {
+                    FirebaseDatabase.getInstance().getReference("friendrequests").child(GlobalHelper.getUserID()).setValue(result);
+                    //usersRef.setValue()
+                //FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
+                }
+
+                Map<String, Object> userValues = GlobalHelper.getUser().toMap();
+                FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
+
+                // if friend request sent
+                /*else if ()
+
+                // if friend
+                if (GlobalHelper.getUser().getFriends().contains(user)) {
+
+                }*/
+
                 break;
             case R.id.other_listings_button:
                 /*
