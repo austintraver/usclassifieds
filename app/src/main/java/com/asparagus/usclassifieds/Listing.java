@@ -66,6 +66,10 @@ public class Listing implements Serializable {
         return result;
     }
 
+    public String getStorageReference() {
+        return this.storageReference;
+    }
+
     public UUID getListingID() {
         return this.listingID;
     }

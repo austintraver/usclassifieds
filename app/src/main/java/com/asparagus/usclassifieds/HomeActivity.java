@@ -129,11 +129,26 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
         } else if(requestCode == DASHBOARD && resultCode == 25) {
-            populateListings("thisUser");
+            fillArrray("thisUser");
+            populateListings();
         }
     }
 
-    private void populateListings(String select) {
+    private void fillArrray(String select) {    //search based on different listings
+        if(select == "thisUser") {
+
+        } else if (select == "Username") {
+
+
+        } else if (select == "Title") {
+
+        } else {        //select == "Tags"
+            System.out.println("select should be Tags: select = " + select);
+        }
+
+    }
+
+    private void populateListings() {
         //select can be one of three things = { Username, Title, Tags }
         //These are the three options for search parameters
         ArrayList<Listing> listings = Listing.getListings();
