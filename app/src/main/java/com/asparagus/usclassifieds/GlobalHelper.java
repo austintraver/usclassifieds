@@ -6,6 +6,11 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
+import com.algolia.search.saas.Index;
+import com.algolia.search.saas.Query;
+import com.google.android.gms.common.api.Api;
 import com.mongodb.client.model.geojson.Point;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,6 +37,10 @@ public class GlobalHelper extends Application {
     public static ArrayList<Listing> searchedListings = new ArrayList<>();
 
     public static GoogleSignInClient mGoogleSignInClient;
+    public static Client mAlgoliaClient;
+    public static Index mAlgoliaIndex;
+    public static final String ALGOLIA_ID = "VTODAQDVW5";
+    public static final String ALGOLIA_ADMIN_KEY = "a06f0b0003ffe4d67f6fe6d89fa05f9a";
 
     public static void signOut() {
         user = null;
@@ -96,4 +105,20 @@ public class GlobalHelper extends Application {
             System.out.println("onCancelled called for event listener");
         }
     };
+
+    // Starts Algolia Client to begin file searches
+    public static void initAlgoliaListings(){
+        if(mAlgoliaIndex == null){
+            mAlgoliaClient = new Client(GlobalHelper.ALGOLIA_ID, GlobalHelper.ALGOLIA_ADMIN_KEY);
+        }
+
+        mAlgoliaIndex = mAlgoliaClient.getIndex("listings");
+    }
+
+    public static void getAlgoliaListings(String select, CompletionHandler ch){
+        initAlgoliaListings();
+        mAlgoliaIndex.searchAsync(new Query(select), ch);
+
+    }
+
 }
