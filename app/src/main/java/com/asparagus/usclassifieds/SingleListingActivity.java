@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,14 @@ public class SingleListingActivity extends Activity {
         populatePageData();
 //        startActivityForResult(intent,RESULT_CANCELED);
 
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.other_user_button:
+                Intent intent = new Intent(this, OtherProfileActivity.class);
+                
+        }
     }
 
     @Override
