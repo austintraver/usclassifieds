@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,9 +24,22 @@ import java.io.IOException;
 public class SingleListingActivity extends Activity {
 
     Listing listing;
+    private Button sold_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sold_button = findViewById(R.id.sold_button);
+        sold_button.setVisibility(View.GONE);
+        if (GlobalHelper.getEmail().equals(listing.getOwnerEmail())) {
+            sold_button.setVisibility(View.VISIBLE);
+            sold_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listing.setSold(true);
+                }
+            });
+        }
+
         System.out.println("Starting Activity: single_listing");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_listing);
