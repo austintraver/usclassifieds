@@ -35,6 +35,7 @@ public class GlobalHelper extends Application {
     public static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     public static Boolean userQueryDone = false;
     public static ArrayList<Listing> searchedListings = new ArrayList<>();
+    public static MyAppGlideModule GlideApp;
 
     public static GoogleSignInClient mGoogleSignInClient;
     public static Client mAlgoliaClient;

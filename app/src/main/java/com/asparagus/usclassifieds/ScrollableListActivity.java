@@ -2,13 +2,14 @@ package com.asparagus.usclassifieds;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class ScrollableListActivity extends AppCompatActivity {
+public class ScrollableListActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
