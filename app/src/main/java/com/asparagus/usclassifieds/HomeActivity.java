@@ -1,6 +1,7 @@
 package com.asparagus.usclassifieds;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,10 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.CompletionHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +26,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -41,7 +49,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         Intent intent = getIntent();
         //populateListings();
 
-        // Used to get client token and set that for logged in user
+        // Used to get client token and set that for logged in person
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -55,7 +63,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                         String token = task.getResult().getToken();
                         System.out.println("token: " + token);
 
-                        /* sets the client ID on logged in user, will be used to send notifications on
+                        /* sets the client ID on logged in person, will be used to send notifications on
                          database updates for friend requests */
 
                         GlobalHelper.getUser().setClientToken(token);
@@ -127,7 +135,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         if (requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
             // TODO --> Toast blurb of created listing success
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            // TODO --> user signed out from the profile page
+            // TODO --> person signed out from the profile page
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
@@ -158,20 +166,54 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         });
     }
 
+
+    CompletionHandler fillSearchResultCallback = new CompletionHandler() {
+
+        @Override
+        public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
+            try{
+                System.out.println("Printing Algolia Result:\n" + jsonObject.toString(2));
+                JSONArray array = jsonObject.getJSONArray("hits");
+                for(int i = 0; i < array.length(); i++)
+                {
+                    GlobalHelper.searchedListings.add(new Listing(array.getJSONObject(i)));
+                }
+                populateListings();
+
+            } catch (JSONException je){
+                je.printStackTrace();
+            }
+
+        }
+    };
+
     private void fillArray(String select) {    //search based on different listings
         GlobalHelper.searchedListings.clear();
-        Query query;
+
+        EditText text = (EditText) findViewById(R.id.search_bar);
+        String query = text.getText().toString();
 
         if(select == "thisUser") {
-            query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
-            getListings(query);
+
+            // searches Algolia client with getUserID as search query
+            GlobalHelper.getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
+
+//            query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
+//            getListings(query);
+
         } else if (select == "Username") {
 
+            GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
 
         } else if (select == "Title") {
 
+            GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
+
         } else {        //select == "Tags"
+
             System.out.println("select should be Tags: select = " + select);
+            GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
+
         }
 
     }

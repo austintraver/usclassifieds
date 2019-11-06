@@ -28,7 +28,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         // Grab view object from listing_row_view to insert listing data
         Button bTitle = convertView.findViewById(R.id.bTitle);
         TextView tvDescription = convertView.findViewById(R.id.tvDescription);
-        TextView tvPrice = convertView.findViewById(R.id.tvSinglePrice);
+        TextView tvPrice = convertView.findViewById(R.id.detail_price);
 
         // Convert listing object data into viewable text
         bTitle.setText(listing.getTitle());

@@ -63,8 +63,7 @@
         android:tint="#C8C8C8"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/search_button"
@@ -79,26 +78,25 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/search_bar"
         app:layout_constraintEnd_toEndOf="@+id/search_bar"
-        app:layout_constraintTop_toTopOf="@+id/search_bar"
-        app:srcCompat="@drawable/search" />
+        app:layout_constraintTop_toTopOf="@+id/search_bar" />
 
     <ImageButton
         android:id="@+id/dashboard_button"
-        android:src="@drawable/person"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:background="#00FFFFFF"
         android:onClick="onClick"
         android:scaleType="centerInside"
+        android:src="@drawable/person"
         android:tint="#C8C8C8"
         android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/search_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/person" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="40dp"
@@ -109,7 +107,8 @@
         android:gravity="center|left"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:text="Search active listings"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:textColor="@android:color/white"
         android:textColorHighlight="@android:color/white"
         android:textSize="12sp"
@@ -122,6 +121,9 @@
         android:id="@+id/lvListing"
         android:layout_width="385dp"
         android:layout_height="487dp"
+        android:textColor="@android:color/white"
+        android:textColorHighlight="@android:color/white"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -130,10 +132,27 @@
         android:id="@+id/spinner"
         android:layout_width="84dp"
         android:layout_height="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#FFFFFF"
+        android:backgroundTintMode="multiply"
+        android:gravity="center"
+        android:textAlignment="center"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
+    <TextView
+        android:id="@+id/filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Filter"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/spinner"
+        app:layout_constraintStart_toStartOf="@+id/spinner"
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

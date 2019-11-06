@@ -101,7 +101,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        // onMessageReceived when the app
 //        // is in the foreground. When the app is in the background an automatically generated
 //        // notification is displayed.
-//        // When the user taps on the notification they are returned to the app. Messages
+//        // When the person taps on the notification they are returned to the app. Messages
 //        // containing both notification
 //        // and data payloads are treated as notification messages. The Firebase console always
 //        // sends notification
@@ -177,7 +177,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Persist token to third-party servers.
      *
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
+     * Modify this method to associate the person's FCM InstanceID token with any server-side account
      * maintained by your application.
      *
      * @param token The new token.

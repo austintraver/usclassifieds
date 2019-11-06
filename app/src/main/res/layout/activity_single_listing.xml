@@ -4,47 +4,137 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".single_listing">
+    android:background="#1E1E1E"
+    tools:context=".SingleListingActivity"
+    tools:ignore="HardcodedText">
+
 
     <TextView
-        android:id="@+id/tvSingleTitle"
+        android:id="@+id/detail_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="204dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:text="Single Bike"
-        android:textSize="18dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detail_title_prompt"
+        app:layout_constraintTop_toBottomOf="@+id/listing_image" />
 
     <TextView
-        android:id="@+id/tvSingleDesc"
-        android:layout_width="376dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/detail_description"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="96dp"
+        android:includeFontPadding="true"
+        android:outlineProvider="paddedBounds"
+        android:padding="12dp"
         android:text="Single Description"
-        android:textSize="18dp"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSingleTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/detail_description_prompt" />
 
     <TextView
-        android:id="@+id/tvSinglePrice"
+        android:id="@+id/detail_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="236dp"
-        android:layout_marginTop="204dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:text="80.00"
-        android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/tvSingleTitle"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detail_price_prompt"
+        app:layout_constraintTop_toBottomOf="@+id/detail_title" />
 
     <ImageView
-        android:id="@+id/ivSingleListing"
-        android:layout_width="219dp"
-        android:layout_height="178dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvSingleTitle"
-        tools:layout_editor_absoluteX="96dp"
+        android:id="@+id/listing_image"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/backgrounds/scenic[1]" />
+
+    <TextView
+        android:id="@+id/detail_title_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Title"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listing_image" />
+
+    <TextView
+        android:id="@+id/detail_description_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="start|top"
+        android:text="Description"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_owner_prompt" />
+
+    <TextView
+        android:id="@+id/detail_price_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Price"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_title_prompt" />
+
+    <TextView
+        android:id="@+id/detail_owner_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="Owner"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_price_prompt" />
+
+    <Button
+        android:id="@+id/other_user_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="48dp"
+        android:text="Austin"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/detail_description_prompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/detail_owner_prompt"
+        app:layout_constraintTop_toBottomOf="@+id/detail_price" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -46,6 +49,24 @@ public class Listing implements Serializable {
         this.storageReference = sref;
         this.latitude = lat;
         this.longitude = lng;
+    }
+
+    public Listing(JSONObject object){
+        try{
+            this.title = object.getString("title");
+            this.description = object.getString("description");
+            this.price = object.getDouble("price");
+            this.longitude = object.getString("longitude");
+            this.latitude = object.getString("latitude");
+            this.ownerID = object.getString("ownerID");
+            this.ownerEmail = object.getString("ownerEmail");
+            this.ownerName = object.getString("ownerName");
+            this.sold = object.getBoolean("sold");
+            this.storageReference = object.getString("storageReference");
+
+        } catch(JSONException je){
+            je.printStackTrace();
+        }
     }
 
     public Listing() { } // Default constructor is required for Firebase instantiation
