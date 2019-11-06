@@ -141,7 +141,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
         if (requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
             // TODO --> Toast blurb of created listing success
-        } else if (resultCode == Activity.RESULT_CANCELED) {
+        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == DASHBOARD) {
             // TODO --> person signed out from the profile page
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
