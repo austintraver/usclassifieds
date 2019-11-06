@@ -43,7 +43,7 @@ public class User implements Serializable {
     private HashSet<String> friends;
     private HashSet<String> outgoingFriendRequests;
     private HashSet<String> incomingFriendRequests;
-    private String clientToken;
+    private HashSet <String> notificationTokens;
 
     public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip, String description) {
         this.userID = userID;
@@ -62,6 +62,7 @@ public class User implements Serializable {
         this.friends = new HashSet<String>();
         this.outgoingFriendRequests = new HashSet<String>();
         this.incomingFriendRequests = new HashSet<String>();
+        this.notificationTokens = new HashSet<String>();
         new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
     }
 
@@ -80,9 +81,10 @@ public class User implements Serializable {
             result.put("latitude", latitude);
             result.put("longitude", longitude);
             result.put("description", description);
-//        result.put("friends",friends);
-//        result.put("outgoing", outgoingFriendRequests);
-//        result.put("incoming", incomingFriendRequests);
+            result.put("friends",friends);
+            result.put("outgoingFriendRequests", outgoingFriendRequests);
+            result.put("incomingFriendRequests", incomingFriendRequests);
+            result.put("notificationTokens", incomingFriendRequests);
 
         return result;
     }
@@ -127,16 +129,20 @@ public class User implements Serializable {
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public HashSet<String> getFriends() { return this.friends; }
-    public String getClientToken() { return this.clientToken; }
+    public HashSet<String> getNotificationTokens() { return this.notificationTokens; }
     public HashSet<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
     public HashSet<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
     // add or remove from the incoming or outgoing friend request
-    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.email); }
-    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.email); }
-    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.email); }
-    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.email); }
-    public void setClientToken(String token) { this.clientToken = token; }
+    public void addFriend(User user) { friends.add(user.getUserID()); }
+    public void removeFriend(User user) { friends.remove(user.getUserID()); }
+    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.getUserID()); }
+    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.getUserID()); }
+    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.getUserID()); }
+    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.getUserID()); }
+    //public void setClientToken(String token) { this.clientToken = token; }
+    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new HashSet<String>(); notificationTokens.add(token); }
+    public void removeNotificationToken(String token) { notificationTokens.remove(token); }
 
     //send outgoing friend request
     public void toggleFriendRequest(User u) {
@@ -151,32 +157,9 @@ public class User implements Serializable {
         }
     }
 
-    // accept a friend requests
-    public void acceptFriendRequest(User u) {
-        addFriend(u);
-        removeIncomingFriendRequest(u);
-        u.removeOutgoingFriendRequest(this);
-    }
-
-    // reject a friend request
-    public void rejectFriendRequest(User u) {
-        removeIncomingFriendRequest(u);
-        u.removeOutgoingFriendRequest(this);
-    }
 
 
-    public void addFriend(User u) {
-        friends.add(u.email);
-        if (!u.getFriends().contains(this.email)) {
-            u.addFriend(this);
-        }
-    }
-    public void removeFriend(User u) {
-        friends.remove(u.email);
-        if (u.getFriends().contains(this.email)) {
-            u.removeFriend(this);
-        }
-    }
+
 
     public class GetCoordinates extends AsyncTask<String,Void,String> {
         //ProgressDialog dialog = new ProgressDialog(MainActivity.this);
