@@ -29,12 +29,15 @@ import java.io.IOException;
 public class SingleListingActivity extends Activity {
 
     Listing listing;
-    private Button sold_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sold_button = findViewById(R.id.sold_button);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_single_listing);
+        Button sold_button = findViewById(R.id.sold_button);
         sold_button.setVisibility(View.GONE);
+        Intent intent = getIntent();
+        this.listing = (Listing) intent.getSerializableExtra("listing");
         if (GlobalHelper.getEmail().equals(listing.getOwnerEmail())) {
             sold_button.setVisibility(View.VISIBLE);
             sold_button.setOnClickListener(new View.OnClickListener() {
@@ -44,13 +47,7 @@ public class SingleListingActivity extends Activity {
                 }
             });
         }
-
         System.out.println("Starting Activity: single_listing");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_listing);
-
-        Intent intent =  getIntent();
-        this.listing = (Listing) intent.getSerializableExtra("listing");
         System.out.println("Listing : " + listing.getTitle() + "\nDescription: " + listing.getDescription());
         populatePageData();
 //        startActivityForResult(intent,RESULT_CANCELED);
