@@ -199,7 +199,7 @@ public class User implements Serializable {
                 HttpDataHandler http = new HttpDataHandler();
                 String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + middle + key;
                 response = http.getHTTPData(url);
-                System.out.println("resp is: " + response);
+//                System.out.println("resp is: " + response);
                 return response;
             }
             catch (Exception ex)
@@ -220,15 +220,13 @@ public class User implements Serializable {
                             .getJSONObject("location").get("lat").toString();
                     String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                             .getJSONObject("location").get("lng").toString();
-                    System.out.println("latitude and longitude" + lat + " " + lng);
+//                    System.out.println("latitude and longitude" + lat + " " + lng);
                     GlobalHelper.getUser().setLatitude(lat);
                     GlobalHelper.getUser().setLongitude(lng);
 
                     Map<String, Object> userValues = GlobalHelper.getUser().toMap();
                     FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
                 }
-
-
 
             } catch (JSONException e) {
                 e.printStackTrace();

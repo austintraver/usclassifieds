@@ -20,8 +20,9 @@ public class Listing implements Serializable {
     private double price;
     private boolean sold;
     private Bitmap image;
-    private String ownerID;
+    private String ownerID, ownerEmail, ownerName;
     private String storageReference;
+    private String latitude, longitude;
 
 //    public Listing (String owner, String title, double price, String description, Bitmap image) {
 //        this.title = title;
@@ -33,14 +34,18 @@ public class Listing implements Serializable {
 //        this.image = image;
 //    }
 
-    public Listing (String owner, String title, double price, String description, String sref) {
+    public Listing (String owner, String ownerE, String ownerN, String title, double price, String description, String sref, String lat, String lng) {
         this.title = title;
         this.description = description;
         this.price = price;
         this.ownerID = owner;
+        this.ownerEmail = ownerE;
+        this.ownerName = ownerN;
         this.sold = false;
         this.image = null;
         this.storageReference = sref;
+        this.latitude = lat;
+        this.longitude = lng;
     }
 
     public Listing() { } // Default constructor is required for Firebase instantiation
@@ -51,14 +56,26 @@ public class Listing implements Serializable {
         result.put("description", description);
         result.put("price", price);
         result.put("ownerID", ownerID);
+        result.put("ownerEmail", ownerEmail);
+        result.put("ownerName", ownerName);
         result.put("sold", sold);
         result.put("storageReference", storageReference);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
 
         return result;
     }
 
     public UUID getListingID() {
         return this.listingID;
+    }
+
+    public String getLatitude() {
+        return this.getLatitude();
+    }
+
+    public String getLongitude() {
+        return this.longitude;
     }
 
     public String getTitle() {

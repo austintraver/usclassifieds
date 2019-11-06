@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,11 +20,13 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
     private static final int CREATE_LISTING = 101;
     private static final int DASHBOARD = 102;
     private static final String TAG = HomeActivity.class.getSimpleName();
+    private static String selection = "Username";
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +34,7 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
 
         Intent intent = getIntent();
-        populateListings();
+        //populateListings();
 
         // Used to get client token and set that for logged in user
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -56,6 +61,31 @@ public class HomeActivity extends Activity {
                         Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        spinner = findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.search_choices, android.R.layout.simple_spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(this);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        selection = parent.getItemAtPosition(pos).toString();
+        System.out.println("Selection is now: " + selection);
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 
     public void onClick(View v) {
@@ -68,6 +98,10 @@ public class HomeActivity extends Activity {
             case R.id.dashboard_button:
                 Intent dashboard = new Intent(this, ProfileActivity.class);
                 startActivityForResult(dashboard, DASHBOARD);
+                break;
+
+            case R.id.search_button:
+                System.out.println("clicking search button with value: " + selection);
                 break;
         }
     }
@@ -86,7 +120,9 @@ public class HomeActivity extends Activity {
         }
     }
 
-    private void populateListings() {
+    private void populateListings(String select) {
+        //select can be one of three things = { Username, Title, Tags }
+        //These are the three options for search parameters
         ArrayList<Listing> listings = Listing.getListings();
         ListingAdapter adapter = new ListingAdapter(this, listings);
         ListView lv = (ListView) findViewById(R.id.lvListing);
