@@ -3,7 +3,10 @@ package com.asparagus.usclassifieds;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class SingleListingActivity extends Activity {
 
@@ -39,6 +42,10 @@ public class SingleListingActivity extends Activity {
             TextView tvSTitle = findViewById(R.id.tvSingleTitle);
             TextView tvSDesc = findViewById(R.id.tvSingleDesc);
             TextView tvSPrice = findViewById(R.id.tvSinglePrice);
+            ImageView ivSListing = findViewById(R.id.ivSingleListing);
+            // Load ImageView with photo from firebase per starter code from
+            // https://firebase.google.com/docs/storage/android/download-files
+            Glide.with(this).load(listing.getStorageReference()).into(ivSListing);
             tvSTitle.setText(listing.getTitle());
             tvSDesc.setText(listing.getDescription());
             tvSPrice.setText(String.format("$%.2f",listing.getPrice()));
