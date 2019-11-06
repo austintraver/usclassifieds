@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class Listing implements Serializable {
 
-    private UUID listingID;
+    //private UUID listingID;
     private String title, description;
     private double price;
     private boolean sold;
@@ -70,9 +70,15 @@ public class Listing implements Serializable {
         return this.storageReference;
     }
 
-    public UUID getListingID() {
-        return this.listingID;
-    }
+//    public UUID getListingID() {
+//        return this.listingID;
+//    }
+
+    public String getOwnerID() { return this.ownerID; }
+
+    public String getOwnerEmail() { return this.ownerEmail; }
+
+    public String getOwnerName() { return this.ownerName; }
 
     public String getLatitude() {
         return this.getLatitude();

@@ -68,6 +68,7 @@ public class ProfileActivity extends Activity {
                 break;
             case R.id.my_listings_button:
                 setResult(25);
+                finish();
                 break;
             case R.id.edit_info:
                 Intent edit = new Intent(this, EditProfileActivity.class);

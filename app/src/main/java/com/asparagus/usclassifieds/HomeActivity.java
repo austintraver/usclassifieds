@@ -15,6 +15,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -129,14 +134,40 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
         } else if(requestCode == DASHBOARD && resultCode == 25) {
-            fillArrray("thisUser");
+            fillArray("thisUser");
             populateListings();
         }
     }
 
-    private void fillArrray(String select) {    //search based on different listings
-        if(select == "thisUser") {
+    public void getListings(Query query) {
+        //listener.onStart();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //listener.onSuccess(dataSnapshot);
+                for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
+//                    System.out.println("Listing snapshot key: " + listingSnapshot.getKey());
+//                    System.out.println("Listing snapshot value: " + listingSnapshot.getValue());
+                    GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
+                }
+                populateListings();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println("onCancelled called for event listener");
+                //listener.onFailure();
+            }
+        });
+    }
+
+    private void fillArray(String select) {    //search based on different listings
+        GlobalHelper.searchedListings.clear();
+        Query query;
+
+        if(select == "thisUser") {
+            query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
+            getListings(query);
         } else if (select == "Username") {
 
 
@@ -151,7 +182,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     private void populateListings() {
         //select can be one of three things = { Username, Title, Tags }
         //These are the three options for search parameters
-        ArrayList<Listing> listings = Listing.getListings();
+        ArrayList<Listing> listings = GlobalHelper.searchedListings;
         ListingAdapter adapter = new ListingAdapter(this, listings);
         ListView lv = (ListView) findViewById(R.id.lvListing);
         lv.setAdapter(adapter);
