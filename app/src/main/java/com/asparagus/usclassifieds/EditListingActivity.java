@@ -153,10 +153,21 @@ public class EditListingActivity extends Activity {
 
             UUID uuid = UUID.randomUUID();
             StorageReference ref = mStorageRef.child("images/"+ GlobalHelper.getUserID() + "/" + uuid.toString());
-            Listing newListing = new Listing(owner, title, price, description, "images/"+ GlobalHelper.getUserID() + "/" + uuid.toString());
+            Listing newListing =
+                    new Listing(
+                            owner,
+                            GlobalHelper.getUser().getFirstName() + " " + GlobalHelper.getUser().getLastName(),
+                            GlobalHelper.getEmail(),
+                            title,
+                            price,
+                            description,
+                            "images/"+ GlobalHelper.getUserID() + "/" + uuid.toString(),
+                            GlobalHelper.getUser().getLatitude(),
+                            GlobalHelper.getUser().getLongitude()
+                    );
 
             Map<String, Object> listingValues = newListing.toMap();
-            FirebaseDatabase.getInstance().getReference("listings").child("available").child(GlobalHelper.getUserID()).setValue(listingValues);
+            FirebaseDatabase.getInstance().getReference("listings").child("available").child(GlobalHelper.getUserID()).child(uuid.toString()).setValue(listingValues);
 
             ref.putFile(selectedImage)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
