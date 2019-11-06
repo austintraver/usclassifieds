@@ -2,11 +2,22 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class SingleListingActivity extends Activity {
 
@@ -45,6 +56,23 @@ public class SingleListingActivity extends Activity {
             ImageView ivSListing = findViewById(R.id.ivSingleListing);
             // Load ImageView with photo from firebase per starter code from
             // https://firebase.google.com/docs/storage/android/download-files
+//            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    try {
+//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle any errors
+//                }
+//            });
             Glide.with(this).load(listing.getStorageReference()).into(ivSListing);
             tvSTitle.setText(listing.getTitle());
             tvSDesc.setText(listing.getDescription());
