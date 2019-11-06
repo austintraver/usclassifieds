@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,9 +32,9 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 public class EditProfileActivity extends Activity {
 
     private Button update;
-
+    private Boolean valid_email = true;
     private EditText first, last, phone, sNum, sName, city, state, zip, desc;
-
+    private TextView email_warning;
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -77,6 +78,12 @@ public class EditProfileActivity extends Activity {
         city.addTextChangedListener(textWatcher);
         state.addTextChangedListener(textWatcher);
         zip.addTextChangedListener(textWatcher);
+
+        email_warning = findViewById(R.id.invalid_email_text_view);
+        if (!GlobalHelper.getEmail().endsWith("@usc.edu")) {
+            email_warning.setText("PLEASE USE YOUR USC EMAIL ADDRESS");
+            valid_email = false;
+        }
 
         update.setEnabled(false);
         if(GlobalHelper.getUser() != null) {
@@ -129,6 +136,10 @@ public class EditProfileActivity extends Activity {
 
     private void checkRequiredFields(){
 
+        if (!valid_email) {
+            return;
+        }
+        
         String s1 = first.getText().toString();
         String s2 = last.getText().toString();
 
