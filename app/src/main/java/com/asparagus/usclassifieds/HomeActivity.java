@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +42,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static String selection = "Username";
     private Spinner spinner;
+    private EditText search_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         Intent intent = getIntent();
         //populateListings();
 
-        // Used to get client token and set that for logged in user
+        // Used to get client token and set that for logged in person
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -63,7 +66,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                         String token = task.getResult().getToken();
                         System.out.println("token: " + token);
 
-                        /* sets the client ID on logged in user, will be used to send notifications on
+                        /* sets the client ID on logged in person, will be used to send notifications on
                          database updates for friend requests */
                         System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
                         GlobalHelper.getUser().addNotificationToken(token);
@@ -88,6 +91,10 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(this);
+
+        // Add listener to text box
+        search_bar = (EditText) findViewById(R.id.search_bar);
+        search_bar.addTextChangedListener(textWatcher);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -118,10 +125,8 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                 break;
 
             case R.id.map_view:
-//                Intent mapIntent = new Intent(this, MapsActivity.class);
-//                mapIntent.putExtra("lat",34.0224);
-//                mapIntent.putExtra("long",-118.2851);
-//                startActivity(mapIntent);
+                Intent mapIntent = new Intent(this, MapsActivity.class);
+                startActivity(mapIntent);
                 break;
 
             case R.id.list_view:
@@ -137,7 +142,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         if (requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
             // TODO --> Toast blurb of created listing success
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            // TODO --> user signed out from the profile page
+            // TODO --> person signed out from the profile page
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
@@ -189,12 +194,30 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         }
     };
 
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            if(spinner== null){
+                spinner = findViewById(R.id.spinner);
+            }
+            fillArray(spinner.toString());
+        }
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    };
+
+// TODO: Add on text change listener to search bar
+
     private void fillArray(String select) {    //search based on different listings
         GlobalHelper.searchedListings.clear();
 
-        EditText text = (EditText) findViewById(R.id.search_bar);
-        String query = text.getText().toString();
-
+        String query = search_bar.getText().toString();
+        System.out.println("Finding results with query string: " + query);
         if(select == "thisUser") {
 
             // searches Algolia client with getUserID as search query

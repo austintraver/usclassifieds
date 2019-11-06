@@ -32,7 +32,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissions;
 
     //private Location mLastLocation = null;
-    private final LatLng defaultLatLng = new LatLng(34.0224,-118.2851);
+    private double lat, lng;
+    private LatLng defaultLatLng;
 
     private Location mLastKnownLocation;
 
@@ -45,8 +46,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        lat = Double.parseDouble(GlobalHelper.getUser().getLatitude());
+        lng = Double.parseDouble(GlobalHelper.getUser().getLongitude());
+        defaultLatLng = new LatLng(lat,lng);
+
         // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        //mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -54,39 +59,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void getLocationPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissions = true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_LOCATION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        mLocationPermissions = false;
-        if (requestCode == MY_LOCATION_REQUEST_CODE) {
-            if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissions = true;
-            } else {
-                // Permission was denied. Display an error message.
-            }
-        }
-        updateMapUI();
-    }
+//    private void getLocationPermissions() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            mLocationPermissions = true;
+//        } else {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+//                    MY_LOCATION_REQUEST_CODE);
+//        }
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        mLocationPermissions = false;
+//        if (requestCode == MY_LOCATION_REQUEST_CODE) {
+//            if (permissions.length == 1 &&
+//                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                mLocationPermissions = true;
+//            } else {
+//                // Permission was denied. Display an error message.
+//            }
+//        }
+//        updateMapUI();
+//    }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * If Google Play services is not installed on the device, the person will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the person has
      * installed Google Play services and returned to the app.
      */
     @Override
@@ -96,35 +101,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent intent = getIntent();
 
         //Request Location Permissions
-        getLocationPermissions();
+        //getLocationPermissions();
 
         updateMapUI();
-        try {
-            if (mLocationPermissions) {
-
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), 14));
-                        } else {
-//                            Log.d(TAG, "Current location is null. Using defaults.");
-//                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(defaultLatLng, 14));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e)  {
-            //Log.e("Exception: %s", e.getMessage());
-        }
+//        try {
+//            if (mLocationPermissions) {
+//
+//                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+//                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Location> task) {
+//                        if (task.isSuccessful() && task.getResult() != null) {
+//                            // Set the map's camera position to the current location of the device.
+//                            mLastKnownLocation = task.getResult();
+//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+//                                    new LatLng(mLastKnownLocation.getLatitude(),
+//                                            mLastKnownLocation.getLongitude()), 14));
+//                        } else {
+////                            Log.d(TAG, "Current location is null. Using defaults.");
+////                            Log.e(TAG, "Exception: %s", task.getException());
+//                            mMap.moveCamera(CameraUpdateFactory
+//                                    .newLatLngZoom(defaultLatLng, 14));
+//                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+//                        }
+//                    }
+//                });
+//            }
+//        } catch (SecurityException e)  {
+//            //Log.e("Exception: %s", e.getMessage());
+//        }
         // Add a marker in USC and move the camera
 
 //        mMap.addMarker(new MarkerOptions().position(defaultLatLng).title("USC Campus"));
@@ -136,15 +141,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(mMap == null)
             return;
         else {
-            if(mLocationPermissions == true) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                //mLastLocation = null;
-                getLocationPermissions();
-            }
+//            if(mLocationPermissions == true) {
+//                mMap.setMyLocationEnabled(true);
+//                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            } else {
+//                mMap.setMyLocationEnabled(false);
+//                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+//                //mLastLocation = null;
+//                getLocationPermissions();
+//            }
+            mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(GlobalHelper.getUser().getFirstName() + " " + GlobalHelper.getUser().getLastName()));
+
         }
     }
 }

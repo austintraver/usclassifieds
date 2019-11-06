@@ -45,8 +45,8 @@ public class OtherProfileActivity extends Activity {
         /*
         TODO
         Normally, the GlobalHelper's getUser() method
-        retrieves the logged-in user's information. We
-        need to have the GlobalHelper refer to the user
+        retrieves the logged-in person's information. We
+        need to have the GlobalHelper refer to the person
         whose page is the one currently being viewed
          */
 
@@ -84,14 +84,14 @@ public class OtherProfileActivity extends Activity {
             a) The button should display the string "Add Friend"
             b) Clicking on the button should submit a friend request
                 i) change the button's string to display "Cancel Friend Request"
-                ii) add that user as a friend
+                ii) add that person as a friend
 
          2. If the two users are not friends AND there IS an outstanding friend request
 
-            a) If the friend request was submit by the currently logged-in user,
+            a) If the friend request was submit by the currently logged-in person,
                 i) then button should display the string "Cancel Friend Request"
 
-            b) If the friend request was submit by the user whose profile we are viewing
+            b) If the friend request was submit by the person whose profile we are viewing
                 i) then the button should display the string "Respond to Friend Request"
                 ii) clicking on the button should prompt a dialogue with three choices
                     一) "Accept"
@@ -112,7 +112,7 @@ public class OtherProfileActivity extends Activity {
             a) The button should display the string "Remove Friend"
             b) Clicking on the button should
                 i) change the button's string to display "Add Friend"
-                ii) delete that user as a member of the friends list array
+                ii) delete that person as a member of the friends list array
                 iii) remove the entry from the database that was storing their friendship
 
          */
