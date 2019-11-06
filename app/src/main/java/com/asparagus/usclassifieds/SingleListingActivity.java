@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -73,7 +74,8 @@ public class SingleListingActivity extends Activity {
 //                    // Handle any errors
 //                }
 //            });
-            Glide.with(this).load(listing.getStorageReference()).into(ivSListing);
+            StorageReference sref = FirebaseStorage.getInstance().getReference().child(listing.getStorageReference());
+            Glide.with(this).load(sref).into(ivSListing);
             tvSTitle.setText(listing.getTitle());
             tvSDesc.setText(listing.getDescription());
             tvSPrice.setText(String.format("$%.2f",listing.getPrice()));

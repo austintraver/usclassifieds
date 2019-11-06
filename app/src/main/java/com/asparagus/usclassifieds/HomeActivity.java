@@ -146,8 +146,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //listener.onSuccess(dataSnapshot);
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-//                    System.out.println("Listing snapshot key: " + listingSnapshot.getKey());
-//                    System.out.println("Listing snapshot value: " + listingSnapshot.getValue());
+
                     GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
                 }
                 populateListings();
