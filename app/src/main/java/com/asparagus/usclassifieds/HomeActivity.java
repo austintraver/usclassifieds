@@ -57,12 +57,12 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
                         /* sets the client ID on logged in user, will be used to send notifications on
                          database updates for friend requests */
-
-                        GlobalHelper.getUser().setClientToken(token);
+                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
+                        GlobalHelper.getUser().addNotificationToken(token);
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
+                        //Log.d(TAG, msg);
                         Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
