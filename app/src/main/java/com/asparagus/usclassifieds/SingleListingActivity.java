@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,12 +32,22 @@ public class SingleListingActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("Starting Activity: single_listing");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_listing);
-
-        Intent intent =  getIntent();
+        Button sold_button = findViewById(R.id.sold_button);
+        sold_button.setVisibility(View.GONE);
+        Intent intent = getIntent();
         this.listing = (Listing) intent.getSerializableExtra("listing");
+        if (GlobalHelper.getEmail().equals(listing.getOwnerEmail())) {
+            sold_button.setVisibility(View.VISIBLE);
+            sold_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listing.setSold(true);
+                }
+            });
+        }
+        System.out.println("Starting Activity: single_listing");
         System.out.println("Listing : " + listing.getTitle() + "\nDescription: " + listing.getDescription());
         populatePageData();
 //        startActivityForResult(intent,RESULT_CANCELED);

@@ -73,8 +73,8 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        //Log.d(TAG, msg);
-                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        // Log.d(TAG, msg);
+                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
 

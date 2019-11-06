@@ -124,6 +124,9 @@ public class Listing implements Serializable {
     public boolean getSold() {
         return this.sold;
     }
+    public void setSold(boolean sold) {
+        this.sold = sold;
+    }
 
     public static ArrayList<Listing> getListings() {
         ArrayList<Listing> listings = new ArrayList<Listing>();

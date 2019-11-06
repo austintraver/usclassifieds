@@ -81,7 +81,7 @@ public class EditProfileActivity extends Activity {
 
         email_warning = findViewById(R.id.invalid_email_text_view);
         if (!GlobalHelper.getEmail().endsWith("@usc.edu")) {
-            email_warning.setText("PLEASE USE YOUR USC EMAIL ADDRESS");
+            email_warning.setText("ERROR: PLEASE USE YOUR USC EMAIL ADDRESS");
             valid_email = false;
         }
 
