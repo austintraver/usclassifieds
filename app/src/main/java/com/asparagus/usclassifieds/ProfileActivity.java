@@ -66,11 +66,8 @@ public class ProfileActivity extends Activity {
                 finish();
                 // returns to HomeActivity.java in onActivityResult() callback with resultCode = 0
                 break;
-            case R.id.map_button:
-                Intent mapIntent = new Intent(this, MapsActivity.class);
-                mapIntent.putExtra("lat",34.0224);
-                mapIntent.putExtra("long",-118.2851);
-                startActivity(mapIntent);
+            case R.id.my_listings_button:
+                setResult(25);
                 break;
             case R.id.edit_info:
                 Intent edit = new Intent(this, EditProfileActivity.class);
