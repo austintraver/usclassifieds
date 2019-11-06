@@ -102,7 +102,7 @@ public class EditProfileActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.update:
-                System.out.println("In Onclick for update/create user!");
+                System.out.println("In Onclick for update/create person!");
                 User updatedUser = new User(
                     GlobalHelper.getEmail(),
                     first.getText().toString(),
@@ -117,7 +117,7 @@ public class EditProfileActivity extends Activity {
                     desc.getText().toString()
                 );
                 GlobalHelper.setUser(updatedUser);
-                System.out.println("creating a new/updated user: " + updatedUser);
+                System.out.println("creating a new/updated person: " + updatedUser);
 
 //                FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(updatedUser);
 //                Intent update_user = new Intent();

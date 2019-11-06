@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         */
 
         /*
-        i needed to pass the context this into the user object when i was testing a different
+        i needed to pass the context this into the person object when i was testing a different
         method, so right now we don't *need* the context variable. however, if the async extended
         class ends up not working, we may need to keep it here, so i'm leaving it for
         safety reasons right now
@@ -93,12 +93,12 @@ public class MainActivity extends Activity {
             System.out.println("In second if statement: null");
             Intent createUserIntent = new Intent(this, EditProfileActivity.class);
             startActivityForResult(createUserIntent, RC_START2);
-            // TODO --> check if user is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
+            // TODO --> check if person is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
             user = mAuth.getCurrentUser();
             if (user != null) {
-                System.out.println("Firebase user is not authenticated.");
+                System.out.println("Firebase person is not authenticated.");
             } else {
                 mAuth.signInAnonymously();
             }
@@ -131,8 +131,8 @@ public class MainActivity extends Activity {
 
         if(resultCode == Activity.RESULT_OK) {
             System.out.println("User successfully logged in!!!");
-            // TODO --> check if user is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
-            // TODO --> use GlobalHelper.setUser( *** ) here if user is found
+            // TODO --> check if person is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
+            // TODO --> use GlobalHelper.setUser( *** ) here if person is found
 
         } else if(resultCode == Activity.RESULT_CANCELED) {
             // TODO --> Sign out and redirect back to sign in activity

@@ -52,7 +52,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         Intent intent = getIntent();
         //populateListings();
 
-        // Used to get client token and set that for logged in user
+        // Used to get client token and set that for logged in person
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -66,7 +66,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                         String token = task.getResult().getToken();
                         System.out.println("token: " + token);
 
-                        /* sets the client ID on logged in user, will be used to send notifications on
+                        /* sets the client ID on logged in person, will be used to send notifications on
                          database updates for friend requests */
 
                         GlobalHelper.getUser().setClientToken(token);
@@ -144,7 +144,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         if (requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
             // TODO --> Toast blurb of created listing success
         } else if (resultCode == Activity.RESULT_CANCELED) {
-            // TODO --> user signed out from the profile page
+            // TODO --> person signed out from the profile page
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
