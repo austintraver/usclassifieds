@@ -54,31 +54,32 @@ public class SingleListingActivity extends Activity {
             TextView tvSTitle = findViewById(R.id.tvSingleTitle);
             TextView tvSDesc = findViewById(R.id.tvSingleDesc);
             TextView tvSPrice = findViewById(R.id.tvSinglePrice);
-            ImageView ivSListing = findViewById(R.id.ivSingleListing);
+            final ImageView ivSListing = findViewById(R.id.ivSingleListing);
             // Load ImageView with photo from firebase per starter code from
             // https://firebase.google.com/docs/storage/android/download-files
-//            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    try {
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle any errors
-//                }
-//            });
-            StorageReference sref = FirebaseStorage.getInstance().getReference().child(listing.getStorageReference());
-            Glide.with(this).load(sref).into(ivSListing);
-            tvSTitle.setText(listing.getTitle());
-            tvSDesc.setText(listing.getDescription());
-            tvSPrice.setText(String.format("$%.2f",listing.getPrice()));
+            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        ivSListing.setImageBitmap(bitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+//            StorageReference sref = FirebaseStorage.getInstance().getReference().child(listing.getStorageReference());
+//            GlideApp.with(this).load(sref).into(ivSListing);
+//            tvSTitle.setText(listing.getTitle());
+//            tvSDesc.setText(listing.getDescription());
+//            tvSPrice.setText(String.format("$%.2f",listing.getPrice()));
         }
     }
 }
