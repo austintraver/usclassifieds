@@ -110,10 +110,8 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                 break;
 
             case R.id.map_view:
-//                Intent mapIntent = new Intent(this, MapsActivity.class);
-//                mapIntent.putExtra("lat",34.0224);
-//                mapIntent.putExtra("long",-118.2851);
-//                startActivity(mapIntent);
+                Intent mapIntent = new Intent(this, MapsActivity.class);
+                startActivity(mapIntent);
                 break;
 
             case R.id.list_view:
