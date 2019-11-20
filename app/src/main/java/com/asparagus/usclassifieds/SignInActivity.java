@@ -127,6 +127,7 @@ public class SignInActivity extends Activity {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     if(dataSnapshot.exists()) {
+//                      If the user exists, add the user's data to the current session
                         GlobalHelper.setUser(dataSnapshot.getValue(User.class));
                         GlobalHelper.userQueryDone = true;
 //                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
