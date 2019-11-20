@@ -1,8 +1,6 @@
 package com.asparagus.usclassifieds;
 
 import android.app.Application;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
@@ -10,8 +8,6 @@ import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
-import com.google.android.gms.common.api.Api;
-import com.mongodb.client.model.geojson.Point;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.database.DataSnapshot;
@@ -20,11 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class GlobalHelper extends Application {

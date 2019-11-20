@@ -2,17 +2,13 @@ package com.asparagus.usclassifieds;
 
 import android.graphics.Bitmap;
 
-import com.google.firebase.storage.StorageReference;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /* TODO include image storage */
 

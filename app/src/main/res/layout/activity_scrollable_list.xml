@@ -7,7 +7,6 @@
     tools:context=".ScrollableListActivity">
 
     <ListView
-        android:id="@+id/lvListings"
         android:layout_width="376dp"
         android:layout_height="330dp"
         android:layout_alignParentLeft="true"

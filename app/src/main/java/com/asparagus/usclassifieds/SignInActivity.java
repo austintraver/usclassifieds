@@ -124,6 +124,7 @@ public class SignInActivity extends Activity {
         else {
             //TODO --> make sure email is @usc.edu only
             final Intent resultEmail = new Intent();
+
             if(!(account.getEmail().contains("@usc.edu"))) {
                 setResult(4567,resultEmail);
                 finish();
@@ -139,6 +140,7 @@ public class SignInActivity extends Activity {
                         if (dataSnapshot.exists()) {
                             GlobalHelper.setUser(dataSnapshot.getValue(User.class));
                             GlobalHelper.userQueryDone = true;
+
 //                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 //                            System.out.println("User snapshot key: " + userSnapshot.getKey());
 //                            System.out.println("User snapshot value: " + userSnapshot.getValue());
