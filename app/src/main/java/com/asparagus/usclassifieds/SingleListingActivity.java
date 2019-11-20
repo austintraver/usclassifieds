@@ -22,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.PicassoProvider;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,6 +32,7 @@ import java.io.IOException;
 public class SingleListingActivity extends Activity {
 
     Listing listing;
+    Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,11 @@ public class SingleListingActivity extends Activity {
         Button sold_button = findViewById(R.id.sold_button);
         sold_button.setVisibility(View.GONE);
         Intent intent = getIntent();
+
+        Picasso.Builder p = new Picasso.Builder(this);
+        this.picasso = p.build();
+        this.picasso.setLoggingEnabled(true);
+
         this.listing = (Listing) intent.getSerializableExtra("listing");
         if (GlobalHelper.getEmail().equals(listing.getOwnerEmail())) {
             sold_button.setVisibility(View.VISIBLE);
@@ -98,34 +107,34 @@ public class SingleListingActivity extends Activity {
         }
         else
         {
+            System.out.println("Loading page");
+
             TextView tvSTitle = findViewById(R.id.detail_title);
             TextView tvSDesc = findViewById(R.id.detail_description);
             TextView tvSPrice = findViewById(R.id.detail_price);
             Button owner = (Button) findViewById(R.id.other_user_button);
             TextView desc = findViewById(R.id.detail_description);
             final ImageView ivSListing = findViewById(R.id.listing_image);
+            picasso.get().setLoggingEnabled(true);
+
             // Load ImageView with photo from firebase per starter code from
             // https://firebase.google.com/docs/storage/android/download-files
-//            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    try {
-//                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                        ivSListing.setImageBitmap(bitmap);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle any errors
-//                }
-//            });
-//            StorageReference sref = FirebaseStorage.getInstance().getReference().child(listing.getStorageReference());
-//            GlideApp.with(this).load(sref).into(ivSListing);
+            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                        System.out.println("Loaded URI " + uri.toString());
+                        picasso.get().load(uri).into(ivSListing);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    System.out.println(exception.getMessage());
+                }
+            });
+
+
             tvSTitle.setText(listing.getTitle());
             tvSDesc.setText(listing.getDescription());
             tvSPrice.setText(String.format("$%.2f",listing.getPrice()));
