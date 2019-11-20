@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -39,6 +40,11 @@ public class SignInActivity extends Activity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         GlobalHelper.setGoogleClient(mGoogleSignInClient);
 
+        Intent intent = getIntent();
+        String emailError = intent.getStringExtra("emailError");
+        if(!emailError.equals("")) {
+            Toast.makeText(SignInActivity.this, emailError, Toast.LENGTH_SHORT).show();
+        }
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,42 +124,47 @@ public class SignInActivity extends Activity {
         else {
             //TODO --> make sure email is @usc.edu only
             final Intent resultEmail = new Intent();
-            GlobalHelper.setEmail(account.getEmail());
-            GlobalHelper.setID(account.getId());
+            if(!(account.getEmail().contains("@usc.edu"))) {
+                setResult(4567,resultEmail);
+                finish();
+            } else {
+                GlobalHelper.setEmail(account.getEmail());
+                GlobalHelper.setID(account.getId());
 
-            Query query = FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID());
-            //query.addListenerForSingleValueEvent(valueEventListener);
-            getUser(query, new OnGetDataListener() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()) {
-                        GlobalHelper.setUser(dataSnapshot.getValue(User.class));
-                        GlobalHelper.userQueryDone = true;
+                Query query = FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID());
+                //query.addListenerForSingleValueEvent(valueEventListener);
+                getUser(query, new OnGetDataListener() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            GlobalHelper.setUser(dataSnapshot.getValue(User.class));
+                            GlobalHelper.userQueryDone = true;
 //                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 //                            System.out.println("User snapshot key: " + userSnapshot.getKey());
 //                            System.out.println("User snapshot value: " + userSnapshot.getValue());
 //                        }
 
-                    } else {
-                        System.out.println("User does not exist");
+                        } else {
+                            System.out.println("User does not exist");
+                        }
+
+                        setResult(Activity.RESULT_OK, resultEmail);
+                        finish();
                     }
 
-                    setResult(Activity.RESULT_OK, resultEmail);
-                    finish();
-                }
+                    @Override
+                    public void onStart() {
+                        System.out.println("Starting onStart() for Listener");
+                    }
 
-                @Override
-                public void onStart() {
-                    System.out.println("Starting onStart() for Listener");
-                }
+                    @Override
+                    public void onFailure() {
+                        System.out.println("Calling onFailure() for Listener");
 
-                @Override
-                public void onFailure() {
-                    System.out.println("Calling onFailure() for Listener");
-
-                    //TODO --> error handeling
-                }
-            });
+                        //TODO --> error handeling
+                    }
+                });
+            }
         }
     }
 

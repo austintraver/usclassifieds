@@ -180,14 +180,15 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         @Override
         public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
             try{
-                System.out.println("Printing Algolia Result:\n" + jsonObject.toString(2));
-                JSONArray array = jsonObject.getJSONArray("hits");
-                for(int i = 0; i < array.length(); i++)
-                {
-                    GlobalHelper.searchedListings.add(new Listing(array.getJSONObject(i)));
+                System.out.println("JSONObject = " + jsonObject);
+                if(jsonObject != null) {
+                    System.out.println("Printing Algolia Result:\n" + jsonObject.toString(2));
+                    JSONArray array = jsonObject.getJSONArray("hits");
+                    for (int i = 0; i < array.length(); i++) {
+                        GlobalHelper.searchedListings.add(new Listing(array.getJSONObject(i)));
+                    }
+                    populateListings();
                 }
-                populateListings();
-
             } catch (JSONException je){
                 je.printStackTrace();
             }
@@ -201,7 +202,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             if(spinner== null){
                 spinner = findViewById(R.id.spinner);
             }
-            fillArray(spinner.toString());
+            fillArray(selection);
         }
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
@@ -218,13 +219,13 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         GlobalHelper.searchedListings.clear();
         String query = "";
 
-        if(search_bar != null && search_bar.getText().toString().equals("")) {
+        if(search_bar != null && !search_bar.getText().toString().equals("")) {
             query = search_bar.getText().toString();
         }
 
 
         System.out.println("Finding results with query string: " + query);
-        if(select == "thisUser") {
+        if(select.equals("thisUser")) {
 
             // searches Algolia client with getUserID as search query
             GlobalHelper.getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
@@ -232,16 +233,18 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 //            query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
 //            getListings(query);
 
-        } else if (select == "Username") {
+        } else if (select.equals("Username")) {
 
+            System.out.println("In USERNAME Search");
             GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
 
-        } else if (select == "Title") {
+        } else if (select.equals("Title")) {
 
+            System.out.println("In TITLE Search");
             GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
 
         } else {        //select == "Tags"
-
+            System.out.println("In TAGS Search");
             System.out.println("select should be Tags: select = " + select);
             GlobalHelper.getAlgoliaListings(query, fillSearchResultCallback);
 

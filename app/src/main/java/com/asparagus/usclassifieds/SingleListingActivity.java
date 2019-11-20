@@ -90,6 +90,10 @@ public class SingleListingActivity extends Activity {
                     });
                 }
                 break;
+
+            case R.id.sold_button:
+                //FirebaseDatabase.getInstance().getReference("listings").child().   ;
+                break;
         }
     }
 
