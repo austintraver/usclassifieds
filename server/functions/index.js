@@ -150,6 +150,15 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       const requested = context.params.requested;
       // If un-follow we exit the function.
       if (!change.after.val()) {
+        
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requesting}/outgoingFriendRequests/${requested}`);
+        requestingRef.remove();
+
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requested}/incomingFriendRequests/${requesting}`);
+        requestingRef.remove();
+        
         return console.log('Friend Request from ', requesting, 'to the following person has been removed: ', requested);
       }
       console.log('We have a new friend request from:', requesting, 'for user:', requested);
@@ -188,7 +197,7 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
 
       // Check if there are any device tokens.
       if (!tokensSnapshot.hasChildren()) {
-        return console.log('There are no notification tokens to send to.');
+        console.log('There are no notification tokens to send to.');
       }
       console.log('There are', tokensSnapshot.numChildren(), 'tokens to send notifications to.');
       console.log('Fetched requester profile', requester);
@@ -196,9 +205,54 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       let messageBody;
       if (friendRequestType === 'request') {
         messageBody = `${requester.displayName} has sent you a friend request.`;
+        
+        // adds outgoing friend request
+        requestingRef = admin.database().ref(`/users/${requesting}/outgoingFriendRequests`);
+        requestingRef.update({
+            [requested]: "true"
+        });
+
+        console.log('got this far');
+
+        // adds incoming friend request
+        requestedRef = admin.database().ref(`/users/${requested}/incomingFriendRequests`);
+        requestedRef.update({
+            [requesting]: "true"
+        });
       }
       else if (friendRequestType === 'accept') {
         messageBody = `${requester.displayName} has accepted your friend request.`;
+
+        // adds friend to outgoing
+        requestingRef = admin.database().ref(`/users/${requesting}/friends`);
+        requestingRef.update({
+            [requested]: "true"
+        }); 
+
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requested}/outgoingFriendRequests/${requesting}`);
+        requestingRef.remove();
+
+        
+        // adds incoming friend request
+        requestedRef = admin.database().ref(`/users/${requested}/friends`);
+        requestedRef.update({
+            [requesting]: "true"
+        });
+
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requesting}/incomingFriendRequests/${requested}`);
+        requestingRef.remove();
+
+
+
+        //removes actual friend requests
+        requestingRef = admin.database().ref(`/friendrequests/${requested}`);
+        requestingRef.remove();
+
+        requestingRef = admin.database().ref(`/friendrequests/${requesting}`);
+        requestingRef.remove();
+            
       }
       console.log('body ', messageBody);
 
@@ -207,12 +261,11 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
         notification: {
           title: 'You have a new friend request!',
           body: messageBody,
-          //icon: follower.photoURL
         }
       };
 
       // Listing all tokens as an array.
-      tokens = Object.keys(tokensSnapshot.val());
+      tokens = Object.values(tokensSnapshot.val());
       // Send notifications to all tokens.
       const response = await admin.messaging().sendToDevice(tokens, payload);
       // For each message check if there was an error.
