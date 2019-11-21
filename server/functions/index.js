@@ -254,7 +254,31 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
         requestingRef.remove();
             
       }
-      console.log('body ', messageBody);
+
+      else if (friendRequestType === 'reject') {
+
+
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requested}/outgoingFriendRequests/${requesting}`);
+        requestingRef.remove();
+
+
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requesting}/incomingFriendRequests/${requested}`);
+        requestingRef.remove();
+
+
+
+        //removes actual friend requests
+        requestingRef = admin.database().ref(`/friendrequests/${requested}`);
+        requestingRef.remove();
+
+        requestingRef = admin.database().ref(`/friendrequests/${requesting}`);
+        requestingRef.remove();
+        return console.log('finished reject function');
+      }
+      
+        console.log('body ', messageBody);
 
       // Notification details.
       const payload = {
@@ -285,5 +309,6 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
           }
         }
       });
-      return Promise.all(tokensToRemove);
+      return Promise.all(tokensToRemove); 
+
     });
