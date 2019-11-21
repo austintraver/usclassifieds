@@ -3,6 +3,7 @@ package com.asparagus.usclassifieds;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,6 +16,7 @@ public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static FirebaseAuth mAuth;  //TODO
     private static FirebaseUser user;
+    private static String emailError = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class MainActivity extends Activity {
         if (GlobalHelper.getEmail().equals("")) {
             System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignInActivity.class);
+            signInIntent.putExtra("emailError", emailError);
             startActivityForResult(signInIntent, RC_START);
         } else if (GlobalHelper.getUser() == null) {
             System.out.println("In second if statement: null");
@@ -138,6 +141,9 @@ public class MainActivity extends Activity {
             // TODO --> Sign out and redirect back to sign in activity
             GlobalHelper.setEmail("");
             GlobalHelper.setID("");
+            GlobalHelper.signOut();
+        } else if (resultCode == 4567) {
+            emailError = "Please use a valid @usc.edu email to sign in.";
             GlobalHelper.signOut();
         }
     }
