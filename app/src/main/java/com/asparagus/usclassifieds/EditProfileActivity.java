@@ -103,6 +103,7 @@ public class EditProfileActivity extends Activity {
         switch (v.getId()) {
             case R.id.update:
                 System.out.println("In Onclick for update/create person!");
+                //TODO --> check if we need all the friends and such when we update info from a user
                 User updatedUser = new User(
                     GlobalHelper.getEmail(),
                     first.getText().toString(),
@@ -116,6 +117,10 @@ public class EditProfileActivity extends Activity {
                     zip.getText().toString(),
                     desc.getText().toString()
                 );
+                updatedUser.setFriends(GlobalHelper.getUser().getFriends());
+                updatedUser.setIncomingFriendRequests(GlobalHelper.getUser().getIncomingFriendRequests());
+                updatedUser.setOutgoingFriendRequests(GlobalHelper.getUser().getOutgoingFriendRequests());
+                updatedUser.setNotificationTokens(GlobalHelper.getUser().getNotificationTokens());
                 GlobalHelper.setUser(updatedUser);
                 System.out.println("creating a new/updated person: " + updatedUser);
 

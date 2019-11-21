@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GlobalHelper extends Application {
 
@@ -27,6 +28,7 @@ public class GlobalHelper extends Application {
     public static Boolean userQueryDone = false;
     public static ArrayList<Listing> searchedListings = new ArrayList<>();
     public static MyAppGlideModule GlideApp;
+    public static String userToken = "";
 
     public static GoogleSignInClient mGoogleSignInClient;
     public static Client mAlgoliaClient;
@@ -43,6 +45,7 @@ public class GlobalHelper extends Application {
         return;
     }
 
+    public static void setUserToken(String token) { userToken = token; }
     public static void setGoogleClient(GoogleSignInClient client) {
         mGoogleSignInClient = client;
     }
@@ -61,7 +64,8 @@ public class GlobalHelper extends Application {
 
     public static void setUser(User newUser) {
         user = newUser;
-        System.out.println("User set with name: " + user.getFirstName() + " " + user.getLastName());
+        Map<String, Object> userValues = GlobalHelper.getUser().toMap();
+        FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
         return;
     }
 
@@ -82,10 +86,11 @@ public class GlobalHelper extends Application {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if(dataSnapshot.exists()) {
                 GlobalHelper.setUser(dataSnapshot.getValue(User.class));
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println("User snapshot key: " + userSnapshot.getKey());
-                    System.out.println("User snapshot value: " + userSnapshot.getValue());
-                }
+
+//                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+//                    System.out.println("User snapshot key: " + userSnapshot.getKey());
+//                    System.out.println("User snapshot value: " + userSnapshot.getValue());
+//                }
 
             } else {
                 System.out.println("User does not exist");

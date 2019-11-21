@@ -18,10 +18,10 @@ public class User implements Serializable {
 
     // email is the identifier
     private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude, description;
-    private ArrayList<String> friends;
-    private ArrayList<String> outgoingFriendRequests;
-    private ArrayList<String> incomingFriendRequests;
-    private ArrayList <String> notificationTokens;
+    private HashMap<String, String> friends;
+    private HashMap<String, String> outgoingFriendRequests;
+    private HashMap<String, String> incomingFriendRequests;
+    private HashMap<String, String> notificationTokens;
 
     public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip, String description) {
         this.userID = userID;
@@ -37,10 +37,12 @@ public class User implements Serializable {
         this.latitude = "";
         this.longitude = "";
         this.description = description;
-        this.friends = new ArrayList<>();
-        this.outgoingFriendRequests = new ArrayList<>();
-        this.incomingFriendRequests = new ArrayList<>();
-        this.notificationTokens = new ArrayList<>();
+        this.friends = new HashMap<>();
+        this.outgoingFriendRequests = new HashMap<>();
+        this.incomingFriendRequests = new HashMap<>();
+        this.notificationTokens = new HashMap<>();
+        this.notificationTokens.put(GlobalHelper.userToken,"true");
+
         new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
     }
 
@@ -59,17 +61,17 @@ public class User implements Serializable {
             result.put("latitude", latitude);
             result.put("longitude", longitude);
             result.put("description", description);
-            List<String> F = new ArrayList<String>(friends);
-            F.add(userID);
+            Map<String,String> F = new HashMap<>(friends);
+            F.put(userID, userID);
             result.put("friends",F);
-            List<String> O = new ArrayList<String>(outgoingFriendRequests);
-            O.add(userID);
+            Map<String,String> O = new HashMap<>(outgoingFriendRequests);
+            O.put(userID,userID);
             result.put("outgoingFriendRequests", O);
-            List<String> I = new ArrayList<String>(incomingFriendRequests);
-            I.add(userID);
+            Map<String,String> I = new HashMap<>(incomingFriendRequests);
+            I.put(userID,userID);
             result.put("incomingFriendRequests", I);
-            List<String> N = new ArrayList<String>(notificationTokens);
-            N.add(userID);
+            Map<String,String> N = new HashMap<>(notificationTokens);
+            N.put(userID,userID);
             result.put("notificationTokens", N);
 
         return result;
@@ -100,6 +102,11 @@ public class User implements Serializable {
     public void setFirstName(String fn) { this.firstName = fn; }
     public void setLastName(String ln) { this.lastName = ln; }
 
+    public void setNotificationTokens(HashMap<String,String> map) { this.notificationTokens = map; }
+    public void setFriends(HashMap<String,String> map) { this.friends = map; }
+    public void setIncomingFriendRequests(HashMap<String,String> map) { this.incomingFriendRequests = map; }
+    public void setOutgoingFriendRequests(HashMap<String,String> map) { this.outgoingFriendRequests = map; }
+
     // getter methods
     public String getDescription() { return this.description; }
     public String getLatitude() { return this.latitude; }
@@ -114,37 +121,35 @@ public class User implements Serializable {
     public String getLastName() { return this.lastName; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
-    public ArrayList<String> getFriends() { return this.friends; }
-    public ArrayList<String> getNotificationTokens() { return this.notificationTokens; }
-    public ArrayList<String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
-    public ArrayList<String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
+    public HashMap<String,String> getFriends() { return this.friends; }
+    public HashMap<String,String> getNotificationTokens() { return this.notificationTokens; }
+    public HashMap<String,String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
+    public HashMap<String,String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
     // add or remove from the incoming or outgoing friend request
-    public void addFriend(User user) { friends.add(user.getUserID()); }
+    public void addFriend(User user) { friends.put(user.getUserID(),user.getFirstName() + " " + user.getLastName()); }
     public void removeFriend(User user) { friends.remove(user.getUserID()); }
-    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.getUserID()); }
-    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.getUserID()); }
-    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.getUserID()); }
-    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.getUserID()); }
+//    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.getUserID()); }
+//    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.getUserID()); }
+//    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.getUserID()); }
+//    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.getUserID()); }
+
     //public void setClientToken(String token) { this.clientToken = token; }
-    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new ArrayList<>(); notificationTokens.add(token); }
-    public void removeNotificationToken(String token) { notificationTokens.remove(token); }
+//    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new ArrayList<>(); notificationTokens.add(token); }
+//    public void removeNotificationToken(String token) { notificationTokens.remove(token); }
 
     //send outgoing friend request
-    public void toggleFriendRequest(User u) {
-        if (friends.contains(u)) {
-            // remove the request
-            u.removeIncomingFriendRequest(this);
-            removeOutgoingFriendRequest(u);
-        } else {
-            // request a friend
-            u.addIncomingFriendRequest(this);
-            addOutgoingFriendRequest(u);
-        }
-    }
-
-
-
+//    public void toggleFriendRequest(User u) {
+//        if (friends.contains(u)) {
+//            // remove the request
+//            u.removeIncomingFriendRequest(this);
+//            removeOutgoingFriendRequest(u);
+//        } else {
+//            // request a friend
+//            u.addIncomingFriendRequest(this);
+//            addOutgoingFriendRequest(u);
+//        }
+//    }
 
 
     public class GetCoordinates extends AsyncTask<String,Void,String> {
@@ -189,12 +194,12 @@ public class User implements Serializable {
                             .getJSONObject("location").get("lat").toString();
                     String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                             .getJSONObject("location").get("lng").toString();
-//                    System.out.println("latitude and longitude" + lat + " " + lng);
+
                     GlobalHelper.getUser().setLatitude(lat);
                     GlobalHelper.getUser().setLongitude(lng);
 
-                    Map<String, Object> userValues = GlobalHelper.getUser().toMap();
-                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
+//                    Map<String, Object> userValues = GlobalHelper.getUser().toMap();
+//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
                 }
 
             } catch (JSONException e) {

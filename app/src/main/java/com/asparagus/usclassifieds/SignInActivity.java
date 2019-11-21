@@ -138,13 +138,14 @@ public class SignInActivity extends Activity {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+//                            System.out.println("datasnapshopt: " + dataSnapshot);
                             GlobalHelper.setUser(dataSnapshot.getValue(User.class));
                             GlobalHelper.userQueryDone = true;
 
-//                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-//                            System.out.println("User snapshot key: " + userSnapshot.getKey());
-//                            System.out.println("User snapshot value: " + userSnapshot.getValue());
-//                        }
+//                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+//                                System.out.println("User snapshot key: " + userSnapshot.getKey());
+//                                System.out.println("User snapshot value: " + userSnapshot.getValue());
+//                            }
 
                         } else {
                             System.out.println("User does not exist");

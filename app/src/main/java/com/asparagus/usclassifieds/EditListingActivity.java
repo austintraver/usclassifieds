@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -167,7 +168,12 @@ public class EditListingActivity extends Activity {
                     );
 
             Map<String, Object> listingValues = newListing.toMap();
-            FirebaseDatabase.getInstance().getReference("listings").child(uuid.toString()).setValue(listingValues);
+            //FirebaseDatabase.getInstance().getReference("listings").child(uuid.toString()).setValue(listingValues);
+
+            String key = FirebaseDatabase.getInstance().getReference("listings").child(GlobalHelper.getUserID()).push().getKey();
+            Map<String, Object> listingUpdates = new HashMap<>();
+            listingUpdates.put("/listings/" + GlobalHelper.getUserID() + "/" + key, listingValues);
+            GlobalHelper.mDatabase.updateChildren(listingUpdates);
 
             ref.putFile(selectedImage)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

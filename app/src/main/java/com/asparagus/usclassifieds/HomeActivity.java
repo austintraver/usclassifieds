@@ -52,31 +52,31 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         Intent intent = getIntent();
         //populateListings();
 
-        // Used to get client token and set that for logged in person
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-                        System.out.println("token: " + token);
-
-                        /* sets the client ID on logged in person, will be used to send notifications on
-                         database updates for friend requests */
-                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
-                        GlobalHelper.getUser().addNotificationToken(token);
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        // Log.d(TAG, msg);
-                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+//        // Used to get client token and set that for logged in person
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w(TAG, "getInstanceId failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new Instance ID token
+//                        String token = task.getResult().getToken();
+//                        System.out.println("token: " + token);
+//
+//                        /* sets the client ID on logged in person, will be used to send notifications on
+//                         database updates for friend requests */
+//                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
+//                        GlobalHelper.getUser().addNotificationToken(token);
+//
+//                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+//                        // Log.d(TAG, msg);
+//                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
         spinner = findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -160,7 +160,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //listener.onSuccess(dataSnapshot);
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-
+                    System.out.println(listingSnapshot.getValue(Listing.class));
                     GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
                 }
                 populateListings();
@@ -228,10 +228,12 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         if(select.equals("thisUser")) {
 
             // searches Algolia client with getUserID as search query
-            GlobalHelper.getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
 
-//            query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
-//            getListings(query);
+            //GlobalHelper.getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
+
+            //query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
+            Query q = FirebaseDatabase.getInstance().getReference("listings").child(GlobalHelper.getUserID());
+            getListings(q);
 
         } else if (select.equals("Username")) {
 

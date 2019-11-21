@@ -13,6 +13,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+
 public class OtherProfileActivity extends Activity {
 
     private String user;
@@ -133,7 +135,7 @@ public class OtherProfileActivity extends Activity {
 
                 //Map<String, Map<String, String>> request = new HashMap<,<>>((GlobalHelper.getUserID(), reqType);
                 // if not friend
-                if (!GlobalHelper.getUser().getFriends().contains(user)) {
+                if (GlobalHelper.getUser().getFriends().get(user) == NULL) {
                     FirebaseDatabase.getInstance().getReference("friendrequests").child(GlobalHelper.getUserID()).setValue(result);
                     //usersRef.setValue()
                 //FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
