@@ -15,7 +15,7 @@ admin.initializeApp({
 });
 
 
-exports.syncListingToAlgolia = functions.database.ref('/listings/{listingid}')
+exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listingid}')
   .onWrite(async (change, context) => {
     console.log('add listing from database');
     const listingid = context.params.listingid;
