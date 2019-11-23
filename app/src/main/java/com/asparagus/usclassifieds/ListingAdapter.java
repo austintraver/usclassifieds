@@ -46,6 +46,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
         });
         tvDescription.setText(listing.getDescription());
         tvPrice.setText(String.format("$ %.2f",listing.getPrice()));
+        notifyDataSetChanged();
 
         // Return completed view to render on screen
         return convertView;

@@ -117,10 +117,12 @@ public class EditProfileActivity extends Activity {
                     zip.getText().toString(),
                     desc.getText().toString()
                 );
-                updatedUser.setFriends(GlobalHelper.getUser().getFriends());
-                updatedUser.setIncomingFriendRequests(GlobalHelper.getUser().getIncomingFriendRequests());
-                updatedUser.setOutgoingFriendRequests(GlobalHelper.getUser().getOutgoingFriendRequests());
-                updatedUser.setNotificationTokens(GlobalHelper.getUser().getNotificationTokens());
+                if(GlobalHelper.getUser() != null && GlobalHelper.getUser().getFriends()!= null) {
+                    updatedUser.setFriends(GlobalHelper.getUser().getFriends());
+                    updatedUser.setIncomingFriendRequests(GlobalHelper.getUser().getIncomingFriendRequests());
+                    updatedUser.setOutgoingFriendRequests(GlobalHelper.getUser().getOutgoingFriendRequests());
+                    updatedUser.setNotificationTokens(GlobalHelper.getUser().getNotificationTokens());
+                }
                 GlobalHelper.setUser(updatedUser);
                 System.out.println("creating a new/updated person: " + updatedUser);
 

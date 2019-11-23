@@ -134,7 +134,7 @@ public class SingleListingActivity extends Activity {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
-                    System.out.println(exception.getMessage());
+                    System.out.println("Listing has no image. Not printing exception");
                 }
             });
 

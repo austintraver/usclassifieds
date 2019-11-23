@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,7 +33,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissions;
 
     //private Location mLastLocation = null;
-    private double lat, lng;
+    // default coordinates are for Downtown LA
+    private double lat = 34.05, lng = -118.24;
     private LatLng defaultLatLng;
 
     private Location mLastKnownLocation;
@@ -46,9 +48,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-        lat = Double.parseDouble(GlobalHelper.getUser().getLatitude());
-        lng = Double.parseDouble(GlobalHelper.getUser().getLongitude());
-        defaultLatLng = new LatLng(lat,lng);
+        if(GlobalHelper.getUser() != null && GlobalHelper.getUser().getLatitude() != null)
+        {
+            // add error handling for new users and testing purposes
+            // code throws exceptions if user lat/long are invalid or not populated
+            try {
+                lat = Double.parseDouble(GlobalHelper.getUser().getLatitude());
+                lng = Double.parseDouble(GlobalHelper.getUser().getLongitude());
+                defaultLatLng = new LatLng(lat, lng);
+            }catch(NumberFormatException nfe)
+            {
+                System.out.println("NFE: " + nfe.getMessage());
+                defaultLatLng = new LatLng(lat,lng);
+            }
+        }
+
 
         // Construct a FusedLocationProviderClient.
         //mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
