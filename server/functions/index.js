@@ -22,7 +22,7 @@ exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listi
     
     if (change.after.val()) {
           const getListingParamsPromise = admin.database()
-        .ref(`/listings/${listingid}`).once('value');
+        .ref(`/listings/${userid}/${listingid}`).once('value');
 
       const results = await Promise.all([getListingParamsPromise]);
 
