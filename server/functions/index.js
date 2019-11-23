@@ -19,6 +19,7 @@ exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listi
   .onWrite(async (change, context) => {
     console.log('add listing from database');
     const listingid = context.params.listingid;
+    const userid = context.params.userid;
     
     if (change.after.val()) {
           const getListingParamsPromise = admin.database()
