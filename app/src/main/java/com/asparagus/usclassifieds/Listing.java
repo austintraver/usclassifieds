@@ -97,9 +97,7 @@ public class Listing implements Serializable {
 
     public String getOwnerName() { return this.ownerName; }
 
-    public String getLatitude() {
-        return this.getLatitude();
-    }
+    public String getLatitude() { return this.latitude;  }
 
     public String getLongitude() {
         return this.longitude;

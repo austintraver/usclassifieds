@@ -15,4 +15,10 @@
         <item>Tags</item>
     </string-array>
 
+    <string-array name="sort_choices">
+        <item>Price ↑</item>
+        <item>Price ↓</item>
+        <item>Distance</item>
+    </string-array>
+
 </resources>

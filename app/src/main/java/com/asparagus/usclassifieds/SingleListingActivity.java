@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -72,14 +73,23 @@ public class SingleListingActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.other_user_button:
+                System.out.println("Other user button: same as owner? " + listing.getOwnerID().equals(GlobalHelper.getUserID()));
+                System.out.println("User id: " + listing.getOwnerID() );
                 if(!listing.getOwnerID().equals(GlobalHelper.getUserID())) {
                     Query query = FirebaseDatabase.getInstance().getReference("users").child(listing.getOwnerID());
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()) {
-                                User other = dataSnapshot.getValue(User.class);
-                                sendToOtherPage(other);
+                                System.out.println("User exists");
+                                try {
+                                    User other = dataSnapshot.getValue(User.class);
+                                    sendToOtherPage(other);
+                                } catch (DatabaseException dbe) {
+                                    System.out.println("Database exception has occurred " + dbe.getMessage());
+                                }
+                            } else {
+                                System.out.println("User doesn't exist");
                             }
                         }
 
@@ -94,6 +104,8 @@ public class SingleListingActivity extends Activity {
             case R.id.sold_button:
                 //FirebaseDatabase.getInstance().getReference("listings").child().   ;d
                 break;
+            default:
+                System.out.println("Button ID: " + v.getId());
         }
     }
 

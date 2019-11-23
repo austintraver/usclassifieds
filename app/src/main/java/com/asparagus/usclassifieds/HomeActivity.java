@@ -2,9 +2,11 @@ package com.asparagus.usclassifieds;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,28 +16,23 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class HomeActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -43,10 +40,14 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     private static final int DASHBOARD = 102;
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static String selection = "Username";
+    private static String sortSelection = "Price ↓";
     private Spinner spinner;
+    private Spinner sortSpinner;
     private EditText search_bar;
     private ListView lv; // global list view for page
     private ListingAdapter adapter; // global adapter to show list
+    private Comparator<Listing> comparator = GlobalHelper.priceDesc;
+    private static String queryString = "";
 
 
     private Client client = null;
@@ -60,45 +61,28 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
         Intent intent = getIntent();
 
-//        // Used to get client token and set that for logged in person
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        if (!task.isSuccessful()) {
-//                            Log.w(TAG, "getInstanceId failed", task.getException());
-//                            return;
-//                        }
-//
-//                        // Get new Instance ID token
-//                        String token = task.getResult().getToken();
-//                        System.out.println("token: " + token);
-//
-//                        /* sets the client ID on logged in person, will be used to send notifications on
-//                         database updates for friend requests */
-//                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
-//                        GlobalHelper.getUser().addNotificationToken(token);
-//
-//                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
-//                        // Log.d(TAG, msg);
-//                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
 
         spinner = findViewById(R.id.spinner);
+        sortSpinner = findViewById(R.id.sort_spinner);
+
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.search_choices, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> sortAdapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_choices, android.R.layout.simple_spinner_item);
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        sortSpinner.setAdapter(sortAdapter);
 
         spinner.setOnItemSelectedListener(this);
+        sortSpinner.setOnItemSelectedListener(this);
+
 
         // Add listener to text box
         search_bar = (EditText) findViewById(R.id.search_bar);
@@ -120,13 +104,19 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
          */
         index = client.getIndex("listings");
 
+
+//        index.browseAsync(new com.algolia.search.saas.Query(""), printerCallback);
+
+
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         selection = parent.getItemAtPosition(pos).toString();
-        System.out.println("Selection is now: " + selection);
+        System.out.println("Selection is now: " + selection + "\nQuery String: " + queryString);
+        getAlgoliaListings(queryString, fillSearchResultCallback);
+
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
@@ -172,7 +162,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             Intent signOut = new Intent();
             setResult(Activity.RESULT_CANCELED, signOut);
             finish();
-        } else if(requestCode == DASHBOARD && resultCode == 25) {
+        } else if (requestCode == DASHBOARD && resultCode == 25) {
 
             // TODO: Fix thisUser query
             fillArray("thisUser");
@@ -205,30 +195,32 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
     CompletionHandler fillSearchResultCallback = new CompletionHandler() {
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
 
-            try{
-                if(jsonObject != null){
+            try {
+                if (jsonObject != null) {
                     System.out.println("fillSearchResultCallback: JSONObject valid");
-                } else{
+                } else {
                     System.out.println("fillSearchResultCallback: JSONObject null");
                 }
 
-                if(e != null)
-                {
+                if (e != null) {
                     System.out.println("ALGOLIA ERROR: " + e.getMessage());
                 }
-                if(jsonObject != null) {
+                if (jsonObject != null) {
                     // to pretty print jsonObject: jsonObject.toString(2)
                     System.out.println("fillSearchResultCallback: loading JSONObject into listings");
                     listings.clear();
                     JSONArray array = jsonObject.getJSONArray("hits");
                     for (int i = 0; i < array.length(); i++) {
-                        if(array.isNull(i) == false){
+                        if ( !array.isNull(i) && ! array.getJSONObject(i).isNull("ownerID")) {
                             listings.add(new Listing(array.getJSONObject(i)));
                         }
                     }
+
+                    listings.sort(comparator);
 
                     populateListings();
 
@@ -236,7 +228,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                     System.out.println("fillSearchResultCallback: JSONObject null");
                 }
 
-            } catch (JSONException je){
+            } catch (JSONException je) {
 
                 je.printStackTrace();
             }
@@ -247,11 +239,13 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if(spinner== null){
+            if (spinner == null) {
                 spinner = findViewById(R.id.spinner);
             }
+
             fillArray(selection);
         }
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
         }
@@ -266,20 +260,19 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         GlobalHelper.searchedListings.clear();
         String query = "";
 
-        if(search_bar != null && !search_bar.getText().toString().matches("")) {
+        if (search_bar != null && !search_bar.getText().toString().matches("")) {
             query = search_bar.getText().toString();
-        }
-        else {
+        } else {
             return;
         }
 
 
         System.out.println("Finding results with query string: " + query);
-        if(select.equals("thisUser")) {
+        queryString = query;
+        if (select.equals("thisUser")) {
 
             System.out.println("Querying user's items");
             // searches Algolia client with getUserID as search query
-
             getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
 
             //query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
@@ -309,8 +302,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         //select can be one of three things = { Username, Title, Tags }
         //These are the three options for search parameters
         System.out.println("POPULATING LISTINGS");
-
-//        ArrayList<Listing> listings = GlobalHelper.searchedListings;
+//      ArrayList<Listing> listings = GlobalHelper.searchedListings;
 
         adapter = new ListingAdapter(this, listings);
         lv = (ListView) findViewById(R.id.lvListing);
@@ -318,8 +310,95 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         adapter.notifyDataSetChanged();
     }
 
-    public void getAlgoliaListings(String select, CompletionHandler ch){
+    public void getAlgoliaListings(String select, CompletionHandler ch) {
+        String indexName = "listings";
+        sortSelection = sortSpinner.getSelectedItem().toString();
+        comparator = GlobalHelper.priceDesc;
+        if (sortSelection.equals("Price ↑")) {
+            indexName = "listings_price_asc";
+            comparator = GlobalHelper.priceAsc;
+        } else if (sortSelection.equals("Price ↓")) {
+            indexName = "listings_price_desc";
+            comparator = GlobalHelper.priceDesc;
+        } else if (sortSelection.equals("Distance")) {
+//            indexName = "listings_dist_desc";
+            comparator = GlobalHelper.distComparator;
+        } else {
+            System.out.println("Selection invalid: indexName =  " + indexName);
+        }
+        System.out.println("sortSelection " + sortSelection);
+//        System.out.println("indexName =  " + indexName);
+//        index = client.getIndex(indexName);
+
         index.searchAsync(new com.algolia.search.saas.Query(select), ch);
     }
 
+
+    CompletionHandler printerCallback = new CompletionHandler() {
+
+        @Override
+        public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
+
+            try {
+                if (jsonObject != null) {
+                    System.out.println("algoliaTest: JSONObject valid");
+                } else {
+                    System.out.println("algoliaTest: JSONObject null");
+                }
+
+                if (e != null) {
+                    System.out.println("ALGOLIA ERROR: " + e.getMessage());
+                }
+                if (jsonObject != null) {
+                    // to pretty print jsonObject: jsonObject.toString(2)
+                    System.out.println("fillSearchResultCallback: loading JSONObject into listings");
+
+                    JSONArray array = jsonObject.getJSONArray("hits");
+                    for (int i = 0; i < array.length(); i++) {
+                        if (!array.isNull(i)) {
+                            System.out.println(array.getJSONObject(i).toString(2));
+                        }
+                    }
+
+                } else {
+                    System.out.println("fillSearchResultCallback: JSONObject null");
+                }
+
+            } catch (JSONException je) {
+
+                je.printStackTrace();
+            }
+
+        }
+    };
 }
+
+/*
+
+          Unused code
+*/
+//        // Used to get client token and set that for logged in person
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w(TAG, "getInstanceId failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new Instance ID token
+//                        String token = task.getResult().getToken();
+//                        System.out.println("token: " + token);
+//
+//                        /* sets the client ID on logged in person, will be used to send notifications on
+//                         database updates for friend requests */
+//                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
+//                        GlobalHelper.getUser().addNotificationToken(token);
+//
+//                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+//                        // Log.d(TAG, msg);
+//                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
