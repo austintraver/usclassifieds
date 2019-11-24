@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
@@ -92,15 +93,17 @@ public class GlobalHelper {
         -latitude-longitude
         Until we implement GeoSearching with Algolia
      */
-    private static double distance(
+    public static double distance(
             double lat1, double lon1, double lat2, double lon2
     ) {
+        DecimalFormat df = new DecimalFormat("#.##");
+
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) +
                       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist) * 60 * 1.1515 * 1.609344;
-        return (dist);
+        return (Double.parseDouble(df.format(dist)));
     }
 
     //  Converts decimal degrees to radians
