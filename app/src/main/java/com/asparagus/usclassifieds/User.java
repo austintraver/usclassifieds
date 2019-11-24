@@ -1,7 +1,7 @@
 package com.asparagus.usclassifieds;
 
 import android.os.AsyncTask;
-import com.google.firebase.database.FirebaseDatabase;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,21 +9,27 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+
+@SuppressWarnings({"WeakerAccess", "StaticFieldLeak"})
 public class User implements Serializable {
 
-    // email is the identifier
-    private String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude, longitude, description;
-    private HashMap<String, String> friends;
-    private HashMap<String, String> outgoingFriendRequests;
-    private HashMap<String, String> incomingFriendRequests;
-    private HashMap<String, String> notificationTokens;
+    // Email is the identifier
+    public String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude
+            , longitude, description;
+    public HashMap<String, String> friends, outgoingFriendRequests, incomingFriendRequests, notificationTokens;
+    private String TAG = User.class.getSimpleName();
 
-    public User(String email, String firstName, String lastName, String phone, String userID, String streetNum, String streetName, String city, String state, String zip, String description) {
+    // Required for calls to Firebase
+    public User() {}
+
+    User(
+            String email, String firstName, String lastName, String phone, final String userID, String streetNum,
+            String streetName, String city, String state, String zip, String description
+    ) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,176 +40,153 @@ public class User implements Serializable {
         this.state = state;
         this.zipCode = zip;
         this.phone = phone;
-        this.latitude = "";
-        this.longitude = "";
         this.description = description;
-        this.friends = new HashMap<>();
-        this.outgoingFriendRequests = new HashMap<>();
-        this.incomingFriendRequests = new HashMap<>();
-        this.notificationTokens = new HashMap<>();
-        this.notificationTokens.put(GlobalHelper.userToken,"true");
-
-        new GetCoordinates().execute(this.streetNumber + " " + this.streetName + ", " + this.city + ", " + this.state + ", " + this.zipCode);
+        this.friends = new HashMap<String, String>() {{
+            put(userID, userID);
+        }};
+        this.outgoingFriendRequests = new HashMap<>(friends);
+        this.incomingFriendRequests = new HashMap<>(friends);
+        this.notificationTokens = new HashMap<String, String>() {{
+            put(userID, userID);
+            put(GlobalHelper.userToken, "true");
+        }};
+        new GetCoordinates().execute(getAddress());
     }
 
-    public Map<String,Object> toMap() {
-            HashMap<String, Object> result = new HashMap<>();
-            result.put("userID", userID);
-            result.put("email",email);
-            result.put("firstName",firstName);
-            result.put("lastName",lastName);
-            result.put("streetNumber",streetNumber);
-            result.put("streetName",streetName);
-            result.put("city",city);
-            result.put("state",state);
-            result.put("zipCode",zipCode);
-            result.put("phone",phone);
-            result.put("latitude", latitude);
-            result.put("longitude", longitude);
-            result.put("description", description);
-            Map<String,String> F = new HashMap<>(friends);
-            F.put(userID, userID);
-            result.put("friends",F);
-            Map<String,String> O = new HashMap<>(outgoingFriendRequests);
-            O.put(userID,userID);
-            result.put("outgoingFriendRequests", O);
-            Map<String,String> I = new HashMap<>(incomingFriendRequests);
-            I.put(userID,userID);
-            result.put("incomingFriendRequests", I);
-            Map<String,String> N = new HashMap<>(notificationTokens);
-            N.put(userID,userID);
-            result.put("notificationTokens", N);
-
-        return result;
+    Map<String, Object> toMap() {
+        return new HashMap<String, Object>() {{
+            put("userID", userID);
+            put("email", email);
+            put("firstName", firstName);
+            put("lastName", lastName);
+            put("streetNumber", streetNumber);
+            put("streetName", streetName);
+            put("city", city);
+            put("state", state);
+            put("zipCode", zipCode);
+            put("phone", phone);
+            put("latitude", latitude);
+            put("longitude", longitude);
+            put("description", description);
+            put("friends", friends);
+            put("outgoingFriendRequests", outgoingFriendRequests);
+            put("incomingFriendRequests", incomingFriendRequests);
+            put("notificationTokens", notificationTokens);
+        }};
     }
 
-    public User() {
-        //required for calls to Firebase
+    private String getAddress() {
+        return format("%s %s, %s, %s, %s", streetNumber, streetName, city, state, zipCode);
     }
 
-    public User(String email) {
-        this.email = email;
+    public String getDescription() {
+        return this.description;
     }
 
-    /* update all at once because all data will be present
-      in update form (default value is current info) */
-    public void updateInfo(String firstName, String lastName, String phone, String address) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-    }
-
-    public void setLatitude(String lat) {
-        this.latitude = lat;
-    }
-    public void setLongitude(String lng) {
-        this.longitude = lng;
-    }
-    public void setFirstName(String fn) { this.firstName = fn; }
-    public void setLastName(String ln) { this.lastName = ln; }
-
-    public void setNotificationTokens(HashMap<String,String> map) { this.notificationTokens = map; }
-    public void setFriends(HashMap<String,String> map) { this.friends = map; }
-    public void setIncomingFriendRequests(HashMap<String,String> map) { this.incomingFriendRequests = map; }
-    public void setOutgoingFriendRequests(HashMap<String,String> map) { this.outgoingFriendRequests = map; }
-
-    // getter methods
-    public String getDescription() { return this.description; }
-    public String getLatitude() { return this.latitude; }
-    public String getLongitude() { return this.longitude; }
     public String getStreetNumber() { return this.streetNumber; }
-    public String getStreetName() { return this.streetName; }
-    public String getCity() { return this.city; }
-    public String getState() { return this.state; }
-    public String getZipCode() { return this.zipCode; }
-    public String getUserID() { return this.userID; }
-    public String getFirstName() { return this.firstName; }
-    public String getLastName() { return this.lastName; }
-    public String getEmail() { return this.email; }
-    public String getPhone() { return this.phone; }
-    public HashMap<String,String> getFriends() { return this.friends; }
-    public HashMap<String,String> getNotificationTokens() { return this.notificationTokens; }
-    public HashMap<String,String> getIncomingFriendRequests() { return this.incomingFriendRequests;}
-    public HashMap<String,String> getOutgoingFriendRequests() { return this.outgoingFriendRequests;}
 
-    // add or remove from the incoming or outgoing friend request
-    public void addFriend(User user) { friends.put(user.getUserID(),user.getFirstName() + " " + user.getLastName()); }
-    public void removeFriend(User user) { friends.remove(user.getUserID()); }
-//    public void addIncomingFriendRequest(User user) { incomingFriendRequests.add(user.getUserID()); }
-//    public void addOutgoingFriendRequest(User user) { outgoingFriendRequests.add(user.getUserID()); }
-//    public void removeIncomingFriendRequest(User user) { incomingFriendRequests.remove(user.getUserID()); }
-//    public void removeOutgoingFriendRequest(User user) { outgoingFriendRequests.remove(user.getUserID()); }
+    public String getStreetName() {
+        return this.streetName;
+    }
 
-    //public void setClientToken(String token) { this.clientToken = token; }
-//    public void addNotificationToken(String token) { if (notificationTokens == null) notificationTokens = new ArrayList<>(); notificationTokens.add(token); }
-//    public void removeNotificationToken(String token) { notificationTokens.remove(token); }
+    public String getCity() {
+        return this.city;
+    }
 
-    //send outgoing friend request
-//    public void toggleFriendRequest(User u) {
-//        if (friends.contains(u)) {
-//            // remove the request
-//            u.removeIncomingFriendRequest(this);
-//            removeOutgoingFriendRequest(u);
-//        } else {
-//            // request a friend
-//            u.addIncomingFriendRequest(this);
-//            addOutgoingFriendRequest(u);
-//        }
-//    }
+    public String getState() {
+        return this.state;
+    }
 
+    public String getZipCode() {
+        return this.zipCode;
+    }
 
-    public class GetCoordinates extends AsyncTask<String,Void,String> {
-        //ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public HashMap<String, String> getFriends() {
+        return this.friends;
+    }
+
+    public void setFriends(HashMap<String, String> map) {
+        this.friends = map;
+    }
+
+    public HashMap<String, String> getNotificationTokens() {
+        return this.notificationTokens;
+    }
+
+    public void setNotificationTokens(HashMap<String, String> map) {
+        this.notificationTokens = map;
+    }
+
+    public HashMap<String, String> getIncomingFriendRequests() {
+        return this.incomingFriendRequests;
+    }
+
+    public void setIncomingFriendRequests(HashMap<String, String> map) {
+        this.incomingFriendRequests = map;
+    }
+
+    public HashMap<String, String> getOutgoingFriendRequests() {
+        return this.outgoingFriendRequests;
+    }
+
+    public void setOutgoingFriendRequests(HashMap<String, String> map) {
+        this.outgoingFriendRequests = map;
+    }
+
+    public class GetCoordinates extends AsyncTask<String, Void, String> {
+
+        private final String TAG = GetCoordinates.class.getSimpleName();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            dialog.setMessage("Please wait....");
-//            dialog.setCanceledOnTouchOutside(false);
-//            dialog.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            String response;
-            try{
-                String address = strings[0];
-                String middle = URLEncoder.encode(address,"UTF-8");
+            try {
+                String address = URLEncoder.encode(strings[0], "UTF-8");
                 String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
                 HttpDataHandler http = new HttpDataHandler();
-                String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + middle + key;
-                response = http.getHTTPData(url);
-//                System.out.println("resp is: " + response);
-                return response;
+                String url = "https://maps.googleapis" + ".com/maps/api/geocode/json";
+                String request = format("%s?address=%s&key=%s", url, address, key);
+                return http.getHTTPData(request);
+            } catch (Exception ex) {
+                Log.d(TAG, format("Error in background, exception: %s", ex.getLocalizedMessage()));
+                return null;
             }
-            catch (Exception ex)
-            {
-                System.out.println("error in background exception: ");
-                ex.printStackTrace();
-            }
-            return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            try{
+            try {
+                User user = GlobalHelper.user;
                 JSONObject jsonObject = new JSONObject(s);
-
-                if (jsonObject != null) {
-                    String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                            .getJSONObject("location").get("lat").toString();
-                    String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-                            .getJSONObject("location").get("lng").toString();
-
-                    GlobalHelper.getUser().setLatitude(lat);
-                    GlobalHelper.getUser().setLongitude(lng);
-
-//                    Map<String, Object> userValues = GlobalHelper.getUser().toMap();
-//                    FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
-                }
-
+                String latitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                                                                         .getJSONObject("location").get("lat")
+                                                                         .toString();
+                String longitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+                                                                          .getJSONObject("location").get("lng")
+                                                                          .toString();
+                user.latitude = latitude;
+                user.longitude = longitude;
             } catch (JSONException e) {
-                e.printStackTrace();
+                String error = e.getLocalizedMessage();
+                if (error != null) {
+                    Log.d(TAG, error);
+                }
             }
         }
     }

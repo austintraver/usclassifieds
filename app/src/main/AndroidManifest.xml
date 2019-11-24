@@ -16,23 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity
             android:name=".OtherProfileActivity"
             android:parentActivityName=".SingleListingActivity">
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".SingleListingActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SingleListingActivity" />
         </activity>
 
         <activity
             android:name=".EditListingActivity"
             android:parentActivityName=".HomeActivity">
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".HomeActivity" />
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity" />
         </activity>
 
         <activity
@@ -42,7 +40,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
         </activity>
+
         <activity android:name=".EditProfileActivity" />
+
         <activity
             android:name=".SignInActivity"
             android:parentActivityName=".MainActivity">
@@ -111,7 +111,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

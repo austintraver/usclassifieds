@@ -14,8 +14,6 @@ public class ProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        Intent intent = getIntent();
     }
 
     @Override
@@ -30,32 +28,34 @@ public class ProfileActivity extends Activity {
 
         TextView textView;
 
+        User user = GlobalHelper.user;
+
         textView = findViewById(R.id.first_name);
-        textView.setText(GlobalHelper.getUser().getFirstName());
+        textView.setText(user.firstName);
 
         textView = findViewById(R.id.last_name);
-        textView.setText(GlobalHelper.getUser().getLastName());
+        textView.setText(user.lastName);
 
         textView = findViewById(R.id.phone_number);
-        textView.setText(GlobalHelper.getUser().getPhone());
+        textView.setText(user.phone);
 
         textView = findViewById(R.id.street_number);
-        textView.setText(GlobalHelper.getUser().getStreetNumber());
+        textView.setText(user.streetNumber);
 
         textView = findViewById(R.id.street_name);
-        textView.setText(GlobalHelper.getUser().getStreetName());
+        textView.setText(user.streetName);
 
         textView = findViewById(R.id.city_name);
-        textView.setText(GlobalHelper.getUser().getCity());
+        textView.setText(user.city);
 
         textView = findViewById(R.id.state_code);
-        textView.setText(GlobalHelper.getUser().getState());
+        textView.setText(user.state);
 
         textView = findViewById(R.id.zip_code);
-        textView.setText(GlobalHelper.getUser().getZipCode());
+        textView.setText(user.zipCode);
 
         textView = findViewById(R.id.description);
-        textView.setText(GlobalHelper.getUser().getDescription());
+        textView.setText(user.description);
     }
 
     public void onClick(View v) {
@@ -80,14 +80,9 @@ public class ProfileActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == EDIT_COMPLETE) {
-            //TODO --> Toast blurb of updated profile information
-            return;
-        } else if(resultCode == Activity.RESULT_CANCELED) {
-            //TODO --> person signed out from the profile page
+        if (resultCode == Activity.RESULT_CANCELED) {
             Intent signOut = new Intent();
-            setResult(Activity.RESULT_CANCELED, signOut);
+            setResult(Activity.RESULT_CANCELED);
             finish();
         }
     }

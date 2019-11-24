@@ -1,57 +1,50 @@
 package com.asparagus.usclassifieds;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
 // Handles REST endpoints
-public class HttpDataHandler {
+class HttpDataHandler {
 
-    public HttpDataHandler() {
-        // TODO
-    }
+    private String TAG = HttpDataHandler.class.getSimpleName();
 
-    public String getHTTPData(String requestURL) {
+    HttpDataHandler() {}
+
+    String getHTTPData(String requestURL) {
         URL url;
-        String response = "";
+        StringBuilder response = new StringBuilder();
         try {
             url = new URL(requestURL);
-            System.out.println("url details " + url);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setReadTimeout(15000);
             conn.setConnectTimeout(15000);
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             int responseCode = conn.getResponseCode();
-            System.out.println("Connection details " + conn.getResponseCode());
             if (responseCode == HttpsURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
-                BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream())
-                );
                 while ((line = br.readLine()) != null) {
-                    response += line;
+                    response.append(line);
                 }
             }
-            else
-                response = "";
-
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        } catch (ProtocolException pe) {
+            Log.d(TAG, Objects.requireNonNull(pe.getLocalizedMessage()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return response;
+        return response.toString();
     }
 }

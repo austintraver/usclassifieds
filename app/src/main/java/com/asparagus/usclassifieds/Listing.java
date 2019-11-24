@@ -1,134 +1,108 @@
 package com.asparagus.usclassifieds;
 
-import android.graphics.Bitmap;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/* TODO include image storage */
-
+@SuppressWarnings("WeakerAccess")
 public class Listing implements Serializable {
 
-    //private UUID listingID;
-    private String title, description;
-    private double price;
-    private boolean sold;
-    private Bitmap image;
-    private String ownerID, ownerEmail, ownerName;
-    private String storageReference;
-    private String latitude, longitude;
+    // Private UUID listingID;
+    public String title, description, ownerID, ownerEmail, ownerName, storageReference, latitude, longitude;
+    public double price;
+    public boolean sold;
 
-//    public Listing (String owner, String title, double price, String description, Bitmap image) {
-//        this.title = title;
-//        this.description = description;
-//        this.price = price;
-//        this.listingID = UUID.randomUUID();
-//        this.ownerID = owner;
-//        this.sold = false;
-//        this.image = image;
-//    }
+    // Default constructor is required for Firebase instantiation
+    public Listing() {}
 
-    public Listing (String owner, String ownerE, String ownerN, String title, double price, String description, String sref, String lat, String lng) {
+    Listing(
+            String ownerID, String ownerName, String ownerEmail, String title, double price, String description,
+            String storageReference, String lat, String lng
+    ) {
+        this.ownerID = ownerID;
+        this.ownerName = ownerName;
+        this.ownerEmail = ownerEmail;
         this.title = title;
         this.description = description;
         this.price = price;
-        this.ownerID = owner;
-        this.ownerEmail = ownerE;
-        this.ownerName = ownerN;
         this.sold = false;
-        this.image = null;
-        this.storageReference = sref;
+        this.storageReference = storageReference;
         this.latitude = lat;
         this.longitude = lng;
     }
 
-    public Listing(JSONObject object){
-        try{
-            this.title = object.getString("title");
-            this.description = object.getString("description");
-            this.price = object.getDouble("price");
-            this.longitude = object.getString("longitude");
-            this.latitude = object.getString("latitude");
-            this.ownerID = object.getString("ownerID");
-            this.ownerEmail = object.getString("ownerEmail");
-            this.ownerName = object.getString("ownerName");
-            this.sold = object.getBoolean("sold");
-            this.storageReference = object.getString("storageReference");
-
-        } catch(JSONException je){
+    Listing(JSONObject object) {
+        try {
+            title = object.getString("title");
+            description = object.getString("description");
+            price = object.getDouble("price");
+            longitude = object.getString("longitude");
+            latitude = object.getString("latitude");
+            ownerID = object.getString("ownerID");
+            ownerEmail = object.getString("ownerEmail");
+            ownerName = object.getString("ownerName");
+            sold = object.getBoolean("sold");
+            storageReference = object.getString("storageReference");
+        } catch (JSONException je) {
             je.printStackTrace();
         }
     }
 
-    public Listing() { } // Default constructor is required for Firebase instantiation
-
-    public Map<String,Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("title", title);
-        result.put("description", description);
-        result.put("price", price);
-        result.put("ownerID", ownerID);
-        result.put("ownerEmail", ownerEmail);
-        result.put("ownerName", ownerName);
-        result.put("sold", sold);
-        result.put("storageReference", storageReference);
-        result.put("latitude", latitude);
-        result.put("longitude", longitude);
-
-        return result;
+    Map<String, Object> toMap() {
+        return new HashMap<String, Object>() {{
+            put("title", title);
+            put("description", description);
+            put("price", price);
+            put("ownerID", ownerID);
+            put("ownerEmail", ownerEmail);
+            put("ownerName", ownerName);
+            put("sold", sold);
+            put("storageReference", storageReference);
+            put("latitude", latitude);
+            put("longitude", longitude);
+        }};
     }
 
-    public String getStorageReference() {
+    String getStorageReference() {
         return this.storageReference;
     }
 
-//    public UUID getListingID() {
-//        return this.listingID;
-//    }
+    String getOwnerID() {
+        return this.ownerID;
+    }
 
-    public String getOwnerID() { return this.ownerID; }
+    String getOwnerName() { return this.ownerName; }
 
-    public String getOwnerEmail() { return this.ownerEmail; }
+    String getOwnerEmail() {
+        return this.ownerEmail;
+    }
 
-    public String getOwnerName() { return this.ownerName; }
+    String getLatitude() {
+        return this.latitude;
+    }
 
-    public String getLatitude() { return this.latitude;  }
-
-    public String getLongitude() {
+    String getLongitude() {
         return this.longitude;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return this.title;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return this.description;
     }
 
-    public double getPrice() {
+    double getPrice() {
         return this.price;
     }
 
-    public boolean getSold() {
-        return this.sold;
-    }
-    public void setSold(boolean sold) {
-        this.sold = sold;
-    }
+    boolean getSold() { return this.sold; }
 
-    public static ArrayList<Listing> getListings() {
-        ArrayList<Listing> listings = new ArrayList<Listing>();
-//        listings.add(new Listing("105390386330726279653", "Bike", 420.00, "A dirty frat boy's bike.", null));
-//        listings.add(new Listing("105390386330726279653", "Another Bike", 42.00, "A dirty frat boy's bike.", null));
-//        listings.add(new Listing("118050324720858569859", "Skateboard", 42.00, "A dirty frat boy's skateboard.", null));
-//        listings.add(new Listing("118050324720858569859", "Bike", 42.00, "A dirty frat boy's bike.", null));
-//        listings.add(new Listing("118050324720858569859", "Bike", 0.00, "We should test for strings too long", null));
-        return listings;
+    void setSold() {
+        this.sold = true;
     }
 }

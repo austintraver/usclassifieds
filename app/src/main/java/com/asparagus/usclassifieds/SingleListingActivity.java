@@ -2,15 +2,15 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -25,13 +25,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.PicassoProvider;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import static java.lang.String.format;
+import static java.util.Locale.getDefault;
 
 public class SingleListingActivity extends Activity {
 
+    private static final String TAG = SingleListingActivity.class.getSimpleName();
     Listing listing;
     Picasso picasso;
 
@@ -43,25 +43,30 @@ public class SingleListingActivity extends Activity {
         sold_button.setVisibility(View.GONE);
         Intent intent = getIntent();
 
+        User user = GlobalHelper.user;
+
         Picasso.Builder p = new Picasso.Builder(this);
         this.picasso = p.build();
         this.picasso.setLoggingEnabled(true);
 
         this.listing = (Listing) intent.getSerializableExtra("listing");
-        if (GlobalHelper.getEmail().equals(listing.getOwnerEmail())) {
-            sold_button.setVisibility(View.VISIBLE);
-            sold_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listing.setSold(true);
-                }
-            });
+        if (listing != null) {
+            /* If the owner is looking at their own listing */
+            if (user.email.equals(listing.ownerEmail)) {
+                /* Create a listener for the sold button */
+                OnClickListener listener = new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listing.sold = true;
+                    }
+                };
+                /* Set the sold button to visible/clickable */
+                sold_button.setVisibility(View.VISIBLE);
+                sold_button.setOnClickListener(listener);
+            }
+            Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
         }
-        System.out.println("Starting Activity: single_listing");
-        System.out.println("Listing : " + listing.getTitle() + "\nDescription: " + listing.getDescription());
         populatePageData();
-//        startActivityForResult(intent,RESULT_CANCELED);
-
     }
 
     private void sendToOtherPage(User u) {
@@ -73,39 +78,51 @@ public class SingleListingActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.other_user_button:
-                System.out.println("Other user button: same as owner? " + listing.getOwnerID().equals(GlobalHelper.getUserID()));
-                System.out.println("User id: " + listing.getOwnerID() );
-                if(!listing.getOwnerID().equals(GlobalHelper.getUserID())) {
+                Log.d(TAG, format("onClick()\nUser id: %s", listing.getOwnerID()));
+                /* User clicks on someone else's profile */
+                User user = GlobalHelper.user;
+                if (!listing.getOwnerID().equals(user.userID)) {
                     Query query = FirebaseDatabase.getInstance().getReference("users").child(listing.getOwnerID());
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    ValueEventListener listener = new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()) {
-                                System.out.println("User exists");
+                        public void onDataChange(
+                                @NonNull DataSnapshot dataSnapshot
+                        ) {
+                            if (dataSnapshot.exists()) {
+                                Log.d(TAG, "User exists");
                                 try {
                                     User other = dataSnapshot.getValue(User.class);
                                     sendToOtherPage(other);
                                 } catch (DatabaseException dbe) {
-                                    System.out.println("Database exception has occurred " + dbe.getMessage());
+                                    Log.e(TAG, format("Database exception has " + "occurred %s", dbe.getMessage()));
                                 }
-                            } else {
-                                System.out.println("User doesn't exist");
+                            }
+                            else {
+                                Log.e(TAG, "User doesn't exist");
+                                Toast.makeText(SingleListingActivity.this, "User doesn't exist", Toast.LENGTH_SHORT)
+                                     .show();
                             }
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            System.out.println("onCancelled called for event listener");
+                        public void onCancelled(
+                                @NonNull DatabaseError databaseError
+                        ) {
+                            Log.d(TAG, "onCancelled()");
                         }
-                    });
+                    };
+                    query.addListenerForSingleValueEvent(listener);
+                }
+                /* User clicks on their own profile, so take them to the
+                Profile activity */
+                else {
+                    startActivity(new Intent(this, ProfileActivity.class));
                 }
                 break;
-
             case R.id.sold_button:
-                //FirebaseDatabase.getInstance().getReference("listings").child().   ;d
                 break;
             default:
-                System.out.println("Button ID: " + v.getId());
+                Log.d(TAG, format("Button ID: %s", v.getId()));
         }
     }
 
@@ -114,48 +131,39 @@ public class SingleListingActivity extends Activity {
         super.onStart();
     }
 
-    private void populatePageData()
-    {
-        if(listing == null)
-        {
-            System.out.println("ERROR: Page cannot display listing data");
-
+    private void populatePageData() {
+        if (listing == null) {
+            String error = "Sorry, unable to display listing data.";
+            Toast.makeText(SingleListingActivity.this, error, Toast.LENGTH_SHORT).show();
+            return;
         }
-        else
-        {
-            System.out.println("Loading page");
-
-            TextView tvSTitle = findViewById(R.id.detail_title);
-            TextView tvSDesc = findViewById(R.id.detail_description);
-            TextView tvSPrice = findViewById(R.id.detail_price);
-            Button owner = (Button) findViewById(R.id.other_user_button);
-            TextView desc = findViewById(R.id.detail_description);
-            final ImageView ivSListing = findViewById(R.id.listing_image);
-            picasso.get().setLoggingEnabled(true);
-
-            // Load ImageView with photo from firebase per starter code from
-            // https://firebase.google.com/docs/storage/android/download-files
-            FirebaseStorage.getInstance().getReference().child(listing.getStorageReference()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                        System.out.println("Loaded URI " + uri.toString());
-                        picasso.get().load(uri).into(ivSListing);
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    System.out.println("Listing has no image. Not printing exception");
-                }
-            });
-
-
-            tvSTitle.setText(listing.getTitle());
-            tvSDesc.setText(listing.getDescription());
-            tvSPrice.setText(String.format("$%.2f",listing.getPrice()));
-            owner.setText(listing.getOwnerEmail());
-            desc.setText(listing.getDescription());
-        }
+        Log.d(TAG, "Loading page");
+        TextView tvSTitle = findViewById(R.id.detail_title);
+        TextView tvSPrice = findViewById(R.id.detail_price);
+        TextView desc = findViewById(R.id.detail_description);
+        Button owner = findViewById(R.id.other_user_button);
+        final ImageView ivSListing = findViewById(R.id.listing_image);
+        Picasso.get().setLoggingEnabled(true);
+        // Load ImageView with photo from firebase per starter code from
+        // https://firebase.google.com/docs/storage/android/download-files
+        OnSuccessListener<Uri> success = new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, format("Loaded URI: %s", uri.toString()));
+                Picasso.get().load(uri).into(ivSListing);
+            }
+        };
+        OnFailureListener failure = new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e(TAG, "Listing has no image.");
+            }
+        };
+        StorageReference child = FirebaseStorage.getInstance().getReference().child(listing.getStorageReference());
+        child.getDownloadUrl().addOnSuccessListener(success).addOnFailureListener(failure);
+        tvSTitle.setText(listing.getTitle());
+        tvSPrice.setText(format(getDefault(), "$%.2f", listing.getPrice()));
+        owner.setText(listing.getOwnerName());
+        desc.setText(listing.getDescription());
     }
 }

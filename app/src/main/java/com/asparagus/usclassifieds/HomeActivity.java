@@ -1,27 +1,25 @@
 package com.asparagus.usclassifieds;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+
 import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
 import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -34,111 +32,67 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class HomeActivity extends Activity implements AdapterView.OnItemSelectedListener {
+import static android.R.layout.simple_spinner_dropdown_item;
+import static android.widget.ArrayAdapter.createFromResource;
+import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ADMIN_KEY;
+import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ID;
+import static com.asparagus.usclassifieds.R.array.search_choices;
+import static com.asparagus.usclassifieds.R.array.sort_choices;
+import static com.asparagus.usclassifieds.R.id.sort_spinner;
+import static com.asparagus.usclassifieds.R.id.spinner;
+import static com.asparagus.usclassifieds.R.layout.activity_home;
+import static com.asparagus.usclassifieds.R.layout.spinner_item;
+import static java.lang.String.format;
+
+public class HomeActivity extends Activity implements OnItemSelectedListener {
 
     private static final int CREATE_LISTING = 101;
     private static final int DASHBOARD = 102;
-    private static final String TAG = HomeActivity.class.getSimpleName();
     private static String selection = "Username";
-    private static String sortSelection = "Price ↓";
-    private Spinner spinner;
+    private static String queryString;
+    private final String TAG = HomeActivity.class.getSimpleName();
     private Spinner sortSpinner;
     private EditText search_bar;
-    private ListView lv; // global list view for page
-    private ListingAdapter adapter; // global adapter to show list
     private Comparator<Listing> comparator = GlobalHelper.priceDesc;
-    private static String queryString = "";
-
-
-    private Client client = null;
-    private Index index = null;
-    private ArrayList<Listing> listings = null;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        Intent intent = getIntent();
-
-
-        spinner = findViewById(R.id.spinner);
-        sortSpinner = findViewById(R.id.sort_spinner);
-
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.search_choices, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> sortAdapter = ArrayAdapter.createFromResource(this,
-                R.array.sort_choices, android.R.layout.simple_spinner_item);
-
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        sortSpinner.setAdapter(sortAdapter);
-
-        spinner.setOnItemSelectedListener(this);
-        sortSpinner.setOnItemSelectedListener(this);
-
-
-        // Add listener to text box
-        search_bar = (EditText) findViewById(R.id.search_bar);
-        search_bar.addTextChangedListener(textWatcher);
-
-        listings = new ArrayList<Listing>();
-        client = new Client(GlobalHelper.ALGOLIA_ID, GlobalHelper.ALGOLIA_ADMIN_KEY);
-
-
-        /*
-            TODO: Add settings to search and sort by fields
-
-            example from https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/quick-start-with-the-api-client/android/
-
-                JSONObject settings = new JSONObject().put("customRanking", "desc(followers)");
-                index.setSettingsAsync(settings, null);
-
-            TODO: fix query to only search for specific users
-         */
-
-        index = client.getIndex("listings");
-
-        // define searchable attributes to restrict in search queries
-        try {
-            index.setSettingsAsync(new JSONObject().put("searchableAttributes",
-                    new JSONArray()
-                    .put("ownerName")
-                    .put("ownerEmail")
-                    .put("title")
-                    .put("description")
-                    ),
-                    null
-            );
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private Spinner filterSpinner;
+    private Index index;
+    private ArrayList<Listing> listings;
+    CompletionHandler fillSearchResultCallback = new CompletionHandler() {
+        @Override
+        public void requestCompleted(JSONObject jsonObject, AlgoliaException ae) {
+            try {
+                if (jsonObject == null) {
+                    return;
+                }
+                listings.clear();
+                JSONArray array = jsonObject.getJSONArray("hits");
+                for (int i = 0; i < array.length(); i++) {
+                    if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
+                        listings.add(new Listing(array.getJSONObject(i)));
+                    }
+                }
+                listings.sort(comparator);
+                populateListings();
+            } catch (JSONException je) {
+                je.printStackTrace();
+            }
+        }
+    };
+    private TextWatcher textWatcher = new TextWatcher() {
+        public void onTextChanged(CharSequence charSequence, int a, int b, int c) {
+            if (filterSpinner == null) {
+                filterSpinner = findViewById(spinner);
+            }
+            fillArray(selection);
         }
 
-//        index.browseAsync(new com.algolia.search.saas.Query(""), printerCallback); // FOR DEBUGGING ONLY
+        public void beforeTextChanged(CharSequence charSequence, int a, int b, int c) {}
 
-    }
+        public void afterTextChanged(Editable editable) {}
+    };
 
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        selection = parent.getItemAtPosition(pos).toString();
-        System.out.println("Selection is now: " + selection + "\nQuery String: " + queryString);
-
-        selection = spinner.getSelectedItem().toString();
-
-        getAlgoliaListings(queryString, fillSearchResultCallback);
-
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
+    // Another interface callback
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     public void onClick(View v) {
         switch (v.getId()) {
@@ -146,55 +100,75 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                 Intent create_listing = new Intent(this, EditListingActivity.class);
                 startActivityForResult(create_listing, CREATE_LISTING);
                 break;
-
             case R.id.dashboard_button:
                 Intent dashboard = new Intent(this, ProfileActivity.class);
                 startActivityForResult(dashboard, DASHBOARD);
                 break;
-
             case R.id.search_button:
-                System.out.println("clicking search button with value: " + selection);
                 fillArray(selection);
                 break;
-
             case R.id.map_view:
                 Intent mapIntent = new Intent(this, MapsActivity.class);
                 startActivity(mapIntent);
                 break;
-
             case R.id.list_view:
-                //TODO -->
                 break;
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(activity_home);
 
-        if (requestCode == CREATE_LISTING && resultCode == Activity.RESULT_OK) {
-            // TODO --> Toast blurb of created listing success
-        } else if (resultCode == Activity.RESULT_CANCELED && requestCode == DASHBOARD) {
-            // TODO --> person signed out from the profile page
-            Intent signOut = new Intent();
-            setResult(Activity.RESULT_CANCELED, signOut);
-            finish();
-        } else if (requestCode == DASHBOARD && resultCode == 25) {
+        filterSpinner = findViewById(spinner);
+        sortSpinner = findViewById(sort_spinner);
 
-            // TODO: Fix thisUser query
-            fillArray("thisUser");
-            populateListings();
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = createFromResource(this, search_choices, spinner_item);
+        ArrayAdapter<CharSequence> sortAdapter = createFromResource(this, sort_choices, spinner_item);
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(simple_spinner_dropdown_item);
+        sortAdapter.setDropDownViewResource(simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        filterSpinner.setAdapter(adapter);
+        sortSpinner.setAdapter(sortAdapter);
+
+        filterSpinner.setOnItemSelectedListener(this);
+        sortSpinner.setOnItemSelectedListener(this);
+
+        // Add listener to text box
+        search_bar = findViewById(R.id.search_bar);
+        search_bar.addTextChangedListener(textWatcher);
+
+        listings = new ArrayList<Listing>();
+        Client client = new Client(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
+        index = client.getIndex("listings");
+
+        // Define searchable attributes to restrict in search queries
+        try {
+            final JSONArray attributes = new JSONArray() {{
+                put("ownerName");
+                put("ownerEmail");
+                put("title");
+                put("description");
+            }};
+            JSONObject settings = new JSONObject() {{
+                put("searchableAttributes", attributes);
+            }};
+            index.setSettingsAsync(settings, null);
+        } catch (JSONException e) {
+            Log.d(TAG, e.getLocalizedMessage());
         }
     }
 
     public void getListings(Query query) {
-        //listener.onStart();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //listener.onSuccess(dataSnapshot);
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-                    System.out.println(listingSnapshot.getValue(Listing.class));
                     GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
                 }
                 populateListings();
@@ -202,221 +176,92 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("onCancelled called for event listener");
-                //listener.onFailure();
+                Log.d(TAG, "onCancelled()");
             }
         });
     }
 
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        selection = parent.getItemAtPosition(pos).toString();
+        Log.d(TAG, format("Selection is: %s\nQuery string is: %s", selection, queryString));
+        selection = filterSpinner.getSelectedItem().toString();
+        getAlgoliaListings(queryString, fillSearchResultCallback);
+    }
 
-    CompletionHandler fillSearchResultCallback = new CompletionHandler() {
-
-        @RequiresApi(api = Build.VERSION_CODES.N)
-        @Override
-        public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
-
-            try {
-
-                if (e != null) {
-                    System.out.println("ALGOLIA ERROR: " + e.getMessage());
-                }
-                if (jsonObject != null) {
-                    // to pretty print jsonObject: jsonObject.toString(2)
-                    System.out.println("fillSearchResultCallback: loading JSONObject into listings" + "\n" + jsonObject.toString(2));
-
-                    listings.clear();
-                    JSONArray array = jsonObject.getJSONArray("hits");
-                    for (int i = 0; i < array.length(); i++) {
-                        if ( !array.isNull(i) && ! array.getJSONObject(i).isNull("ownerID")) {
-                            listings.add(new Listing(array.getJSONObject(i)));
-                        }
-                    }
-
-                    listings.sort(comparator);
-
-                    populateListings();
-
-                } else {
-                    System.out.println("fillSearchResultCallback: JSONObject null");
-                }
-
-            } catch (JSONException je) {
-
-                je.printStackTrace();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DASHBOARD) {
+            if (resultCode == RESULT_CANCELED) {
+                Intent signOut = new Intent();
+                setResult(RESULT_CANCELED, signOut);
+                finish();
             }
-
-        }
-    };
-
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if (spinner == null) {
-                spinner = findViewById(R.id.spinner);
+            else if (resultCode == 25) {
+                fillArray("thisUser");
+                populateListings();
             }
-            fillArray(selection);
         }
+    }
 
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-        }
-    };
-
-
-    private void fillArray(String select) {    //search based on different listings
+    private void fillArray(String select) {
+        // Search based on different listings
         GlobalHelper.searchedListings.clear();
-        String query = "";
-
-        if (search_bar != null && !search_bar.getText().toString().matches("")) {
-            query = search_bar.getText().toString();
-        } else {
+        if (search_bar == null || search_bar.getText().toString().equals("")) {
             return;
         }
-
-
-        System.out.println("Finding results with query string: " + query);
-        queryString = query;
-        if (select.equals("thisUser")) {
-
-            System.out.println("Querying user's items");
-            // searches Algolia client with getUserID as search query
-            getAlgoliaListings(GlobalHelper.getUserID(), fillSearchResultCallback);
-
-            //query = FirebaseDatabase.getInstance().getReference("listings").orderByChild("ownerID").equalTo(GlobalHelper.getUserID());
-//            Query q = FirebaseDatabase.getInstance().getReference("listings").child(GlobalHelper.getUserID());
-//            getListings(q);
-
-        } else if (select.equals("Username")) {
-
-            System.out.println("In USERNAME Search");
-            getAlgoliaListings(query, fillSearchResultCallback);
-
-        } else if (select.equals("Title")) {
-
-            System.out.println("In TITLE Search");
-            getAlgoliaListings(query, fillSearchResultCallback);
-
-        } else {        //select == "Tags"
-            System.out.println("In TAGS Search");
-            System.out.println("select should be Tags: select = " + select);
-            getAlgoliaListings(query, fillSearchResultCallback);
+        queryString = search_bar.getText().toString();
+        Log.d(TAG, format("Finding results with query string: %s\n", queryString));
+        Log.d(TAG, format("select is: %s", select));
+        if ("thisUser".equals(select)) {
+            Log.d(TAG, "Querying user's items");
+            // Searches Algolia client with getId as search query
+            getAlgoliaListings(GlobalHelper.user.userID, fillSearchResultCallback);
         }
-
+        else {
+            getAlgoliaListings(queryString, fillSearchResultCallback);
+        }
     }
 
     private void populateListings() {
-        //select can be one of three things = { Username, Title, Tags }
-        //These are the three options for search parameters
-        System.out.println("POPULATING LISTINGS");
-
-        adapter = new ListingAdapter(this, listings);
-        lv = (ListView) findViewById(R.id.lvListing);
+        // Select can be one of three things = { Username, Title, Tags }
+        // These are the three options for search parameters
+        Log.d(TAG, "Populating Listings");
+        // Global adapter to show list
+        ListingAdapter adapter = new ListingAdapter(this, listings);
+        // Global list view for page
+        ListView lv = findViewById(R.id.lvListing);
         lv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    public void getAlgoliaListings(String select, CompletionHandler ch) {
-        sortSelection = sortSpinner.getSelectedItem().toString();
-
-        comparator = GlobalHelper.priceDesc;
-        if (sortSelection.equals("Price ↑")) {
-            comparator = GlobalHelper.priceAsc;
-        } else if (sortSelection.equals("Price ↓")) {
-            comparator = GlobalHelper.priceDesc;
-        } else if (sortSelection.equals("Distance")) {
-            comparator = GlobalHelper.distComparator;
+    public void getAlgoliaListings(String select, CompletionHandler completionHandler) {
+        String sortSelection = sortSpinner.getSelectedItem().toString();
+        switch (sortSelection) {
+            case "Price ↑":
+                comparator = GlobalHelper.priceAsc;
+                break;
+            case "Price ↓":
+                comparator = GlobalHelper.priceDesc;
+                break;
+            case "Distance":
+                comparator = GlobalHelper.distComparator;
+                break;
         }
-
-        selection = spinner.getSelectedItem().toString();
-
-        if (selection.equals("Username")){
-            System.out.println("Getting search attr for username");
-            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("ownerName", "ownerEmail"), ch);
-
-        } else if (selection.equals("Title")){
-            System.out.println("Getting search attr for title");
-            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("title"), ch);
-
-        } else {
-            System.out.println("Getting search attr for tags");
-
-            index.searchAsync(new com.algolia.search.saas.Query(select), ch);
-
+        selection = filterSpinner.getSelectedItem().toString();
+        Log.d(TAG, format("Getting search attribute for %s\n", selection));
+        if (selection.equals("Username")) {
+            index.searchAsync(new com.algolia.search.saas.Query(select)
+                                      .setRestrictSearchableAttributes("ownerName", "ownerEmail"), completionHandler);
         }
-
-
-
+        else if (selection.equals("Title")) {
+            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("title"),
+                              completionHandler
+            );
+        }
+        else {
+            index.searchAsync(new com.algolia.search.saas.Query(select), completionHandler);
+        }
     }
-
-
-    CompletionHandler printerCallback = new CompletionHandler() {
-
-        @Override
-        public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
-
-            try {
-                if (jsonObject != null) {
-                    System.out.println("algoliaTest: JSONObject valid");
-                } else {
-                    System.out.println("algoliaTest: JSONObject null");
-                }
-
-                if (e != null) {
-                    System.out.println("ALGOLIA ERROR: " + e.getMessage());
-                }
-                if (jsonObject != null) {
-                    // to pretty print jsonObject: jsonObject.toString(2)
-
-                    JSONArray array = jsonObject.getJSONArray("hits");
-                    for (int i = 0; i < array.length(); i++) {
-                        if (!array.isNull(i)) {
-                            System.out.println(array.getJSONObject(i).toString(2));
-                        }
-                    }
-
-                } else {
-                    System.out.println("fillSearchResultCallback: JSONObject null");
-                }
-
-            } catch (JSONException je) {
-
-                je.printStackTrace();
-            }
-
-        }
-    };
 }
-
-/*
-
-          Unused code
-*/
-//        // Used to get client token and set that for logged in person
-//        FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-//                        if (!task.isSuccessful()) {
-//                            Log.w(TAG, "getInstanceId failed", task.getException());
-//                            return;
-//                        }
-//
-//                        // Get new Instance ID token
-//                        String token = task.getResult().getToken();
-//                        System.out.println("token: " + token);
-//
-//                        /* sets the client ID on logged in person, will be used to send notifications on
-//                         database updates for friend requests */
-//                        System.out.println("user name: " + GlobalHelper.getUser().getFirstName());
-//                        GlobalHelper.getUser().addNotificationToken(token);
-//
-//                        // Log and toast
-//                        String msg = getString(R.string.msg_token_fmt, token);
-//                        // Log.d(TAG, msg);
-//                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-//                    }
-//                });

@@ -1,103 +1,56 @@
 package com.asparagus.usclassifieds;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
+import static java.lang.String.format;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    public static User user = GlobalHelper.user;
     private static final int MY_LOCATION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
-    private boolean mLocationPermissions;
-
-    //private Location mLastLocation = null;
-    // default coordinates are for Downtown LA
-    private double lat = 34.05, lng = -118.24;
-    private LatLng defaultLatLng;
-
     private Location mLastKnownLocation;
-
-    // The entry point to the Fused Location Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private String TAG = MapsActivity.class.getSimpleName();
+    private GoogleMap mMap;
+    private LatLng defaultLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
-        if(GlobalHelper.getUser() != null && GlobalHelper.getUser().getLatitude() != null)
-        {
-            // add error handling for new users and testing purposes
-            // code throws exceptions if user lat/long are invalid or not populated
-            try {
-                lat = Double.parseDouble(GlobalHelper.getUser().getLatitude());
-                lng = Double.parseDouble(GlobalHelper.getUser().getLongitude());
-                defaultLatLng = new LatLng(lat, lng);
-            }catch(NumberFormatException nfe)
-            {
-                System.out.println("NFE: " + nfe.getMessage());
-                defaultLatLng = new LatLng(lat,lng);
-            }
+        if (user == null) {
+            return;
         }
-
-
-        // Construct a FusedLocationProviderClient.
-        //mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        try {
+            double latitude = Double.parseDouble(user.latitude);
+            double longitude = Double.parseDouble(user.longitude);
+            defaultLatLng = new LatLng(latitude, longitude);
+        } catch (NumberFormatException nfe) {
+            Log.d(TAG, format("Number Format Exception: %s", nfe.getLocalizedMessage()));
+            // Default coordinates are for Downtown Los Angeles
+            double latitude = 34.021697;
+            double longitude = -118.286704;
+            defaultLatLng = new LatLng(latitude, longitude);
+        } catch (Exception e) {
+            Log.d(TAG, format("Exception: %s", e.getLocalizedMessage()));
+        }
+        // Get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
-
-
-//    private void getLocationPermissions() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED) {
-//            mLocationPermissions = true;
-//        } else {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                    MY_LOCATION_REQUEST_CODE);
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        mLocationPermissions = false;
-//        if (requestCode == MY_LOCATION_REQUEST_CODE) {
-//            if (permissions.length == 1 &&
-//                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                mLocationPermissions = true;
-//            } else {
-//                // Permission was denied. Display an error message.
-//            }
-//        }
-//        updateMapUI();
-//    }
 
     /**
      * Manipulates the map once available.
@@ -111,67 +64,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        Intent intent = getIntent();
-
-        //Request Location Permissions
-        //getLocationPermissions();
-
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         updateMapUI();
-//        try {
-//            if (mLocationPermissions) {
-//
-//                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-//                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Location> task) {
-//                        if (task.isSuccessful() && task.getResult() != null) {
-//                            // Set the map's camera position to the current location of the device.
-//                            mLastKnownLocation = task.getResult();
-//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-//                                    new LatLng(mLastKnownLocation.getLatitude(),
-//                                            mLastKnownLocation.getLongitude()), 14));
-//                        } else {
-////                            Log.d(TAG, "Current location is null. Using defaults.");
-////                            Log.e(TAG, "Exception: %s", task.getException());
-//                            mMap.moveCamera(CameraUpdateFactory
-//                                    .newLatLngZoom(defaultLatLng, 14));
-//                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-//                        }
-//                    }
-//                });
-//            }
-//        } catch (SecurityException e)  {
-//            //Log.e("Exception: %s", e.getMessage());
-//        }
-        // Add a marker in USC and move the camera
-
-//        mMap.addMarker(new MarkerOptions().position(defaultLatLng).title("USC Campus"));
-//        mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
     }
 
     public void updateMapUI() {
-        if(mMap == null)
+        if (mMap == null) {
             return;
-        else {
-//            if(mLocationPermissions == true) {
-//                mMap.setMyLocationEnabled(true);
-//                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//            } else {
-//                mMap.setMyLocationEnabled(false);
-//                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-//                //mLastLocation = null;
-//                getLocationPermissions();
-//            }
-            mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(GlobalHelper.getUser().getFirstName() + " " + GlobalHelper.getUser().getLastName()));
-//            for (Listing l : GlobalHelper.searchedListings) {
-//                Double tempLat = Double.parseDouble(l.getLatitude());
-//                Double tempLng = Double.parseDouble(l.getLongitude());
-//                mMap.addMarker(new MarkerOptions().position(new LatLng(tempLat,tempLng)).title(l.getTitle()));
-//            }
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(14));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
         }
+        String title = String.format("%s %s", user.firstName, user.lastName);
+        mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(title));
+        /* TODO
+         *   Collect all of the listings in the current search results
+         *   For each listing, pull their latitude and longitude
+         *   Add a marker for each listing
+         *   */
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
     }
 }
