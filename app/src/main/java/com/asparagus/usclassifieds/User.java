@@ -145,6 +145,27 @@ public class User implements Serializable {
         this.outgoingFriendRequests = map;
     }
 
+    // add or remove from the incoming or outgoing friend request
+    public void acceptFriendRequest(User user) {
+        friends.put(user.userID,user.getFirstName() + " " + user.getLastName());
+        user.getFriends().put(userID, firstName + " " + lastName);
+        rejectFriendRequest(user);
+    }
+    public void rejectFriendRequest(User user) {
+        incomingFriendRequests.remove(user.userID);
+        user.getOutgoingFriendRequests().remove(userID);
+    }
+
+    public void addFriend(User user) {
+        outgoingFriendRequests.put(user.userID, user.getFirstName() + " " + user.getLastName());
+        user.getIncomingFriendRequests().put(userID, firstName + " " + lastName);
+    }
+
+    public void removeFriend(User user) {
+        friends.remove(user.userID);
+        user.getFriends().remove(userID);
+    }
+
     public class GetCoordinates extends AsyncTask<String, Void, String> {
 
         private final String TAG = GetCoordinates.class.getSimpleName();
