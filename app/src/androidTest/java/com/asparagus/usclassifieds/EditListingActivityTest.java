@@ -1,11 +1,9 @@
 package com.asparagus.usclassifieds;
 
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
 import org.junit.After;
@@ -13,7 +11,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class EditListingActivityTest {
 
@@ -23,30 +22,32 @@ public class EditListingActivityTest {
     public ActivityTestRule<EditListingActivity> mActivityTestRule = new ActivityTestRule<EditListingActivity>(EditListingActivity.class);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         activity = mActivityTestRule.getActivity();
     }
 
     @Test
     public void invalid_missing_photo() {
         EditText title_edit_text = activity.findViewById(R.id.title_edit_text);
-        title_edit_text.setText("ASDF");
+        title_edit_text.setText("Sample Title");
         Button create_button = activity.findViewById(R.id.create_button);
-        assertTrue(!create_button.isEnabled());
+        assertFalse(create_button.isEnabled());
     }
+
     @Test
     public void invalid_missing_title() {
         TextView upload_text_view = activity.findViewById(R.id.upload_text_view);
-        upload_text_view.setText("ASDF");
+        upload_text_view.setText("Sample Title");
         Button create_button = activity.findViewById(R.id.create_button);
-        assertTrue(!create_button.isEnabled());
+        assertFalse(create_button.isEnabled());
     }
+
     @Test
     public void valid_listing() {
-        TextView upload_text_view = activity.findViewById(R.id.upload_text_view);
         EditText title_edit_text = activity.findViewById(R.id.title_edit_text);
-        title_edit_text.setText("ASDF");
-        upload_text_view.setText("ASDF");
+        title_edit_text.setText("Sample Title");
+        TextView upload_text_view = activity.findViewById(R.id.upload_text_view);
+        upload_text_view.setText("Sample Title");
         Button create_button = activity.findViewById(R.id.create_button);
         assertTrue(create_button.isEnabled());
     }
