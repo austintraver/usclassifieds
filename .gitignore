@@ -69,3 +69,4 @@ captures/
 .project
 .cproject
 .settings/
+node_modules/

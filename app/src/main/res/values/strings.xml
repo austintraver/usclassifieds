@@ -8,6 +8,8 @@
     <string name="school">USC</string>
     <string name="friend_button">Add Friend</string>
     <string name="view_listings">View Listings</string>
+    <string name="appNameP2">lassifieds</string>
+    <string name="upload_complete">Upload Complete!</string>
 
     <string-array name="search_choices">
         <item>Username</item>
