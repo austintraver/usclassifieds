@@ -102,11 +102,25 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
             TODO: fix query to only search for specific users
          */
+
         index = client.getIndex("listings");
 
+        // define searchable attributes to restrict in search queries
+        try {
+            index.setSettingsAsync(new JSONObject().put("searchableAttributes",
+                    new JSONArray()
+                    .put("ownerName")
+                    .put("ownerEmail")
+                    .put("title")
+                    .put("description")
+                    ),
+                    null
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-//        index.browseAsync(new com.algolia.search.saas.Query(""), printerCallback);
-
+//        index.browseAsync(new com.algolia.search.saas.Query(""), printerCallback); // FOR DEBUGGING ONLY
 
     }
 
@@ -115,6 +129,9 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         // An item was selected. You can retrieve the selected item using
         selection = parent.getItemAtPosition(pos).toString();
         System.out.println("Selection is now: " + selection + "\nQuery String: " + queryString);
+
+        selection = spinner.getSelectedItem().toString();
+
         getAlgoliaListings(queryString, fillSearchResultCallback);
 
     }
@@ -181,7 +198,6 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                     GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
                 }
                 populateListings();
-
             }
 
             @Override
@@ -200,18 +216,14 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
 
             try {
-                if (jsonObject != null) {
-                    System.out.println("fillSearchResultCallback: JSONObject valid");
-                } else {
-                    System.out.println("fillSearchResultCallback: JSONObject null");
-                }
 
                 if (e != null) {
                     System.out.println("ALGOLIA ERROR: " + e.getMessage());
                 }
                 if (jsonObject != null) {
                     // to pretty print jsonObject: jsonObject.toString(2)
-                    System.out.println("fillSearchResultCallback: loading JSONObject into listings");
+                    System.out.println("fillSearchResultCallback: loading JSONObject into listings" + "\n" + jsonObject.toString(2));
+
                     listings.clear();
                     JSONArray array = jsonObject.getJSONArray("hits");
                     for (int i = 0; i < array.length(); i++) {
@@ -242,7 +254,6 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             if (spinner == null) {
                 spinner = findViewById(R.id.spinner);
             }
-
             fillArray(selection);
         }
 
@@ -293,7 +304,6 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
             System.out.println("In TAGS Search");
             System.out.println("select should be Tags: select = " + select);
             getAlgoliaListings(query, fillSearchResultCallback);
-
         }
 
     }
@@ -302,7 +312,6 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         //select can be one of three things = { Username, Title, Tags }
         //These are the three options for search parameters
         System.out.println("POPULATING LISTINGS");
-//      ArrayList<Listing> listings = GlobalHelper.searchedListings;
 
         adapter = new ListingAdapter(this, listings);
         lv = (ListView) findViewById(R.id.lvListing);
@@ -311,26 +320,36 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     }
 
     public void getAlgoliaListings(String select, CompletionHandler ch) {
-        String indexName = "listings";
         sortSelection = sortSpinner.getSelectedItem().toString();
+
         comparator = GlobalHelper.priceDesc;
         if (sortSelection.equals("Price ↑")) {
-            indexName = "listings_price_asc";
             comparator = GlobalHelper.priceAsc;
         } else if (sortSelection.equals("Price ↓")) {
-            indexName = "listings_price_desc";
             comparator = GlobalHelper.priceDesc;
         } else if (sortSelection.equals("Distance")) {
-//            indexName = "listings_dist_desc";
             comparator = GlobalHelper.distComparator;
-        } else {
-            System.out.println("Selection invalid: indexName =  " + indexName);
         }
-        System.out.println("sortSelection " + sortSelection);
-//        System.out.println("indexName =  " + indexName);
-//        index = client.getIndex(indexName);
 
-        index.searchAsync(new com.algolia.search.saas.Query(select), ch);
+        selection = spinner.getSelectedItem().toString();
+
+        if (selection.equals("Username")){
+            System.out.println("Getting search attr for username");
+            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("ownerName", "ownerEmail"), ch);
+
+        } else if (selection.equals("Title")){
+            System.out.println("Getting search attr for title");
+            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("title"), ch);
+
+        } else {
+            System.out.println("Getting search attr for tags");
+
+            index.searchAsync(new com.algolia.search.saas.Query(select), ch);
+
+        }
+
+
+
     }
 
 
@@ -351,7 +370,6 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
                 }
                 if (jsonObject != null) {
                     // to pretty print jsonObject: jsonObject.toString(2)
-                    System.out.println("fillSearchResultCallback: loading JSONObject into listings");
 
                     JSONArray array = jsonObject.getJSONArray("hits");
                     for (int i = 0; i < array.length(); i++) {
