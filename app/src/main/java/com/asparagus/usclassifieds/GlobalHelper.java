@@ -69,12 +69,12 @@ public class GlobalHelper {
         }
     };
 
-    private static boolean debug = false;
+    private static boolean debug = true;
     public static void setDebug(boolean b){debug = b;}
     public static boolean getDebug(){return debug;}
 
     public static User getTestUser(){
-        return new User(
+        User u = new User(
                 "tommytrojan@usc.edu",
                 "Tommy",
                 "Trojan",
@@ -86,6 +86,9 @@ public class GlobalHelper {
                 "CA",
                 "90007",
                 "An absolute unit");
+        u.latitude = "34.021697";
+        u.longitude = "-118.286704";
+        return u;
     }
 
     public static void setTestUser(){
@@ -125,7 +128,7 @@ public class GlobalHelper {
             // Accounting for rounding errors
             aDist = distance(lat1, lon1, userLatitude, userLongitude) * 1000.0f;
             bDist = distance(lat2, lon2, userLatitude, userLongitude) * 1000.0f;
-            return (int) (bDist - aDist);
+            return (int) (aDist - bDist);
         }
     };
     private static GoogleSignInClient mGoogleSignInClient;

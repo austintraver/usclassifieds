@@ -72,7 +72,15 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         System.out.println("onResume() MAIN ");
-        if (GlobalHelper.getEmail().equals("")) {
+        if(GlobalHelper.getDebug()){
+            System.out.println("start sign in intent");
+            GlobalHelper.setTestUser();
+            mAuth.signInAnonymously();
+            System.out.println("Start home page intent: " + GlobalHelper.getUser());
+            Intent homePageIntent = new Intent(this, HomeActivity.class);
+            startActivityForResult(homePageIntent, RC_STOP);
+
+        } else if (GlobalHelper.getEmail().equals("")) {
             System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignInActivity.class);
             signInIntent.putExtra("emailError", emailError);

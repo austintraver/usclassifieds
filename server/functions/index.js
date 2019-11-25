@@ -39,7 +39,8 @@ exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listi
         price: listingSnapshot.child("price").val(),
         sold: listingSnapshot.child("sold").val(),
         storageReference: listingSnapshot.child("storageReference").val(),
-        title: listingSnapshot.child("title").val()
+        title: listingSnapshot.child("title").val(),
+        uuid: listingSnapshot.child("uuid").val()
   };
 return addToAlgolia(data, 'listings')
  .then(res => console.log('SUCCESS ALGOLIA listing ADD', res))

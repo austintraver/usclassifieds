@@ -23,7 +23,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLastKnownLocation;
     private String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
-    private LatLng defaultLatLng;
+    private LatLng defaultLatLng = new LatLng(34.021697,-118.286704);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
