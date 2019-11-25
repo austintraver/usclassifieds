@@ -69,7 +69,7 @@ public class GlobalHelper {
         }
     };
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static void setDebug(boolean b){debug = b;}
     public static boolean getDebug(){return debug;}
 
