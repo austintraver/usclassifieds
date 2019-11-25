@@ -14,10 +14,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import static android.app.PendingIntent.getActivity;
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 public class ListingAdapter extends ArrayAdapter<Listing> {
     ListingAdapter(Context context, ArrayList<Listing> listings) {
         super(context, 0, listings);
     }
+    private static final int searching = 1045;
 
     @NotNull
     @Override
@@ -43,6 +47,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
                 Intent intent = new Intent(view.getContext(), SingleListingActivity.class);
                 intent.putExtra("listing", listing);
                 view.getContext().startActivity(intent);
+                //view.getContext().startActivityForResult(intent, searching);
             }
         };
         bTitle.setOnClickListener(onClickListener);

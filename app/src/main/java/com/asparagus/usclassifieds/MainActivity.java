@@ -89,7 +89,6 @@ public class MainActivity extends Activity {
             System.out.println("In second if statement: null");
             Intent createUserIntent = new Intent(this, EditProfileActivity.class);
             startActivityForResult(createUserIntent, RC_START2);
-            // TODO --> check if person is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
             System.out.println("Logged in and going to Homepage");
@@ -100,7 +99,7 @@ public class MainActivity extends Activity {
             }
 
             user = mAuth.getCurrentUser();
-            if (user == null) {
+            if (user != null) {
                 System.out.println("Firebase person is not authenticated.");
             } else {
                 mAuth.signInAnonymously();
@@ -138,6 +137,8 @@ public class MainActivity extends Activity {
 
         } else if(resultCode == Activity.RESULT_CANCELED) {
             // TODO --> Sign out and redirect back to sign in activity
+            System.out.println("Main--> Signing out");
+
             GlobalHelper.setEmail("");
             GlobalHelper.setID("");
             GlobalHelper.signOut();

@@ -203,6 +203,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DASHBOARD) {
             if (resultCode == RESULT_CANCELED) {
+                System.out.println("Home --> Signing out");
                 Intent signOut = new Intent();
                 setResult(RESULT_CANCELED, signOut);
                 finish();
