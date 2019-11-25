@@ -91,7 +91,6 @@ public class MainActivity extends Activity {
             startActivityForResult(createUserIntent, RC_START2);
         }
         else {
-            System.out.println("Logged in and going to Homepage");
             if(GlobalHelper.getUser().getNotificationTokens().get(GlobalHelper.userToken) == NULL) {
                 GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, "true");
                 Map<String, Object> userValues = GlobalHelper.getUser().toMap();
@@ -105,7 +104,6 @@ public class MainActivity extends Activity {
                 mAuth.signInAnonymously();
             }
 
-            System.out.println("Start home page intent: " + GlobalHelper.getUser());
             Intent homePageIntent = new Intent(this, HomeActivity.class);
             startActivityForResult(homePageIntent, RC_STOP);
         }
@@ -132,13 +130,7 @@ public class MainActivity extends Activity {
 
         if(resultCode == Activity.RESULT_OK) {
             System.out.println("User successfully logged in!!!");
-            // TODO --> check if person is in Firebase, if not go to edit_profile activity and update DB, o.w. go to homepage
-            // TODO --> use GlobalHelper.setUser( *** ) here if person is found
-
         } else if(resultCode == Activity.RESULT_CANCELED) {
-            // TODO --> Sign out and redirect back to sign in activity
-            System.out.println("Main--> Signing out");
-
             GlobalHelper.setEmail("");
             GlobalHelper.setID("");
             GlobalHelper.signOut();

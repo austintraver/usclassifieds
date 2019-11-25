@@ -169,6 +169,19 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(!GlobalHelper.otherUser.equals("")) {
+            String other = GlobalHelper.otherUser;
+            GlobalHelper.otherUser = "";
+
+            Query q = FirebaseDatabase.getInstance().getReference("listings").child(other);
+            getListings(q);
+        }
+    }
+
     public void getListings(Query query) {
         listings.clear();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -229,6 +242,12 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 listings.remove(tempListing);
                 populateListings();
             }
+        } else if( resultCode == 54321) {
+            Intent get = getIntent();
+            String other = get.getStringExtra("otherUser");
+
+            Query q = FirebaseDatabase.getInstance().getReference("listings").child(other);
+            getListings(q);
         }
     }
 

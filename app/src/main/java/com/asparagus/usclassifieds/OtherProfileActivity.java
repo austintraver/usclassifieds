@@ -134,13 +134,9 @@ public class OtherProfileActivity extends Activity {
                 break;
             /* User clicks the view listings button for the other otherUser */
             case R.id.other_listings_button:
-                /*
-                TODO
-                    The home activitiy is launched
-                    The filter is set to users
-                    The content of that filter is set to that otherUser's name
-                    Hopefully the listings appear
-                */
+                Intent i = new Intent();
+                setResult(12345);
+                finish();
                 break;
         }
     }
