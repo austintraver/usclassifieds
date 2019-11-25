@@ -11,8 +11,8 @@ public class GlobalHelperTest {
 
     @Test
     public void test_distance_comparator() {
-        Double lat = Double.parseDouble(GlobalHelper.user.latitude);
-        Double lon = Double.parseDouble(GlobalHelper.user.longitude);
+        Double lat = Double.parseDouble(GlobalHelper.getTestUser().latitude);
+        Double lon = Double.parseDouble(GlobalHelper.getTestUser().longitude);
 
         Listing listing1 = new Listing("seller1", "seller@usc.edu", "seller seller", "table1", 1, "big table with legs", "sref1", Double.toString(lat + 1.0), Double.toString(lon + 1.0));
         Listing listing2 = new Listing("seller2", "seller@usc.edu", "seller seller", "table2", 2, "big table with legs", "sref2", Double.toString(lat + 2.0), Double.toString(lon + 2.0));
