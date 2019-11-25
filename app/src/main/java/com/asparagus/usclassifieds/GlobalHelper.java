@@ -92,6 +92,15 @@ public class GlobalHelper {
         user = getTestUser();
     }
 
+    public static boolean isValidEmail(String email) {
+        if (email != null) {
+            if (email.endsWith("@usc.edu")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static String TAG = GlobalHelper.class.getSimpleName();
     static Comparator<Listing> distComparator = new Comparator<Listing>() {
         @Override
