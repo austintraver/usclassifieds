@@ -113,8 +113,10 @@ public class OtherProfileActivity extends Activity {
     }
 
     public void onClick(View v) {
+        System.out.println("clicked");
         switch (v.getId()) {
             case R.id.friend_button:
+                System.out.println("user id: " + user.userID);
                 final Map<String, String> reqType = new HashMap<String, String>() {{
                     put(otherUser.userID, "request");
                 }};
@@ -122,11 +124,13 @@ public class OtherProfileActivity extends Activity {
                     put(user.userID, reqType);
                 }};
                 // If not friends
-                if (Objects.equals(user.friends.get(otherUser.userID), NULL)) {
-                    FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(result);
+                System.out.println("user status: " + user.friends.get(otherUser.userID));
+                if (Objects.equals(user.friends.get(otherUser.userID), null)) {
+                    System.out.println("aren't friends: " + user.userID);
+                    FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(reqType);
                 }
-                Map<String, Object> userValues = user.toMap();
-                FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
+                //Map<String, Object> userValues = user.toMap();
+                //FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
                 break;
             /* User clicks the view listings button for the other otherUser */
             case R.id.other_listings_button:

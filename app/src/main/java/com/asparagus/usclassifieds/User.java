@@ -1,6 +1,7 @@
 package com.asparagus.usclassifieds;
 
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -19,7 +20,7 @@ public class User implements Serializable {
 
     // Email is the identifier
     public String firstName, lastName, email, phone, userID, streetNumber, streetName, city, state, zipCode, latitude
-            , longitude, description;
+            , longitude, description, bought, sold;
     public HashMap<String, String> friends, outgoingFriendRequests, incomingFriendRequests, notificationTokens;
     private String TAG = User.class.getSimpleName();
 
@@ -50,6 +51,8 @@ public class User implements Serializable {
             put(userID, userID);
             put(GlobalHelper.userToken, "true");
         }};
+        this.bought = "0";
+        this.sold = "0";
         new GetCoordinates().execute(getAddress());
     }
 
@@ -72,12 +75,22 @@ public class User implements Serializable {
             put("outgoingFriendRequests", outgoingFriendRequests);
             put("incomingFriendRequests", incomingFriendRequests);
             put("notificationTokens", notificationTokens);
+            put("bought",bought);
+            put("sold",sold);
         }};
     }
 
     private String getAddress() {
         return format("%s %s, %s, %s, %s", streetNumber, streetName, city, state, zipCode);
     }
+
+    public String getBought() { return this.bought; }
+
+    public String getSold() { return this.sold; }
+
+    public void setBought(String b) { this.bought = b; }
+
+    public void setSold(String s) { this.sold = s; }
 
     public String getDescription() {
         return this.description;
@@ -203,6 +216,7 @@ public class User implements Serializable {
                                                                           .toString();
                 user.latitude = latitude;
                 user.longitude = longitude;
+                GlobalHelper.setUser(user);
             } catch (JSONException e) {
                 String error = e.getLocalizedMessage();
                 if (error != null) {
