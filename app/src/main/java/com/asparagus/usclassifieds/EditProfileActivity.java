@@ -93,7 +93,14 @@ public class EditProfileActivity extends Activity {
                                             desc.getText().toString()
                 );
 
-                GlobalHelper.updateUser(updatedUser);
+                User user = GlobalHelper.getUser();
+                if (user != null && user.getFriends() != null) {
+                    updatedUser.setFriends(user.friends);
+                    updatedUser.setIncomingFriendRequests(user.incomingFriendRequests);
+                    updatedUser.setOutgoingFriendRequests(user.outgoingFriendRequests);
+                    updatedUser.setNotificationTokens(user.notificationTokens);
+                }
+                GlobalHelper.setUser(updatedUser);
 
                 setResult(Activity.RESULT_OK, new Intent());
                 finish();

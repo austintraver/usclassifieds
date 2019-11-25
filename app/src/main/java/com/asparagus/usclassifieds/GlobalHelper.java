@@ -184,14 +184,4 @@ public class GlobalHelper {
         return (rad * 180.0 / Math.PI);
     }
 
-    public static void updateUser(User updatedUser) {
-        User user = GlobalHelper.getUser();
-        if (user != null && user.getFriends() != null) {
-            updatedUser.setFriends(user.friends);
-            updatedUser.setIncomingFriendRequests(user.incomingFriendRequests);
-            updatedUser.setOutgoingFriendRequests(user.outgoingFriendRequests);
-            updatedUser.setNotificationTokens(user.notificationTokens);
-        }
-        GlobalHelper.setUser(updatedUser);
-    }
 }
