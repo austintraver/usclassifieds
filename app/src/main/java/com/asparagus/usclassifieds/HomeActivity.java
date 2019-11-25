@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -22,6 +23,7 @@ import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -68,7 +70,10 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 JSONArray array = jsonObject.getJSONArray("hits");
                 for (int i = 0; i < array.length(); i++) {
                     if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
-                        listings.add(new Listing(array.getJSONObject(i)));
+                        Listing l = new Listing(array.getJSONObject((i)));
+                        if(l.sold == false) {
+                            listings.add(new Listing(array.getJSONObject(i)));
+                        }
                     }
                 }
                 listings.sort(comparator);
@@ -165,11 +170,15 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
     }
 
     public void getListings(Query query) {
+        listings.clear();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot listingSnapshot : dataSnapshot.getChildren()) {
-                    GlobalHelper.searchedListings.add(listingSnapshot.getValue(Listing.class));
+                    Listing l = listingSnapshot.getValue(Listing.class);
+                    if(l.sold == false) {
+                        listings.add(l);
+                    }
                 }
                 populateListings();
             }
@@ -199,7 +208,24 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 finish();
             }
             else if (resultCode == 25) {
-                fillArray("thisUser");
+//                fillArray("thisUser");
+//                populateListings();
+                Query q = FirebaseDatabase.getInstance().getReference("listings").child(GlobalHelper.getUserID());
+                getListings(q);
+            }
+
+        }
+        else if (resultCode == 4444) {
+            System.out.println("With Res code 444");
+            Toast.makeText(HomeActivity.this, "Item marked as sold.", Toast.LENGTH_SHORT)
+                    .show();
+            Intent temp = getIntent();
+            Listing tempListing = (Listing)temp.getSerializableExtra("changedListing");
+            System.out.println("new listing: " + tempListing);
+
+            if(listings.contains(tempListing)) {
+                System.out.println("Removing listing: " + tempListing);
+                listings.remove(tempListing);
                 populateListings();
             }
         }

@@ -100,6 +100,10 @@ public class EditProfileActivity extends Activity {
                     updatedUser.setOutgoingFriendRequests(user.outgoingFriendRequests);
                     updatedUser.setNotificationTokens(user.notificationTokens);
                 }
+                if(user != null) {
+                    updatedUser.setBought(user.getBought());
+                    updatedUser.setSold(user.getSold());
+                }
                 GlobalHelper.setUser(updatedUser);
 
                 setResult(Activity.RESULT_OK, new Intent());

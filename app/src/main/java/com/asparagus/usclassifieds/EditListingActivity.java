@@ -153,11 +153,12 @@ public class EditListingActivity extends Activity {
         final User user = GlobalHelper.user;
         StorageReference ref = mStorageRef.child("images/" + user.userID + "/" + uuid.toString());
         String ownerName = String.format("%s %s", user.firstName, user.lastName);
+        final String key = FirebaseDatabase.getInstance().getReference("listings").child(user.userID).push().getKey();
         Listing newListing = new Listing(ownerID, ownerName, user.email, title, price, description,
-                                         "images/" + user.userID + "/" + uuid.toString(), user.latitude, user.longitude
+                                         "images/" + user.userID + "/" + uuid.toString(), user.latitude, user.longitude, key
         );
         final Map<String, Object> listingValues = newListing.toMap();
-        final String key = FirebaseDatabase.getInstance().getReference("listings").child(user.userID).push().getKey();
+
         Map<String, Object> listingUpdates = new HashMap<String, Object>() {{
             put("/listings/" + user.userID + "/" + key, listingValues);
         }};
