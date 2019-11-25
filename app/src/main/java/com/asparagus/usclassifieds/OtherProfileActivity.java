@@ -127,10 +127,10 @@ public class OtherProfileActivity extends Activity {
                 System.out.println("user status: " + user.friends.get(otherUser.userID));
                 if (Objects.equals(user.friends.get(otherUser.userID), null)) {
                     System.out.println("aren't friends: " + user.userID);
-                    FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(result);
+                    FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(reqType);
                 }
-                Map<String, Object> userValues = user.toMap();
-                FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
+                //Map<String, Object> userValues = user.toMap();
+                //FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
                 break;
             /* User clicks the view listings button for the other otherUser */
             case R.id.other_listings_button:
