@@ -10,6 +10,25 @@ import static org.junit.Assert.*;
 public class GlobalHelperTest {
 
     @Test
+    public void test_update_user_null() {
+        GlobalHelper.setTestUser();
+        User user = GlobalHelper.getUser();
+
+        GlobalHelper.updateUser(null);
+        assertTrue(GlobalHelper.getUser().equals(user));
+    }
+
+    @Test
+    public void test_update_user() {
+        GlobalHelper.setTestUser();
+        User updatedUser = GlobalHelper.getTestUser();
+        updatedUser.friends.put("jalapeno", "asparagus");
+
+        GlobalHelper.updateUser(updatedUser);
+        assertTrue(GlobalHelper.getUser().equals(updatedUser));
+    }
+
+    @Test
     public void test_distance_comparator() {
         Double lat = Double.parseDouble(GlobalHelper.getTestUser().latitude);
         Double lon = Double.parseDouble(GlobalHelper.getTestUser().longitude);
