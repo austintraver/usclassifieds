@@ -20,6 +20,7 @@ public class GlobalHelper {
     static final String ALGOLIA_ID = "VTODAQDVW5";
     static final String ALGOLIA_ADMIN_KEY = "a06f0b0003ffe4d67f6fe6d89fa05f9a";
     public static User user;
+    public static String otherUser = "";
 
     static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     static Boolean userQueryDone = false;

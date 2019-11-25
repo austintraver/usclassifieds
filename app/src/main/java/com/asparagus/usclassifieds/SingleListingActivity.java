@@ -73,7 +73,7 @@ public class SingleListingActivity extends Activity {
     private void sendToOtherPage(User u) {
         Intent intent = new Intent(this, OtherProfileActivity.class);
         intent.putExtra("other_user", u);
-        startActivity(intent);
+        startActivityForResult(intent, 54321);
     }
 
     public void onClick(View v) {
@@ -179,5 +179,17 @@ public class SingleListingActivity extends Activity {
         tvSPrice.setText(format(getDefault(), "$%.2f", listing.getPrice()));
         owner.setText(listing.getOwnerName());
         desc.setText(listing.getDescription());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 54321 && resultCode == 12345) {
+            Intent otherSearch = new Intent();
+            otherSearch.putExtra("otherUser",listing.getOwnerID());
+            setResult(54321, otherSearch);
+            GlobalHelper.otherUser = listing.getOwnerID();
+            finish();
+        }
     }
 }
