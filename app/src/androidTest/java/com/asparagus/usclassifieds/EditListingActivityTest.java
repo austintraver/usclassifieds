@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -44,14 +45,22 @@ public class EditListingActivityTest {
     }
 
     @Test
-    public void valid_listing() {
+    public void valid_listing() throws Throwable {
         EditText title_edit_text = activity.findViewById(R.id.title_edit_text);
         title_edit_text.setText("Sample Title");
         TextView upload_text_view = activity.findViewById(R.id.upload_text_view);
         upload_text_view.setText("Sample Title");
         Button create_button = activity.findViewById(R.id.create_button);
-        boolean b = activity.checkRequiredFields();
-        Log.e(" RESULT VALID LISTING ", Boolean.toString(b) );
+
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.checkRequiredFields();
+
+            }
+
+        });
         assertTrue(create_button.isEnabled());
     }
 
