@@ -108,16 +108,19 @@ public class SignInActivity extends Activity {
     }
 
     public void updateUI(GoogleSignInAccount account) {
-        if (account == null || account.getEmail() == null || account.getId() == null) {
+        if (account == null) { //|| account.getEmail() == null || account.getId() == null
             startActivity(getIntent());
             return;
         }
         final Intent resultEmail = new Intent();
         if (!(account.getEmail().endsWith("@usc.edu"))) {
+            Log.e("SignInActivity", "didnt use a usc id");
             setResult(4567, resultEmail);
             finish();
             return;
         }
+        GlobalHelper.setEmail(account.getEmail());
+        GlobalHelper.setID(account.getId());
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
         Query query = databaseReference.child(account.getId());
         OnGetDataListener listener = new OnGetDataListener() {

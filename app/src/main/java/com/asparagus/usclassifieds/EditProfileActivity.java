@@ -3,6 +3,7 @@ package com.asparagus.usclassifieds;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -65,31 +66,34 @@ public class EditProfileActivity extends Activity {
         zip.addTextChangedListener(textWatcher);
 
         User user = GlobalHelper.user;
-        valid_email = GlobalHelper.isValidEmail(user.email);
+        valid_email = GlobalHelper.isValidEmail(GlobalHelper.getEmail());
 
         update.setEnabled(false);
-        first.setText(user.firstName);
-        last.setText(user.lastName);
-        phone.setText(user.phone);
-        streetNumber.setText(user.streetNumber);
-        streetName.setText(user.streetName);
-        city.setText(user.city);
-        state.setText(user.state);
-        zip.setText(user.zipCode);
-        desc.setText(user.description);
+        if(user != null) {
+            first.setText(user.firstName);
+            last.setText(user.lastName);
+            phone.setText(user.phone);
+            streetNumber.setText(user.streetNumber);
+            streetName.setText(user.streetName);
+            city.setText(user.city);
+            state.setText(user.state);
+            zip.setText(user.zipCode);
+            desc.setText(user.description);
+        }
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.update:
-                User user = GlobalHelper.user;
-                User updatedUser = new User(user.email, first.getText().toString(), last.getText().toString(),
-                                            phone.getText().toString(), user.userID, streetNumber.getText().toString(),
+
+                User updatedUser = new User(GlobalHelper.getEmail(), first.getText().toString(), last.getText().toString(),
+                                            phone.getText().toString(), GlobalHelper.getUserID(), streetNumber.getText().toString(),
                                             streetName.getText().toString(), city.getText().toString(),
                                             state.getText().toString(), zip.getText().toString(),
                                             desc.getText().toString()
                 );
-                if (user.friends != null) {
+                User user = GlobalHelper.getUser();
+                if (user != null && user.getFriends() != null) {
                     updatedUser.setFriends(user.friends);
                     updatedUser.setIncomingFriendRequests(user.incomingFriendRequests);
                     updatedUser.setOutgoingFriendRequests(user.outgoingFriendRequests);

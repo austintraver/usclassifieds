@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
     private static final int RC_START2 = 4;
     private static final int RC_STOP = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static FirebaseAuth mAuth;  //TODO
+    private static FirebaseAuth mAuth;
     private static FirebaseUser user;
     private static String emailError = "";
 
@@ -34,25 +34,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance(); //TODO
-
-        /*
-        File file = new File("./firebase_key.json");
-        try {
-            FileInputStream serviceAccount =
-                    new FileInputStream(file);
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://usclassifieds-c83d5.firebaseio.com")
-                    .build();
-
-            FirebaseApp.initializeApp(options);
-        } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        */
+        mAuth = FirebaseAuth.getInstance();
 
         System.out.println("onCreate() MAIN ");
 
@@ -133,7 +115,7 @@ public class MainActivity extends Activity {
             // TODO --> check if person is in DB, if not go to edit_profile activity and update DB, o.w. go to homepage
         }
         else {
-
+            System.out.println("Logged in and going to Homepage");
             if(GlobalHelper.getUser().getNotificationTokens().get(GlobalHelper.userToken) == NULL) {
                 GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, "true");
                 Map<String, Object> userValues = GlobalHelper.getUser().toMap();
@@ -151,7 +133,6 @@ public class MainActivity extends Activity {
             Intent homePageIntent = new Intent(this, HomeActivity.class);
             startActivityForResult(homePageIntent, RC_STOP);
         }
-
 
     }
 
