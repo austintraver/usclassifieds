@@ -20,6 +20,7 @@ public class GlobalHelper {
     static final String ALGOLIA_ID = "VTODAQDVW5";
     static final String ALGOLIA_ADMIN_KEY = "a06f0b0003ffe4d67f6fe6d89fa05f9a";
     public static User user;
+
     static DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     static Boolean userQueryDone = false;
     static ArrayList<Listing> searchedListings = new ArrayList<>();
@@ -27,15 +28,39 @@ public class GlobalHelper {
     static Comparator<Listing> priceAsc = new Comparator<Listing>() {
         @Override
         public int compare(Listing a, Listing b) {
-            return (int) (b.getPrice() - a.getPrice());
+            return (int) (a.getPrice() - b.getPrice());
         }
     };
     static Comparator<Listing> priceDesc = new Comparator<Listing>() {
         @Override
         public int compare(Listing a, Listing b) {
-            return (int) (a.getPrice() - b.getPrice());
+            return (int) (b.getPrice() - a.getPrice());
         }
     };
+
+    private static boolean debug = true;
+    public static void setDebug(boolean b){debug = b;}
+    public static boolean getDebug(){return debug;}
+
+    public static User getTestUser(){
+        return new User(
+                "tommytrojan@usc.edu",
+                "Tommy",
+                "Trojan",
+                "9999999999",
+                "999243817665695620666",
+                "123",
+                "Sesame Street",
+                "Los Angeles",
+                "CA",
+                "90007",
+                "An absolute unit");
+    }
+
+    public static void setTestUser(){
+        user = getTestUser();
+    }
+
     private static String TAG = GlobalHelper.class.getSimpleName();
     static Comparator<Listing> distComparator = new Comparator<Listing>() {
         @Override
@@ -48,8 +73,8 @@ public class GlobalHelper {
                 lon2 = Double.parseDouble(b.getLongitude());
                 userLatitude = Double.parseDouble(user.latitude);
                 userLongitude = Double.parseDouble(user.longitude);
-            } catch (NumberFormatException nfe) {
-                Log.d(TAG, format("NumberFormatException: %s", nfe.getMessage()));
+            } catch (Exception e) {
+                Log.d(TAG, format("Exception: %s", e.getMessage()));
                 lat1 = 0.0f;
                 lat2 = 0.0f;
                 lon1 = 0.0f;

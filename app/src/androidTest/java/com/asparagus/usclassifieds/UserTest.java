@@ -30,14 +30,15 @@ public class UserTest {
         // assume add friend works
         user1.addFriend(user2);
 
-        assertTrue(user1.getFriends().isEmpty());
-        assertTrue(user2.getFriends().isEmpty());
+        int user1_friends = user1.getFriends().size();
+        int user2_friends = user2.getFriends().size();
+        assertFalse(user1.getFriends().containsKey(user2.userID));
+        assertFalse(user2.getFriends().containsKey(user1.userID));
 
         user2.acceptFriendRequest(user1);
 
-        assertTrue(user1.getFriends().size() == 1);
-        assertTrue(user2.getFriends().size() == 1);
-
+        assertTrue(user1.getFriends().size() == user1_friends + 1);
+        assertTrue(user2.getFriends().size() == user2_friends + 1);
         assertTrue(user1.getFriends().containsKey(user2.userID));
         assertTrue(user2.getFriends().containsKey(user1.userID));
     }
@@ -47,24 +48,28 @@ public class UserTest {
         // assume add friend works
         user1.addFriend(user2);
 
-        assertTrue(user1.getFriends().isEmpty());
-        assertTrue(user2.getFriends().isEmpty());
+        int user1_friends = user1.getFriends().size();
+        int user2_friends = user2.getFriends().size();
+        assertFalse(user1.getFriends().containsKey(user2.userID));
+        assertFalse(user2.getFriends().containsKey(user1.userID));
 
         user2.rejectFriendRequest(user1);
 
-        assertTrue(user1.getFriends().isEmpty());
-        assertTrue(user2.getFriends().isEmpty());
+        assertTrue(user1.getFriends().size() == user1_friends);
+        assertTrue(user2.getFriends().size() == user2_friends);
+        assertFalse(user1.getFriends().containsKey(user2.userID));
+        assertFalse(user2.getFriends().containsKey(user1.userID));
     }
 
     @Test
     public void test_add_friend() {
-        assertTrue(user1.getOutgoingFriendRequests().isEmpty());
-        assertTrue(user2.getIncomingFriendRequests().isEmpty());
+        int user1_friends = user1.getOutgoingFriendRequests().size();
+        int user2_friends = user2.getIncomingFriendRequests().size();
 
         user1.addFriend(user2);
 
-        assertTrue(user1.getOutgoingFriendRequests().size() == 1);
-        assertTrue(user2.getIncomingFriendRequests().size() == 1);
+        assertTrue(user1.getOutgoingFriendRequests().size() == user1_friends + 1);
+        assertTrue(user2.getIncomingFriendRequests().size() == user2_friends + 1);
     }
 
     @Test
@@ -72,13 +77,15 @@ public class UserTest {
         user1.getFriends().put(user2.userID, "filler");
         user2.getFriends().put(user1.userID, "filler");
 
-        assertTrue(user1.getFriends().size() == 1);
-        assertTrue(user2.getFriends().size() == 1);
+        int user1_friends = user1.getFriends().size();
+        int user2_friends = user2.getFriends().size();
 
         user1.removeFriend(user2);
 
-        assertTrue(user1.getFriends().isEmpty());
-        assertTrue(user2.getFriends().isEmpty());
+        assertTrue(user1.getFriends().size() == user1_friends - 1);
+        assertTrue(user2.getFriends().size() == user2_friends - 1);
+        assertFalse(user1.getFriends().containsKey(user2.userID));
+        assertFalse(user2.getFriends().containsKey(user1.userID));
     }
 
     @Test
@@ -100,9 +107,9 @@ public class UserTest {
         assertTrue(map.containsKey("longitude"));
         assertTrue(map.get("description").equals("puppet 1"));
 
-        assertTrue(((Map<String, Object>)map.get("outgoingFriendRequests")).isEmpty());
-        assertTrue(((Map<String, Object>)map.get("incomingFriendRequests")).isEmpty());
-        assertTrue(((Map<String, Object>)map.get("friends")).isEmpty());
+        assertTrue(map.containsKey("incomingFriendRequests"));
+        assertTrue(map.containsKey("outgoingFriendRequests"));
+        assertTrue(map.containsKey("friends"));
         assertTrue(map.containsKey("notificationTokens"));
     }
 }

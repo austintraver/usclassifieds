@@ -63,6 +63,7 @@ public class GlobalHelperTest {
 
     @Test
     public void test_distance() {
-        Log.e("DISTANCE: ", Double.toString(GlobalHelper.distance(35.6544, 139.74477, 21.4225, 39.8261)));
+        assertTrue(GlobalHelper.distance(35.6544, 139.74477, 21.4225, 39.8261) == 9480.2);
+        assertTrue(GlobalHelper.distance(0, 0, 0, 0) == 0);
     }
 }

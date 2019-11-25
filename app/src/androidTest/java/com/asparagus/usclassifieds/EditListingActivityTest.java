@@ -1,5 +1,6 @@
 package com.asparagus.usclassifieds;
 
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -49,6 +50,8 @@ public class EditListingActivityTest {
         TextView upload_text_view = activity.findViewById(R.id.upload_text_view);
         upload_text_view.setText("Sample Title");
         Button create_button = activity.findViewById(R.id.create_button);
+        boolean b = activity.checkRequiredFields();
+        Log.e(" RESULT VALID LISTING ", Boolean.toString(b) );
         assertTrue(create_button.isEnabled());
     }
 

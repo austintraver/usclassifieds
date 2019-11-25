@@ -65,6 +65,13 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume()");
+        if(GlobalHelper.user == null && GlobalHelper.getDebug()){
+            Log.d(TAG, "Logging in for test user");
+            GlobalHelper.setTestUser();
+            mAuth.signInAnonymously();
+            Intent homePageIntent = new Intent(this, HomeActivity.class);
+            startActivityForResult(homePageIntent, RC_STOP);
+        }
         if (GlobalHelper.user == null) {
             System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignInActivity.class);
@@ -78,10 +85,11 @@ public class MainActivity extends Activity {
             FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.user.userID).setValue(userValues);
         }
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            System.out.println("Firebase person is not authenticated.");
+        if (user == null) {
+            Log.e(TAG, "Firebase person is not authenticated.");
         }
         else {
+            Log.e(TAG, "Signing in anon.");
             mAuth.signInAnonymously();
         }
 

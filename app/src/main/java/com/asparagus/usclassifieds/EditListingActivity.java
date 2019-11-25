@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.firebase.client.annotations.NotNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,7 +27,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask.TaskSnapshot;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -135,10 +135,11 @@ public class EditListingActivity extends Activity {
         }
     }
 
-    private void checkRequiredFields() {
+    public boolean checkRequiredFields() {
         String upload = upload_text_view.getText().toString().trim();
         String title = title_edit_text.getText().toString().trim();
         create_button.setEnabled(!upload.isEmpty() && !title.isEmpty());
+        return !upload.isEmpty() && !title.isEmpty();
     }
 
     private void uploadImage(

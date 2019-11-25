@@ -53,7 +53,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
     private final String TAG = HomeActivity.class.getSimpleName();
     private Spinner sortSpinner;
     private EditText search_bar;
-    private Comparator<Listing> comparator = GlobalHelper.priceDesc;
+    private Comparator<Listing> comparator = GlobalHelper.priceAsc;
     private Spinner filterSpinner;
     private Index index;
     private ArrayList<Listing> listings;
@@ -240,10 +240,10 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         String sortSelection = sortSpinner.getSelectedItem().toString();
         switch (sortSelection) {
             case "Price ↑":
-                comparator = GlobalHelper.priceAsc;
+                comparator = GlobalHelper.priceDesc;
                 break;
             case "Price ↓":
-                comparator = GlobalHelper.priceDesc;
+                comparator = GlobalHelper.priceAsc;
                 break;
             case "Distance":
                 comparator = GlobalHelper.distComparator;

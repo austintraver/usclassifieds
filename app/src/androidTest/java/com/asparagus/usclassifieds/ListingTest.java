@@ -14,7 +14,7 @@ public class ListingTest {
 
     @Before
     public void setUp() throws Exception {
-        listing = new Listing("seller", "seller@usc.edu", "seller seller", "table", 1, "big table with legs", "sref", "100", "200");
+        listing = new Listing("seller",  "seller seller", "seller@usc.edu", "table", 1, "big table with legs", "sref", "100", "200");
     }
 
     @After
@@ -27,9 +27,9 @@ public class ListingTest {
         Map<String, Object> map = listing.toMap();
 
         assertTrue(map.size() == 10);
-        assertTrue(map.get("title").equals("item"));
+        assertTrue(map.get("title").equals("table"));
         assertTrue(map.get("description").equals("big table with legs"));
-        assertTrue(map.get("price").equals(1));
+        assertTrue(map.get("price").equals(1.0));
         assertTrue(map.get("ownerID").equals("seller"));
         assertTrue(map.get("ownerEmail").equals("seller@usc.edu"));
         assertTrue(map.get("ownerName").equals("seller seller"));
