@@ -22,8 +22,6 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -35,20 +33,20 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class HomeActivityUsernameSearch {
+public class Blackbox_HomeActivitySortAsc {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void homeActivityUsernameSearch() {
+    public void homeActivitySortAsc() {
         ViewInteraction spinner = onView(
-                allOf(withId(R.id.spinner),
+                allOf(withId(R.id.sort_spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                8),
+                                9),
                         isDisplayed()));
         spinner.perform(click());
 
@@ -56,28 +54,28 @@ public class HomeActivityUsernameSearch {
                 .inAdapterView(childAtPosition(
                         withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
                         0))
-                .atPosition(0);
+                .atPosition(1);
         checkedTextView.perform(click());
 
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.search_bar),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText.perform(replaceText("cameron"), closeSoftKeyboard());
-
         ViewInteraction textView = onView(
-                allOf(withId(R.id.tvDescription), withText("Nice new, blue hydroflask"),
+                allOf(withId(R.id.detail_price), withText("$ 40000.99"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        textView.check(matches(withText("Nice new, blue hydroflask")));
+        textView.check(matches(withText("$ 40000.99")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.detail_price), withText("$ 24.99"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        0),
+                                2),
+                        isDisplayed()));
+        textView2.check(matches(withText("$ 24.99")));
     }
 
     private static Matcher<View> childAtPosition(

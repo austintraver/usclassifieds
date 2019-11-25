@@ -20,8 +20,6 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -30,62 +28,52 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CancelCreateListingTest {
+public class Blackbox_ListingsNavigationTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void cancelCreateListingTest() {
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.tvDescription), withText("Brand new truck from Elon Musk, driven in by Cameron!"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("Brand new truck from Elon Musk, driven in by Cameron!")));
-
+    public void listingsNavigationTest() {
         ViewInteraction imageButton = onView(
-                allOf(withId(R.id.create_listing),
+                allOf(withId(R.id.dashboard_button),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                5),
                         isDisplayed()));
         imageButton.perform(click());
 
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.title_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        editText.perform(replaceText("t"), closeSoftKeyboard());
-
         ViewInteraction button = onView(
-                allOf(withId(R.id.cancel_button), withText("Cancel"),
+                allOf(withId(R.id.my_listings_button), withText("Listings"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                7),
+                                2),
                         isDisplayed()));
         button.perform(click());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvDescription), withText("Brand new truck from Elon Musk, driven in by Cameron!"),
+        ViewInteraction spinner = onView(
+                allOf(withId(R.id.spinner),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        withId(android.R.id.content),
                                         0),
-                                1),
+                                8),
                         isDisplayed()));
-        textView2.check(matches(withText("Brand new truck from Elon Musk, driven in by Cameron!")));
+        spinner.perform(click());
+
+        ViewInteraction tableLayout = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.lvListing),
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
+                                        11)),
+                        0),
+                        isDisplayed()));
+        tableLayout.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

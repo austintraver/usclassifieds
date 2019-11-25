@@ -29,13 +29,13 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CreateListingInvalidTest {
+public class Blackbox_CreateListingTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void createListingInvalidTest() {
+    public void createListingTest() {
         ViewInteraction imageButton = onView(
                 allOf(withId(R.id.create_listing),
                         childAtPosition(
@@ -54,39 +54,89 @@ public class CreateListingInvalidTest {
                                         0),
                                 0),
                         isDisplayed()));
-        editText.perform(replaceText("ti"), closeSoftKeyboard());
+        editText.perform(replaceText("item"), closeSoftKeyboard());
 
         ViewInteraction editText2 = onView(
-                allOf(withId(R.id.title_edit_text), withText("ti"),
+                allOf(withId(R.id.price_edit_text),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                5),
                         isDisplayed()));
-        editText2.perform(click());
+        editText2.perform(replaceText("99"), closeSoftKeyboard());
 
         ViewInteraction editText3 = onView(
-                allOf(withId(R.id.title_edit_text), withText("ti"),
+                allOf(withId(R.id.description_edit_text),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                2),
                         isDisplayed()));
-        editText3.perform(replaceText("t"));
+        editText3.perform(replaceText(""), closeSoftKeyboard());
 
         ViewInteraction editText4 = onView(
-                allOf(withId(R.id.title_edit_text), withText("t"),
+                allOf(withId(R.id.description_edit_text),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                2),
                         isDisplayed()));
-        editText4.perform(closeSoftKeyboard());
+        editText4.perform(click());
+
+        ViewInteraction editText5 = onView(
+                allOf(withId(R.id.description_edit_text),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        editText5.perform(replaceText("description"), closeSoftKeyboard());
+
+        ViewInteraction editText6 = onView(
+                allOf(withId(R.id.description_edit_text), withText("description"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        editText6.check(matches(withText("description")));
+
+        ViewInteraction editText7 = onView(
+                allOf(withId(R.id.price_edit_text), withText("99"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText7.check(matches(withText("99")));
+
+        ViewInteraction editText8 = onView(
+                allOf(withId(R.id.title_edit_text), withText("item"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        editText8.check(matches(withText("item")));
 
         ViewInteraction button = onView(
+                allOf(withId(R.id.upload_photo_button), withText("Upload Photo"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                9),
+                        isDisplayed()));
+        button.perform(click());
+
+        ViewInteraction button2 = onView(
                 allOf(withId(R.id.create_button),
                         childAtPosition(
                                 childAtPosition(
@@ -94,7 +144,17 @@ public class CreateListingInvalidTest {
                                         0),
                                 10),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+        button2.check(matches(isDisplayed()));
+
+        ViewInteraction button3 = onView(
+                allOf(withId(R.id.create_button), withText("Create"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        button3.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

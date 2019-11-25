@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GlobalHelperTest {
+public class Whitebox_GlobalHelperTest {
 
     @Test
     public void test_distance_comparator() {

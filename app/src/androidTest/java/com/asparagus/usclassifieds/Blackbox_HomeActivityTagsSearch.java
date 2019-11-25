@@ -14,6 +14,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,24 +35,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SingleListingTest {
+public class Blackbox_HomeActivityTagsSearch {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void singleListingTest() throws InterruptedException {
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.search_bar),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText.perform(replaceText("cybertrk"), closeSoftKeyboard());
-
-
+    public void homeActivityTagsSearch() {
         ViewInteraction spinner = onView(
                 allOf(withId(R.id.spinner),
                         childAtPosition(
@@ -62,36 +52,99 @@ public class SingleListingTest {
                         isDisplayed()));
         spinner.perform(click());
 
-
-
         DataInteraction checkedTextView = onData(anything())
                 .inAdapterView(childAtPosition(
                         withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
                         0))
-                .atPosition(1);
+                .atPosition(2);
         checkedTextView.perform(click());
-        Thread.sleep(10000);
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.bTitle), withText("cybertruck"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.TableLayout")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        button.perform(click());
-        Thread.sleep(10000);
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.detail_title), withText("cybertruck"),
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.search_bar),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                6),
                         isDisplayed()));
-        textView.check(matches(withText("cybertruck")));
+        editText.perform(replaceText("longboard"), closeSoftKeyboard());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView.check(matches(withText("Bamboo longboard with red wheels")));
+
+        ViewInteraction spinner2 = onView(
+                allOf(withId(R.id.spinner),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        spinner2.perform(click());
+
+        DataInteraction checkedTextView2 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        checkedTextView2.perform(click());
+
+        ViewInteraction editText2 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText2.perform(click());
+
+        ViewInteraction editText3 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText3.perform(click());
+
+        ViewInteraction editText4 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText4.perform(replaceText("skatb"));
+
+        ViewInteraction editText5 = onView(
+                allOf(withId(R.id.search_bar), withText("skatb"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText5.perform(closeSoftKeyboard());
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(withText("Bamboo longboard with red wheels")));
     }
 
     private static Matcher<View> childAtPosition(

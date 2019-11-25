@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ListingTest {
+public class Whitebox_ListingTest {
 
     private Listing listing;
 

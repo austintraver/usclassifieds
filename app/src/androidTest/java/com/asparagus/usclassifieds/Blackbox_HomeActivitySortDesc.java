@@ -33,13 +33,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class HomeActivityDistance {
+public class Blackbox_HomeActivitySortDesc {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void homeActivityDistance() {
+    public void homeActivitySortDesc() {
         ViewInteraction spinner = onView(
                 allOf(withId(R.id.sort_spinner),
                         childAtPosition(
@@ -54,28 +54,28 @@ public class HomeActivityDistance {
                 .inAdapterView(childAtPosition(
                         withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
                         0))
-                .atPosition(2);
+                .atPosition(0);
         checkedTextView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.tvDescription), withText("Nice new, blue hydroflask"),
+                allOf(withId(R.id.detail_price), withText("$ 24.99"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        textView.check(matches(withText("Nice new, blue hydroflask")));
+        textView.check(matches(withText("$ 24.99")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvDescription), withText("cat"),
+                allOf(withId(R.id.detail_price), withText("$ 40000.99"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        textView2.check(matches(withText("cat")));
+        textView2.check(matches(withText("$ 40000.99")));
     }
 
     private static Matcher<View> childAtPosition(

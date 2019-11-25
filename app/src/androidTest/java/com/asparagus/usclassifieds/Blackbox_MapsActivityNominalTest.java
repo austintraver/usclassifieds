@@ -13,7 +13,6 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,56 +23,53 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ListingsNavigationTest {
+public class Blackbox_MapsActivityNominalTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void listingsNavigationTest() {
-        ViewInteraction imageButton = onView(
-                allOf(withId(R.id.dashboard_button),
+    public void mapsActivityNominalTest() throws Throwable {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                GlobalHelper.setDebug(true);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.map_view), withText("Map View"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                1),
                         isDisplayed()));
-        imageButton.perform(click());
+        textView.perform(click());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.my_listings_button), withText("Listings"),
+        ViewInteraction frameLayout = onView(
+                allOf(withId(R.id.map),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                0),
                         isDisplayed()));
-        button.perform(click());
-
-        ViewInteraction spinner = onView(
-                allOf(withId(R.id.spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                8),
-                        isDisplayed()));
-        spinner.perform(click());
-
-        ViewInteraction tableLayout = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.lvListing),
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
-                                        11)),
-                        0),
-                        isDisplayed()));
-        tableLayout.check(matches(isDisplayed()));
+        frameLayout.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

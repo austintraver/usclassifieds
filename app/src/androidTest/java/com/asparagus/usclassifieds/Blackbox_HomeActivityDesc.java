@@ -33,13 +33,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class HomeActivitySortDesc {
+public class Blackbox_HomeActivityDesc {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void homeActivitySortDesc() {
+    public void homeActivityDesc() {
         ViewInteraction spinner = onView(
                 allOf(withId(R.id.sort_spinner),
                         childAtPosition(
@@ -58,24 +58,24 @@ public class HomeActivitySortDesc {
         checkedTextView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.detail_price), withText("$ 24.99"),
+                allOf(withId(R.id.detail_price), withText("$ 10.00"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
                                 2),
                         isDisplayed()));
-        textView.check(matches(withText("$ 24.99")));
+        textView.check(matches(withText("$ 10.00")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.detail_price), withText("$ 40000.99"),
+                allOf(withId(R.id.detail_price), withText("$ 40000.00"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
                                 2),
                         isDisplayed()));
-        textView2.check(matches(withText("$ 40000.99")));
+        textView2.check(matches(withText("$ 40000.00")));
     }
 
     private static Matcher<View> childAtPosition(

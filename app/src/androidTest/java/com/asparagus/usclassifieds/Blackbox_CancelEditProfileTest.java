@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CancelEditProfileTest {
+public class Blackbox_CancelEditProfileTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -116,7 +116,6 @@ public class CancelEditProfileTest {
                                 10),
                         isDisplayed()));
 
-        textView.check(matches(withText("An absolute unit")));
     }
 
     private static Matcher<View> childAtPosition(

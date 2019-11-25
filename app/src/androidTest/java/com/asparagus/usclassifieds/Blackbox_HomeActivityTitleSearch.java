@@ -35,13 +35,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class HomeActivityTagsSearch {
+public class Blackbox_HomeActivityTitleSearch {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void homeActivityTagsSearch() {
+    public void homeActivityTitleSearch() {
         ViewInteraction spinner = onView(
                 allOf(withId(R.id.spinner),
                         childAtPosition(
@@ -56,7 +56,7 @@ public class HomeActivityTagsSearch {
                 .inAdapterView(childAtPosition(
                         withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
                         0))
-                .atPosition(2);
+                .atPosition(1);
         checkedTextView.perform(click());
 
         ViewInteraction editText = onView(
@@ -67,84 +67,17 @@ public class HomeActivityTagsSearch {
                                         0),
                                 6),
                         isDisplayed()));
-        editText.perform(replaceText("longboard"), closeSoftKeyboard());
+        editText.perform(replaceText("hydroflask"), closeSoftKeyboard());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
+                allOf(withId(R.id.tvDescription), withText("Nice new, blue hydroflask"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
                                         0),
                                 1),
                         isDisplayed()));
-        textView.check(matches(withText("Bamboo longboard with red wheels")));
-
-        ViewInteraction spinner2 = onView(
-                allOf(withId(R.id.spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                8),
-                        isDisplayed()));
-        spinner2.perform(click());
-
-        DataInteraction checkedTextView2 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
-        checkedTextView2.perform(click());
-
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.search_bar), withText("longboard"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText2.perform(click());
-
-        ViewInteraction editText3 = onView(
-                allOf(withId(R.id.search_bar), withText("longboard"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText3.perform(click());
-
-        ViewInteraction editText4 = onView(
-                allOf(withId(R.id.search_bar), withText("longboard"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText4.perform(replaceText("skatb"));
-
-        ViewInteraction editText5 = onView(
-                allOf(withId(R.id.search_bar), withText("skatb"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        editText5.perform(closeSoftKeyboard());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView2.check(matches(withText("Bamboo longboard with red wheels")));
+        textView.check(matches(withText("Nice new, blue hydroflask")));
     }
 
     private static Matcher<View> childAtPosition(

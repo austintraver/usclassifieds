@@ -12,7 +12,7 @@ import org.junit.Test;
 import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.junit.Assert.*;
 
-public class EditProfileActivityTest {
+public class Whitebox_EditProfileActivityTest {
 
     private EditProfileActivity activity;
 

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class UserTest {
+public class Whitebox_UserTest {
 
     public User user1;
     public User user2;
