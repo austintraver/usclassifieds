@@ -25,6 +25,37 @@ public class GlobalHelper {
     static Boolean userQueryDone = false;
     static ArrayList<Listing> searchedListings = new ArrayList<>();
     static String userToken;
+    private static String email = "";
+    private static String userID = "";
+
+
+    public static User getUser() {
+        return user;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static String getUserID() {
+        return userID;
+    }
+
+    public static void setUserToken(String token) { userToken = token; }
+
+
+    public static void setEmail(String newEmail) {
+        email = newEmail;
+        System.out.println("Email set to: " + email);
+        return;
+    }
+
+    public static void setID(String id) {
+        userID = id;
+        System.out.println("UserID set to: " + userID);
+        return;
+    }
+
     static Comparator<Listing> priceAsc = new Comparator<Listing>() {
         @Override
         public int compare(Listing a, Listing b) {
@@ -38,7 +69,7 @@ public class GlobalHelper {
         }
     };
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static void setDebug(boolean b){debug = b;}
     public static boolean getDebug(){return debug;}
 
