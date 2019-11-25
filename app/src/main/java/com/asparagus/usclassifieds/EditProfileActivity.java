@@ -65,11 +65,8 @@ public class EditProfileActivity extends Activity {
         zip.addTextChangedListener(textWatcher);
 
         User user = GlobalHelper.user;
-        if (user.email != null) {
-            if (!(user.email.endsWith("@usc.edu"))) {
-                valid_email = false;
-            }
-        }
+        valid_email = GlobalHelper.isValidEmail(user.email);
+
         update.setEnabled(false);
         first.setText(user.firstName);
         last.setText(user.lastName);
