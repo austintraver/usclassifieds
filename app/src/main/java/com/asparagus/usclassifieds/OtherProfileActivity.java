@@ -113,8 +113,10 @@ public class OtherProfileActivity extends Activity {
     }
 
     public void onClick(View v) {
+        System.out.println("clicked");
         switch (v.getId()) {
             case R.id.friend_button:
+                System.out.println("user id: " + user.userID);
                 final Map<String, String> reqType = new HashMap<String, String>() {{
                     put(otherUser.userID, "request");
                 }};
@@ -122,7 +124,9 @@ public class OtherProfileActivity extends Activity {
                     put(user.userID, reqType);
                 }};
                 // If not friends
-                if (Objects.equals(user.friends.get(otherUser.userID), NULL)) {
+                System.out.println("user status: " + user.friends.get(otherUser.userID));
+                if (Objects.equals(user.friends.get(otherUser.userID), null)) {
+                    System.out.println("aren't friends: " + user.userID);
                     FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(result);
                 }
                 Map<String, Object> userValues = user.toMap();
