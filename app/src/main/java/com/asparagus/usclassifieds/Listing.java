@@ -14,13 +14,14 @@ public class Listing implements Serializable {
     public String title, description, ownerID, ownerEmail, ownerName, storageReference, latitude, longitude;
     public double price;
     public boolean sold;
+    public String uuid;
 
     // Default constructor is required for Firebase instantiation
     public Listing() {}
 
     Listing(
             String ownerID, String ownerName, String ownerEmail, String title, double price, String description,
-            String storageReference, String lat, String lng
+            String storageReference, String lat, String lng, String uuid
     ) {
         this.ownerID = ownerID;
         this.ownerName = ownerName;
@@ -32,10 +33,12 @@ public class Listing implements Serializable {
         this.storageReference = storageReference;
         this.latitude = lat;
         this.longitude = lng;
+        this.uuid = uuid;
     }
 
     Listing(JSONObject object) {
         try {
+            System.out.println(object);
             title = object.getString("title");
             description = object.getString("description");
             price = object.getDouble("price");
@@ -46,6 +49,7 @@ public class Listing implements Serializable {
             ownerName = object.getString("ownerName");
             sold = object.getBoolean("sold");
             storageReference = object.getString("storageReference");
+            uuid = object.getString("uuid");
         } catch (JSONException je) {
             je.printStackTrace();
         }
@@ -63,8 +67,11 @@ public class Listing implements Serializable {
             put("storageReference", storageReference);
             put("latitude", latitude);
             put("longitude", longitude);
+            put("uuid", uuid);
         }};
     }
+
+    String getUUID() { return this.uuid; }
 
     String getStorageReference() {
         return this.storageReference;

@@ -62,9 +62,10 @@ public class SingleListingActivity extends Activity {
                 };
                 /* Set the sold button to visible/clickable */
                 sold_button.setVisibility(View.VISIBLE);
-                sold_button.setOnClickListener(listener);
+                //sold_button.setOnClickListener(listener);
+                Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
+
             }
-            Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
         }
         populatePageData();
     }
@@ -119,8 +120,21 @@ public class SingleListingActivity extends Activity {
                     startActivity(new Intent(this, ProfileActivity.class));
                 }
                 break;
+
             case R.id.sold_button:
+                FirebaseDatabase.getInstance().getReference().child("listings").child(listing.getOwnerID()).child(listing.getUUID()).child("sold").setValue(true);
+                Integer currentSold = Integer.parseInt(GlobalHelper.getUser().sold);
+                currentSold = currentSold + 1;
+                String tempString = currentSold.toString();
+                FirebaseDatabase.getInstance().getReference().child("users").child(GlobalHelper.getUserID()).child("sold").setValue(tempString);
+                GlobalHelper.getUser().setSold(tempString);
+
+                Intent i = new Intent();
+                i.putExtra("changedListing",listing);
+                setResult(4444, i);
+                finish();
                 break;
+
             default:
                 Log.d(TAG, format("Button ID: %s", v.getId()));
         }

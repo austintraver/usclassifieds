@@ -60,37 +60,6 @@ public class MainActivity extends Activity {
                     }
                 });
 
-        /*
-        GlobalHelper.insert();
-        System.out.println("Inserted successfully");
-        Point tempPoint = new Point(new Position(34,-118));
-        Query query = FirebaseDatabase.getInstance().getReference("users").child(userID);
-        query.addListenerForSingleValueEvent(valueEventListener);
-
-        GlobalHelper.addNewUser("jltanner@usc.edu","John","Tanner","9498128890","12345678");
-        System.out.println("users/123456789: " + GlobalHelper.userExists("123456789"));
-        */
-
-        /*
-        i needed to pass the context this into the person object when i was testing a different
-        method, so right now we don't *need* the context variable. however, if the async extended
-        class ends up not working, we may need to keep it here, so i'm leaving it for
-        safety reasons right now
-
-        these lines of code handle geo-encoding. uncomment them to test what's returned from
-        different addresses or users
-        */
-
-        /*
-        String address = "1279 West 37th Place, Los Angeles, CA, 90007";
-        User u = new User("cpyle@usc.edu", "Charlie", "Pyle", "1234567890", this, address, "1234312");
-        */
-
-        /*
-        below is the async class that handles HTTP requests
-        new GetCoordinates().execute(address);
-        */
-
     }
 
     @Override
@@ -123,7 +92,7 @@ public class MainActivity extends Activity {
             }
 
             user = mAuth.getCurrentUser();
-            if (user != null) {
+            if (user == null) {
                 System.out.println("Firebase person is not authenticated.");
             } else {
                 mAuth.signInAnonymously();
