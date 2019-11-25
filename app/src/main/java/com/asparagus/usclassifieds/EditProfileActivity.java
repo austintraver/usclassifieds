@@ -92,6 +92,7 @@ public class EditProfileActivity extends Activity {
                                             state.getText().toString(), zip.getText().toString(),
                                             desc.getText().toString()
                 );
+
                 User user = GlobalHelper.getUser();
                 if (user != null && user.getFriends() != null) {
                     updatedUser.setFriends(user.friends);
@@ -100,6 +101,7 @@ public class EditProfileActivity extends Activity {
                     updatedUser.setNotificationTokens(user.notificationTokens);
                 }
                 GlobalHelper.setUser(updatedUser);
+
                 setResult(Activity.RESULT_OK, new Intent());
                 finish();
                 break;
@@ -110,10 +112,7 @@ public class EditProfileActivity extends Activity {
         }
     }
 
-    private void checkRequiredFields() {
-        if (!(valid_email)) {
-            return;
-        }
+    public boolean hasRequiredFields() {
         String firstName, lastName, streetNumber, streetName, cityName, stateName, zipCode;
         firstName = first.getText().toString().trim();
         lastName = last.getText().toString().trim();
@@ -124,7 +123,23 @@ public class EditProfileActivity extends Activity {
         zipCode = zip.getText().toString().trim();
 
         if (firstName.isEmpty() || lastName.isEmpty() || streetNumber.isEmpty() || streetName.isEmpty() ||
-            cityName.isEmpty() || stateName.isEmpty() || zipCode.isEmpty()) {
+                cityName.isEmpty() || stateName.isEmpty() || zipCode.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public void checkRequiredFields() {
+        if (!(valid_email)) {
+            return;
+        }
+        String streetNumber, streetName, cityName, stateName;
+        streetNumber = this.streetNumber.getText().toString().trim();
+        streetName = this.streetName.getText().toString().trim();
+        cityName = city.getText().toString().trim();
+        stateName = state.getText().toString().trim();
+
+        if (!hasRequiredFields()) {
             update.setEnabled(false);
             return;
         }
