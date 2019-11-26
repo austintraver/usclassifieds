@@ -58,8 +58,6 @@ public class User implements Serializable {
         }};
         this.bought = "0";
         this.sold = "0";
-        GlobalHelper.setUser(this);
-        System.out.println("user1 set to: " + GlobalHelper.getUser().latitude + " " + GlobalHelper.getUser().longitude);
         new GetCoordinates().execute(getAddress());
     }
 

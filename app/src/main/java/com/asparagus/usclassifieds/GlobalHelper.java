@@ -67,7 +67,7 @@ public class GlobalHelper {
         }
     };
 
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static void setDebug(boolean b){debug = b;}
     public static boolean getDebug(){return debug;}
 
@@ -136,11 +136,13 @@ public class GlobalHelper {
     }
 
     static void setUser(User newUser) {
-        if (newUser == null || newUser.userID == null) {
+        if (newUser == null || newUser.userID == null || GlobalHelper.getDebug()) {
             return;
         }
         user = newUser;
+        System.out.println("user is now: " + user);
         Map<String, Object> userValues = user.toMap();
+        System.out.println("userMap is now: " + userValues);
         FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
     }
 
