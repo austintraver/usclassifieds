@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -14,68 +13,88 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class HomeActivitySortDesc {
+public class Blackbox_CreateListingInvalidTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void homeActivitySortDesc() {
-        ViewInteraction spinner = onView(
-                allOf(withId(R.id.sort_spinner),
+    public void createListingInvalidTest() {
+        ViewInteraction imageButton = onView(
+                allOf(withId(R.id.create_listing),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                9),
+                                3),
                         isDisplayed()));
-        spinner.perform(click());
+        imageButton.perform(click());
 
-        DataInteraction checkedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        checkedTextView.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.detail_price), withText("$ 24.99"),
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.title_edit_text),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        withId(android.R.id.content),
                                         0),
-                                2),
+                                0),
                         isDisplayed()));
-        textView.check(matches(withText("$ 24.99")));
+        editText.perform(replaceText("ti"), closeSoftKeyboard());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.detail_price), withText("$ 40000.99"),
+        ViewInteraction editText2 = onView(
+                allOf(withId(R.id.title_edit_text), withText("ti"),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        withId(android.R.id.content),
                                         0),
-                                2),
+                                0),
                         isDisplayed()));
-        textView2.check(matches(withText("$ 40000.99")));
+        editText2.perform(click());
+
+        ViewInteraction editText3 = onView(
+                allOf(withId(R.id.title_edit_text), withText("ti"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        editText3.perform(replaceText("t"));
+
+        ViewInteraction editText4 = onView(
+                allOf(withId(R.id.title_edit_text), withText("t"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        editText4.perform(closeSoftKeyboard());
+
+        ViewInteraction button = onView(
+                allOf(withId(R.id.create_button),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                10),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

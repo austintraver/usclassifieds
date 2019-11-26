@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -13,148 +14,137 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CreateListingTest {
+public class Blackbox_HomeActivityTagsSearch {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void createListingTest() {
-        ViewInteraction imageButton = onView(
-                allOf(withId(R.id.create_listing),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        imageButton.perform(click());
-
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.title_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        editText.perform(replaceText("item"), closeSoftKeyboard());
-
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.price_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        editText2.perform(replaceText("99"), closeSoftKeyboard());
-
-        ViewInteraction editText3 = onView(
-                allOf(withId(R.id.description_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        editText3.perform(replaceText(""), closeSoftKeyboard());
-
-        ViewInteraction editText4 = onView(
-                allOf(withId(R.id.description_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        editText4.perform(click());
-
-        ViewInteraction editText5 = onView(
-                allOf(withId(R.id.description_edit_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        editText5.perform(replaceText("description"), closeSoftKeyboard());
-
-        ViewInteraction editText6 = onView(
-                allOf(withId(R.id.description_edit_text), withText("description"),
+    public void homeActivityTagsSearch() {
+        ViewInteraction spinner = onView(
+                allOf(withId(R.id.spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 8),
                         isDisplayed()));
-        editText6.check(matches(withText("description")));
+        spinner.perform(click());
 
-        ViewInteraction editText7 = onView(
-                allOf(withId(R.id.price_edit_text), withText("99"),
+        DataInteraction checkedTextView = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(2);
+        checkedTextView.perform(click());
+
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.search_bar),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 6),
                         isDisplayed()));
-        editText7.check(matches(withText("99")));
+        editText.perform(replaceText("longboard"), closeSoftKeyboard());
 
-        ViewInteraction editText8 = onView(
-                allOf(withId(R.id.title_edit_text), withText("item"),
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView.check(matches(withText("Bamboo longboard with red wheels")));
+
+        ViewInteraction spinner2 = onView(
+                allOf(withId(R.id.spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                8),
                         isDisplayed()));
-        editText8.check(matches(withText("item")));
+        spinner2.perform(click());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.upload_photo_button), withText("Upload Photo"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                9),
-                        isDisplayed()));
-        button.perform(click());
+        DataInteraction checkedTextView2 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        checkedTextView2.perform(click());
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.create_button),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                10),
-                        isDisplayed()));
-        button2.check(matches(isDisplayed()));
-
-        ViewInteraction button3 = onView(
-                allOf(withId(R.id.create_button), withText("Create"),
+        ViewInteraction editText2 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 6),
                         isDisplayed()));
-        button3.perform(click());
+        editText2.perform(click());
+
+        ViewInteraction editText3 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText3.perform(click());
+
+        ViewInteraction editText4 = onView(
+                allOf(withId(R.id.search_bar), withText("longboard"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText4.perform(replaceText("skatb"));
+
+        ViewInteraction editText5 = onView(
+                allOf(withId(R.id.search_bar), withText("skatb"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        editText5.perform(closeSoftKeyboard());
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.tvDescription), withText("Bamboo longboard with red wheels"),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.widget.TableLayout.class),
+                                        0),
+                                1),
+                        isDisplayed()));
+        textView2.check(matches(withText("Bamboo longboard with red wheels")));
     }
 
     private static Matcher<View> childAtPosition(

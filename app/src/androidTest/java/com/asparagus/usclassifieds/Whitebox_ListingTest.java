@@ -8,13 +8,13 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ListingTest {
+public class Whitebox_ListingTest {
 
     private Listing listing;
 
     @Before
     public void setUp() throws Exception {
-        listing = new Listing("seller",  "seller seller", "seller@usc.edu", "table", 1, "big table with legs", "sref", "100", "200");
+        listing = new Listing("seller",  "seller seller", "seller@usc.edu", "table", 1, "big table with legs", "sref", "100", "200", "1111111111111");
     }
 
     @After
@@ -26,7 +26,7 @@ public class ListingTest {
     public void test_to_map() {
         Map<String, Object> map = listing.toMap();
 
-        assertTrue(map.size() == 10);
+        assertTrue(map.size() == 11);
         assertTrue(map.get("title").equals("table"));
         assertTrue(map.get("description").equals("big table with legs"));
         assertTrue(map.get("price").equals(1.0));

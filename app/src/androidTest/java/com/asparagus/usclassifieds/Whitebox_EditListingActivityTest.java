@@ -16,7 +16,7 @@ import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.r
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class EditListingActivityTest {
+public class Whitebox_EditListingActivityTest {
 
     private EditListingActivity activity;
 
