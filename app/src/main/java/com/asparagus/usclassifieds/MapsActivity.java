@@ -13,6 +13,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import static java.lang.String.format;
 
 
@@ -24,6 +26,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     private LatLng defaultLatLng = new LatLng(34.021697,-118.286704);
+    private ArrayList<Listing> listings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +36,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         try {
-            System.out.println("LatLng Before: " + user.latitude + ", " + user.longitude);
+            listings = (ArrayList<Listing>) getIntent().getSerializableExtra("listingArray");
             double latitude = Double.parseDouble(user.latitude);
             double longitude = Double.parseDouble(user.longitude);
             defaultLatLng = new LatLng(latitude, longitude);
-            System.out.println("LatLng set: " + defaultLatLng + " - " + latitude + ", " + longitude);
 
         } catch (NumberFormatException nfe) {
             Log.d(TAG, format("Number Format Exception: %s", nfe.getLocalizedMessage()));
@@ -75,7 +77,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mMap == null) {
             return;
         }
-        System.out.println("LatLng used: " + defaultLatLng);
         String title = String.format("%s %s", user.firstName, user.lastName);
         mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(title));
         /* TODO
@@ -83,6 +84,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
          *   For each listing, pull their latitude and longitude
          *   Add a marker for each listing
          *   */
+        for (Listing l : listings) {
+            double lat = Double.parseDouble(l.getLatitude());
+            double lng = Double.parseDouble(l.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title(l.title));
+        }
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
     }
