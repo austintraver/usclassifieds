@@ -127,7 +127,9 @@ public class SignInActivity extends Activity {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    GlobalHelper.setUser(dataSnapshot.getValue(User.class));
+                    User u = dataSnapshot.getValue(User.class);
+//                    User newU = new User(u);
+                    GlobalHelper.setUser(u);
                     GlobalHelper.userQueryDone = true;
                 }
                 else {

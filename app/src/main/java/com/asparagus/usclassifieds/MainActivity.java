@@ -107,7 +107,6 @@ public class MainActivity extends Activity {
             Intent homePageIntent = new Intent(this, HomeActivity.class);
             startActivityForResult(homePageIntent, RC_STOP);
         }
-
     }
 
     @Override

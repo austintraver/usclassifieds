@@ -33,9 +33,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         try {
+            System.out.println("LatLng Before: " + user.latitude + ", " + user.longitude);
             double latitude = Double.parseDouble(user.latitude);
             double longitude = Double.parseDouble(user.longitude);
             defaultLatLng = new LatLng(latitude, longitude);
+            System.out.println("LatLng set: " + defaultLatLng + " - " + latitude + ", " + longitude);
+
         } catch (NumberFormatException nfe) {
             Log.d(TAG, format("Number Format Exception: %s", nfe.getLocalizedMessage()));
             // Default coordinates are for Downtown Los Angeles
@@ -72,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mMap == null) {
             return;
         }
+        System.out.println("LatLng used: " + defaultLatLng);
         String title = String.format("%s %s", user.firstName, user.lastName);
         mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(title));
         /* TODO

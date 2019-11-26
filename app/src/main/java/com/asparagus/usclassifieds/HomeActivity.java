@@ -113,8 +113,11 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 fillArray(selection);
                 break;
             case R.id.map_view:
-                Intent mapIntent = new Intent(this, MapsActivity.class);
-                startActivity(mapIntent);
+                if(listings != null && listings.size() != 0) {
+                    Intent mapIntent = new Intent(this, MapsActivity.class);
+                    mapIntent.putExtra("listingArray", listings);
+                    startActivity(mapIntent);
+                }
                 break;
             case R.id.list_view:
                 break;

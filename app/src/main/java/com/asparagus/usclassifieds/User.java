@@ -27,6 +27,11 @@ public class User implements Serializable {
     // Required for calls to Firebase
     public User() {}
 
+    public User( User other) {
+        User temp = new User(other.email, other.firstName, other.lastName, other.phone, other.userID, other.streetNumber, other.streetName, other.city, other.state, other.zipCode, other.description);
+
+    }
+
     User(
             String email, String firstName, String lastName, String phone, final String userID, String streetNum,
             String streetName, String city, String state, String zip, String description
@@ -53,6 +58,8 @@ public class User implements Serializable {
         }};
         this.bought = "0";
         this.sold = "0";
+        GlobalHelper.setUser(this);
+        System.out.println("user1 set to: " + GlobalHelper.getUser().latitude + " " + GlobalHelper.getUser().longitude);
         new GetCoordinates().execute(getAddress());
     }
 
@@ -192,7 +199,7 @@ public class User implements Serializable {
         protected String doInBackground(String... strings) {
             try {
                 String address = URLEncoder.encode(strings[0], "UTF-8");
-                String key = "&key=AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
+                String key = "AIzaSyCfVnn-khp9z8ao5Sb2uESYaqmRuo2PhQ4";
                 HttpDataHandler http = new HttpDataHandler();
                 String url = "https://maps.googleapis" + ".com/maps/api/geocode/json";
                 String request = format("%s?address=%s&key=%s", url, address, key);
@@ -207,13 +214,16 @@ public class User implements Serializable {
         protected void onPostExecute(String s) {
             try {
                 User user = GlobalHelper.user;
+                System.out.println("user2 set to: " + GlobalHelper.getUser().latitude + " " + GlobalHelper.getUser().longitude);
                 JSONObject jsonObject = new JSONObject(s);
+                System.out.println("result: " + jsonObject);
                 String latitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                                                                          .getJSONObject("location").get("lat")
                                                                          .toString();
                 String longitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                                                                           .getJSONObject("location").get("lng")
                                                                           .toString();
+                System.out.println("Users latitude is :" + latitude + ", " + longitude);
                 user.latitude = latitude;
                 user.longitude = longitude;
                 GlobalHelper.setUser(user);

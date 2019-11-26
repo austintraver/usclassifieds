@@ -29,10 +29,7 @@ public class GlobalHelper {
     private static String email = "";
     private static String userID = "";
 
-
-    public static User getUser() {
-        return user;
-    }
+    public static User getUser() { return user; }
 
     public static String getEmail() {
         return email;
