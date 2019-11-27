@@ -153,7 +153,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
 
         listings = new ArrayList<Listing>();
         Client client = new Client(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
-        index = client.getIndex("listings");
+        index = client.getIndex("item_listings");
 
         // Define searchable attributes to restrict in search queries
         try {
@@ -180,7 +180,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             String other = GlobalHelper.otherUser;
             GlobalHelper.otherUser = "";
 
-            Query q = FirebaseDatabase.getInstance().getReference("listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
             getListings(q);
         }
     }
@@ -227,7 +227,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             else if (resultCode == 25) {
 //                fillArray("thisUser");
 //                populateListings();
-                Query q = FirebaseDatabase.getInstance().getReference("listings").child(GlobalHelper.getUserID());
+                Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID());
                 getListings(q);
             }
 
@@ -249,7 +249,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             Intent get = getIntent();
             String other = get.getStringExtra("otherUser");
 
-            Query q = FirebaseDatabase.getInstance().getReference("listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
             getListings(q);
         }
     }

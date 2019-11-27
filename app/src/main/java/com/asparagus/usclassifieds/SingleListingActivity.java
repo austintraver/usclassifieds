@@ -122,7 +122,7 @@ public class SingleListingActivity extends Activity {
                 break;
 
             case R.id.sold_button:
-                FirebaseDatabase.getInstance().getReference().child("listings").child(listing.getOwnerID()).child(listing.getUUID()).child("sold").setValue(true);
+                FirebaseDatabase.getInstance().getReference().child("item_listings").child(listing.getOwnerID()).child(listing.getUUID()).child("sold").setValue(true);
                 Integer currentSold = Integer.parseInt(GlobalHelper.getUser().sold);
                 currentSold = currentSold + 1;
                 String tempString = currentSold.toString();
