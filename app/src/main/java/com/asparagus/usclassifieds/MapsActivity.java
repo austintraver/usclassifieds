@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -78,7 +79,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         String title = String.format("%s %s", user.firstName, user.lastName);
-        mMap.addMarker(new MarkerOptions().position(defaultLatLng).title(title));
+        mMap.addMarker(new MarkerOptions()
+                .position(defaultLatLng).title(title)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        );
         /* TODO
          *   Collect all of the listings in the current search results
          *   For each listing, pull their latitude and longitude
