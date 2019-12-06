@@ -81,9 +81,16 @@ public class ProfileActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
-            Intent signOut = new Intent();
-            setResult(Activity.RESULT_CANCELED);
-            finish();
+//            Intent signOut = new Intent();
+//            setResult(Activity.RESULT_CANCELED);
+//            finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }
