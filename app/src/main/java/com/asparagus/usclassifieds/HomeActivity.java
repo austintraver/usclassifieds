@@ -3,6 +3,7 @@ package com.asparagus.usclassifieds;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -180,7 +181,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             String other = GlobalHelper.otherUser;
             GlobalHelper.otherUser = "";
 
-            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
             getListings(q);
         }
     }
@@ -227,7 +228,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             else if (resultCode == 25) {
 //                fillArray("thisUser");
 //                populateListings();
-                Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID());
+                Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID()).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
                 getListings(q);
             }
 
@@ -249,7 +250,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             Intent get = getIntent();
             String other = get.getStringExtra("otherUser");
 
-            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
             getListings(q);
         }
     }
@@ -302,15 +303,16 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         Log.d(TAG, format("Getting search attribute for %s\n", selection));
         if (selection.equals("Username")) {
             index.searchAsync(new com.algolia.search.saas.Query(select)
-                                      .setRestrictSearchableAttributes("ownerName", "ownerEmail"), completionHandler);
-        }
-        else if (selection.equals("Title")) {
-            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("title"),
-                              completionHandler
+                    .setRestrictSearchableAttributes("ownerName", "ownerEmail")
+                    .setLength(GlobalHelper.QUERY_RESULTS_LENGTH), completionHandler);
+        } else if (selection.equals("Title")) {
+            index.searchAsync(new com.algolia.search.saas.Query(select)
+                            .setRestrictSearchableAttributes("title")
+                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH),
+                    completionHandler
             );
-        }
-        else {
-            index.searchAsync(new com.algolia.search.saas.Query(select), completionHandler);
+        } else {
+            index.searchAsync(new com.algolia.search.saas.Query(select).setLength(GlobalHelper.QUERY_RESULTS_LENGTH), completionHandler);
         }
     }
 }
