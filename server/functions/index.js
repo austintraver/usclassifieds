@@ -15,7 +15,7 @@ admin.initializeApp({
 });
 
 
-exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listingid}')
+exports.syncListingToAlgolia = functions.database.ref('/item_listings/{userid}/{listingid}')
   .onWrite(async (change, context) => {
     console.log('add listing from database');
     const listingid = context.params.listingid;
@@ -23,7 +23,7 @@ exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listi
     
     if (change.after.val()) {
           const getListingParamsPromise = admin.database()
-        .ref(`/listings/${userid}/${listingid}`).once('value');
+        .ref(`/item_listings/${userid}/${listingid}`).once('value');
 
       const results = await Promise.all([getListingParamsPromise]);
 
@@ -42,12 +42,12 @@ exports.syncListingToAlgolia = functions.database.ref('/listings/{userid}/{listi
         title: listingSnapshot.child("title").val(),
         uuid: listingSnapshot.child("uuid").val()
   };
-return addToAlgolia(data, 'listings')
+return addToAlgolia(data, 'item_listings')
  .then(res => console.log('SUCCESS ALGOLIA listing ADD', res))
  .catch(err => console.log('ERROR ALGOLIA listing ADD', err));
     }
     else if (!change.after.val()) {
-      return removeFromAlgolia(listingid, 'listings')
+      return removeFromAlgolia(listingid, 'item_listings')
     .then(res => console.log('SUCCESS ALGOLIA listing remove', res))
     .catch(err => console.log('ERROR ALGOLIA listing remove', err));
     }
