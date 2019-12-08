@@ -2,6 +2,7 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
@@ -61,6 +62,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
     private Spinner filterSpinner;
     private Index index;
     private ArrayList<Listing> listings;
+    private Boolean restrictToFriendsOnly = false;
     CompletionHandler fillSearchResultCallback = new CompletionHandler() {
         @Override
         public void requestCompleted(JSONObject jsonObject, AlgoliaException ae) {
@@ -74,8 +76,8 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                     if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
                         Listing l = new Listing(array.getJSONObject((i)));
                         boolean isFriend = GlobalHelper.getUser().getFriends().containsKey(l.getOwnerID()) && (!l.getOwnerID().equals(GlobalHelper.getUserID()));
-                        Log.d(TAG,"Item: " + l.getTitle() + " From Friend? " + Boolean.toString(isFriend));
-                        if(l.sold == false) {
+//                        Log.d(TAG,"Item: " + l.getTitle() + " From Friend? " + Boolean.toString(isFriend) + " restrict? " + Boolean.toString(restrictToFriendsOnly) + " adding ? " + Boolean.toString((!restrictToFriendsOnly || isFriend)));
+                        if(l.sold == false && (!restrictToFriendsOnly || isFriend)) {
                             listings.add(new Listing(array.getJSONObject(i)));
                         }
                     }
@@ -124,6 +126,11 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 }
                 break;
             case R.id.list_view:
+                break;
+            case R.id.friends_only:
+                Log.d(TAG, "Toggling to friends only search");
+                toggleFriendsOnlySearch();
+                fillArray(selection);
                 break;
         }
     }
@@ -323,6 +330,16 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                                 .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
                                 .setFilters(String.format("NOT ownerID:%s", GlobalHelper.getUserID())),
                     completionHandler);
+        }
+    }
+
+    private void toggleFriendsOnlySearch(){
+        restrictToFriendsOnly = !restrictToFriendsOnly;
+        View friendsOnlyBtn = findViewById(R.id.friends_only);
+        if(restrictToFriendsOnly){
+            friendsOnlyBtn.setBackgroundColor(Color.DKGRAY);
+        } else {
+            friendsOnlyBtn.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }

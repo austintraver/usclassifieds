@@ -39,17 +39,37 @@
         android:id="@+id/list_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
         android:onClick="onClick"
         android:text="List View"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@id/friends_only"
         app:layout_constraintEnd_toStartOf="@+id/map_view"
+        app:layout_constraintStart_toEndOf="@+id/friends_only"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar"
+        app:layout_constraintVertical_bias="0.526" />
+
+    <TextView
+        android:id="@+id/friends_only"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="onClick"
+        android:text="Friends Only"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/list_view"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/search_bar"
+        app:layout_constraintVertical_bias="0.526" />
 
     <ImageButton
         android:id="@+id/create_listing"
