@@ -39,6 +39,7 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.widget.ArrayAdapter.createFromResource;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ADMIN_KEY;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ID;
+import static com.asparagus.usclassifieds.GlobalHelper.getUser;
 import static com.asparagus.usclassifieds.R.array.search_choices;
 import static com.asparagus.usclassifieds.R.array.sort_choices;
 import static com.asparagus.usclassifieds.R.id.sort_spinner;
@@ -72,6 +73,8 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 for (int i = 0; i < array.length(); i++) {
                     if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
                         Listing l = new Listing(array.getJSONObject((i)));
+                        boolean isFriend = GlobalHelper.getUser().getFriends().containsKey(l.getOwnerID()) && (!l.getOwnerID().equals(GlobalHelper.getUserID()));
+                        Log.d(TAG,"Item: " + l.getTitle() + " From Friend? " + Boolean.toString(isFriend));
                         if(l.sold == false) {
                             listings.add(new Listing(array.getJSONObject(i)));
                         }
@@ -262,7 +265,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             return;
         }
         queryString = search_bar.getText().toString();
-        Log.d(TAG, format("Finding results with query string: %s\n", queryString));
+        Log.d(TAG, format("Finding results with query string: %s - userID: %s\n", queryString, GlobalHelper.getUserID()));
         Log.d(TAG, format("select is: %s", select));
         if ("thisUser".equals(select)) {
             Log.d(TAG, "Querying user's items");
@@ -303,16 +306,23 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         Log.d(TAG, format("Getting search attribute for %s\n", selection));
         if (selection.equals("Username")) {
             index.searchAsync(new com.algolia.search.saas.Query(select)
-                    .setRestrictSearchableAttributes("ownerName", "ownerEmail")
-                    .setLength(GlobalHelper.QUERY_RESULTS_LENGTH), completionHandler);
+                            .setRestrictSearchableAttributes("ownerName", "ownerEmail")
+                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                            .setFilters(String.format("NOT ownerID:\"%s\"", GlobalHelper.getUserID())),
+                      completionHandler)
+            ;
         } else if (selection.equals("Title")) {
             index.searchAsync(new com.algolia.search.saas.Query(select)
                             .setRestrictSearchableAttributes("title")
-                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH),
+                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                            .setFilters(String.format("NOT ownerID:\"%s\"", GlobalHelper.getUserID())),
                     completionHandler
             );
         } else {
-            index.searchAsync(new com.algolia.search.saas.Query(select).setLength(GlobalHelper.QUERY_RESULTS_LENGTH), completionHandler);
+            index.searchAsync(new com.algolia.search.saas.Query(select)
+                                .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                                .setFilters(String.format("NOT ownerID:%s", GlobalHelper.getUserID())),
+                    completionHandler);
         }
     }
 }
