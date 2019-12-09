@@ -4,13 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import androidx.annotation.NonNull;
 
@@ -26,21 +31,38 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import static android.widget.ArrayAdapter.createFromResource;
+import static com.asparagus.usclassifieds.R.array.search_choices;
+import static com.asparagus.usclassifieds.R.id.sort_spinner;
+import static com.asparagus.usclassifieds.R.layout.spinner_item;
 import static java.lang.String.format;
 import static java.util.Locale.getDefault;
 
-public class SingleListingActivity extends Activity {
+public class SingleListingActivity extends Activity implements OnItemSelectedListener {
 
     private static final String TAG = SingleListingActivity.class.getSimpleName();
     Listing listing;
     Picasso picasso;
+    private Spinner userSpinner;
+    private String selectedUser;
+    private int userIndex;
+    Button sold_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_listing);
-        Button sold_button = findViewById(R.id.sold_button);
+        sold_button = findViewById(R.id.sold_button);
         sold_button.setVisibility(View.GONE);
+
+        selectedUser = "";
+        userIndex = 0;
+        userSpinner = findViewById(R.id.user_spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, GlobalHelper.getUserNames());
+        userSpinner.setAdapter(adapter);
+        userSpinner.setOnItemSelectedListener(this);
+
+        userSpinner.setVisibility(View.GONE);
         Intent intent = getIntent();
 
         User user = GlobalHelper.user;
@@ -62,6 +84,8 @@ public class SingleListingActivity extends Activity {
                 };
                 /* Set the sold button to visible/clickable */
                 sold_button.setVisibility(View.VISIBLE);
+                sold_button.setEnabled(false);
+                userSpinner.setVisibility(View.VISIBLE);
                 //sold_button.setOnClickListener(listener);
                 Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
 
@@ -69,6 +93,18 @@ public class SingleListingActivity extends Activity {
         }
         populatePageData();
     }
+
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        selectedUser = parent.getItemAtPosition(pos).toString();
+        userIndex = pos;
+        System.out.println("userIndex: " + userIndex);
+        if(!selectedUser.equals(""))
+            sold_button.setEnabled(true);
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {}
+
 
     private void sendToOtherPage(User u) {
         Intent intent = new Intent(this, OtherProfileActivity.class);
@@ -128,6 +164,12 @@ public class SingleListingActivity extends Activity {
                 String tempString = currentSold.toString();
                 FirebaseDatabase.getInstance().getReference().child("users").child(GlobalHelper.getUserID()).child("sold").setValue(tempString);
                 GlobalHelper.getUser().setSold(tempString);
+
+                User other = GlobalHelper.getActiveUsers().get(userIndex);
+                Integer currentBought = Integer.parseInt(other.getBought());
+                currentBought = currentBought + 1;
+                tempString = currentBought.toString();
+                FirebaseDatabase.getInstance().getReference().child("users").child(other.userID).child("bought").setValue(tempString);
 
                 Intent i = new Intent();
                 i.putExtra("changedListing",listing);

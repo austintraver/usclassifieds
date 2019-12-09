@@ -183,6 +183,9 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
             getListings(q);
         }
+        GlobalHelper.getActiveUsers().clear();
+        GlobalHelper.getUserNames().clear();
+        GlobalHelper.updateUserList();
     }
 
     public void getListings(Query query) {

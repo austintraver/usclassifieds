@@ -1,11 +1,18 @@
 package com.asparagus.usclassifieds;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +35,11 @@ public class GlobalHelper {
     static String userToken;
     private static String email = "";
     private static String userID = "";
+    private static ArrayList<User> activeUsers = new ArrayList<>();
+    private static ArrayList<String> userNames = new ArrayList<>();
+
+    public static ArrayList<String> getUserNames() { return userNames; }
+    public static ArrayList<User> getActiveUsers() { return activeUsers; }
 
     public static User getUser() { return user; }
 
@@ -140,9 +152,7 @@ public class GlobalHelper {
             return;
         }
         user = newUser;
-        System.out.println("user is now: " + user);
         Map<String, Object> userValues = user.toMap();
-        System.out.println("userMap is now: " + userValues);
         FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
     }
 
@@ -184,4 +194,53 @@ public class GlobalHelper {
         return (rad * 180.0 / Math.PI);
     }
 
+    public static void startUserFill(Query query, final OnGetDataListener listener) {
+        listener.onStart();
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("ValueEventListener", "onCancelled()");
+                listener.onFailure();
+            }
+        };
+        query.addListenerForSingleValueEvent(eventListener);
+    }
+
+    public static void updateUserList() {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = databaseReference.child("users");
+        OnGetDataListener listener = new OnGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot userData: dataSnapshot.getChildren()) {
+                        User u = userData.getValue(User.class);
+                        if(!activeUsers.contains(u))
+                            activeUsers.add(u);
+                            userNames.add(u.firstName + " " + u.lastName);
+                    }
+
+                }
+                else {
+                    Log.w("OnGetDataListener", "Error with updating list of active users.");
+                }
+            }
+            @Override
+            public void onStart() {
+                Log.d("onGetDataListener", "onStart()");
+            }
+            @Override
+            public void onFailure() {
+                Log.d("OnGetDataListener", "onFailure()");
+            }
+        };
+        startUserFill(query, listener);
+    }
 }

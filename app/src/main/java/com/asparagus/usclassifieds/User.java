@@ -89,6 +89,7 @@ public class User implements Serializable {
         return format("%s %s, %s, %s, %s", streetNumber, streetName, city, state, zipCode);
     }
 
+
     public String getBought() { return this.bought; }
 
     public String getSold() { return this.sold; }
@@ -212,16 +213,13 @@ public class User implements Serializable {
         protected void onPostExecute(String s) {
             try {
                 User user = GlobalHelper.user;
-                System.out.println("user2 set to: " + GlobalHelper.getUser().latitude + " " + GlobalHelper.getUser().longitude);
                 JSONObject jsonObject = new JSONObject(s);
-                System.out.println("result: " + jsonObject);
                 String latitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                                                                          .getJSONObject("location").get("lat")
                                                                          .toString();
                 String longitude = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
                                                                           .getJSONObject("location").get("lng")
                                                                           .toString();
-                System.out.println("Users latitude is :" + latitude + ", " + longitude);
                 user.latitude = latitude;
                 user.longitude = longitude;
                 GlobalHelper.setUser(user);
