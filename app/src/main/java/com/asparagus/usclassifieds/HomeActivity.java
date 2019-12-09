@@ -2,7 +2,9 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,6 +40,7 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.widget.ArrayAdapter.createFromResource;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ADMIN_KEY;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ID;
+import static com.asparagus.usclassifieds.GlobalHelper.getUser;
 import static com.asparagus.usclassifieds.R.array.search_choices;
 import static com.asparagus.usclassifieds.R.array.sort_choices;
 import static com.asparagus.usclassifieds.R.id.sort_spinner;
@@ -59,6 +62,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
     private Spinner filterSpinner;
     private Index index;
     private ArrayList<Listing> listings;
+    private Boolean restrictToFriendsOnly = false;
     CompletionHandler fillSearchResultCallback = new CompletionHandler() {
         @Override
         public void requestCompleted(JSONObject jsonObject, AlgoliaException ae) {
@@ -71,7 +75,9 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 for (int i = 0; i < array.length(); i++) {
                     if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
                         Listing l = new Listing(array.getJSONObject((i)));
-                        if(l.sold == false) {
+                        boolean isFriend = GlobalHelper.getUser().getFriends().containsKey(l.getOwnerID()) && (!l.getOwnerID().equals(GlobalHelper.getUserID()));
+//                        Log.d(TAG,"Item: " + l.getTitle() + " From Friend? " + Boolean.toString(isFriend) + " restrict? " + Boolean.toString(restrictToFriendsOnly) + " adding ? " + Boolean.toString((!restrictToFriendsOnly || isFriend)));
+                        if(l.sold == false && (!restrictToFriendsOnly || isFriend)) {
                             listings.add(new Listing(array.getJSONObject(i)));
                         }
                     }
@@ -120,6 +126,11 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 }
                 break;
             case R.id.list_view:
+                break;
+            case R.id.friends_only:
+                Log.d(TAG, "Toggling to friends only search");
+                toggleFriendsOnlySearch();
+                fillArray(selection);
                 break;
         }
     }
@@ -180,7 +191,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             String other = GlobalHelper.otherUser;
             GlobalHelper.otherUser = "";
 
-            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
             getListings(q);
         }
         GlobalHelper.getActiveUsers().clear();
@@ -230,7 +241,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             else if (resultCode == 25) {
 //                fillArray("thisUser");
 //                populateListings();
-                Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID());
+                Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID()).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
                 getListings(q);
             }
 
@@ -252,7 +263,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             Intent get = getIntent();
             String other = get.getStringExtra("otherUser");
 
-            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other);
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
             getListings(q);
         }
     }
@@ -264,7 +275,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             return;
         }
         queryString = search_bar.getText().toString();
-        Log.d(TAG, format("Finding results with query string: %s\n", queryString));
+        Log.d(TAG, format("Finding results with query string: %s - userID: %s\n", queryString, GlobalHelper.getUserID()));
         Log.d(TAG, format("select is: %s", select));
         if ("thisUser".equals(select)) {
             Log.d(TAG, "Querying user's items");
@@ -305,15 +316,33 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         Log.d(TAG, format("Getting search attribute for %s\n", selection));
         if (selection.equals("Username")) {
             index.searchAsync(new com.algolia.search.saas.Query(select)
-                                      .setRestrictSearchableAttributes("ownerName", "ownerEmail"), completionHandler);
-        }
-        else if (selection.equals("Title")) {
-            index.searchAsync(new com.algolia.search.saas.Query(select).setRestrictSearchableAttributes("title"),
-                              completionHandler
+                            .setRestrictSearchableAttributes("ownerName", "ownerEmail")
+                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                            .setFilters(String.format("NOT ownerID:\"%s\"", GlobalHelper.getUserID())),
+                      completionHandler)
+            ;
+        } else if (selection.equals("Title")) {
+            index.searchAsync(new com.algolia.search.saas.Query(select)
+                            .setRestrictSearchableAttributes("title")
+                            .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                            .setFilters(String.format("NOT ownerID:\"%s\"", GlobalHelper.getUserID())),
+                    completionHandler
             );
+        } else {
+            index.searchAsync(new com.algolia.search.saas.Query(select)
+                                .setLength(GlobalHelper.QUERY_RESULTS_LENGTH)
+                                .setFilters(String.format("NOT ownerID:%s", GlobalHelper.getUserID())),
+                    completionHandler);
         }
-        else {
-            index.searchAsync(new com.algolia.search.saas.Query(select), completionHandler);
+    }
+
+    private void toggleFriendsOnlySearch(){
+        restrictToFriendsOnly = !restrictToFriendsOnly;
+        View friendsOnlyBtn = findViewById(R.id.friends_only);
+        if(restrictToFriendsOnly){
+            friendsOnlyBtn.setBackgroundColor(Color.DKGRAY);
+        } else {
+            friendsOnlyBtn.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }
