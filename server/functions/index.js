@@ -204,9 +204,9 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       else {
         console.log('There are', tokensSnapshot.numChildren(), 'tokens to send notifications to.');
         let children = tokensSnapshot.children;
-        for (let i = 0; i < children.length; i++) {
-          console.log('token: ', children[i] );
-        }
+        children.forEach(function(token) {
+          console.log('token: ', token );
+        });
       }
       
       console.log('Fetched requester profile', requester);
@@ -300,10 +300,9 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       // Listing all tokens as an array.
       tokens = Object.values(tokensSnapshot.val());
       console.log('There are this many token vals: ', tokensSnapshot.numChildren());
-      let children = tokensSnapshot.children;
-      for (let i = 0; i < tokens; i++) {
-        console.log('token: ', tokens[i] );
-      }
+      tokens.forEach(function(token) {
+        console.log('token: ', token );
+      });
       // Send notifications to all tokens.
       const response = await admin.messaging().sendToDevice(tokens, payload);
       // For each message check if there was an error.
