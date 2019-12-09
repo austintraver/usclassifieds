@@ -187,6 +187,19 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
     public void onResume() {
         super.onResume();
 
+        if(GlobalHelper.justSoldItem) {
+            GlobalHelper.justSoldItem = false;
+            listings.remove(GlobalHelper.soldItem);
+            populateListings();
+            GlobalHelper.soldItem = null;
+            Toast.makeText(HomeActivity.this, "Item marked as sold.", Toast.LENGTH_SHORT)
+                    .show();
+
+            Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID()).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
+            getListings(q);
+
+        }
+
         if(!GlobalHelper.otherUser.equals("")) {
             String other = GlobalHelper.otherUser;
             GlobalHelper.otherUser = "";
@@ -194,6 +207,7 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(other).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
             getListings(q);
         }
+
         GlobalHelper.getActiveUsers().clear();
         GlobalHelper.getUserNames().clear();
         GlobalHelper.updateUserList();

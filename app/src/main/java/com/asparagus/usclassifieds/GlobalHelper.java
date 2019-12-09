@@ -39,6 +39,9 @@ public class GlobalHelper {
     private static ArrayList<User> activeUsers = new ArrayList<>();
     private static ArrayList<String> userNames = new ArrayList<>();
 
+    public static Boolean justSoldItem = false;
+    public static Listing soldItem = null;
+
     public static ArrayList<String> getUserNames() { return userNames; }
     public static ArrayList<User> getActiveUsers() { return activeUsers; }
 
@@ -223,9 +226,10 @@ public class GlobalHelper {
                 if (dataSnapshot.exists()) {
                     for(DataSnapshot userData: dataSnapshot.getChildren()) {
                         User u = userData.getValue(User.class);
-                        if(!activeUsers.contains(u))
+                        if(!activeUsers.contains(u) && !u.userID.equals(user.userID)) {
                             activeUsers.add(u);
                             userNames.add(u.firstName + " " + u.lastName);
+                        }
                     }
 
                 }

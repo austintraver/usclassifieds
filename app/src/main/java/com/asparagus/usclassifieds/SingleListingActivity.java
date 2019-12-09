@@ -74,7 +74,7 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
         this.listing = (Listing) intent.getSerializableExtra("listing");
         if (listing != null) {
             /* If the owner is looking at their own listing */
-            if (user.email.equals(listing.ownerEmail)) {
+            if (user.email.equals(listing.ownerEmail) && !listing.sold) {
                 /* Create a listener for the sold button */
                 OnClickListener listener = new OnClickListener() {
                     @Override
@@ -98,7 +98,6 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
         // An item was selected. You can retrieve the selected item using
         selectedUser = parent.getItemAtPosition(pos).toString();
         userIndex = pos;
-        System.out.println("userIndex: " + userIndex);
         if(!selectedUser.equals(""))
             sold_button.setEnabled(true);
     }
@@ -171,10 +170,15 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
                 tempString = currentBought.toString();
                 FirebaseDatabase.getInstance().getReference().child("users").child(other.userID).child("bought").setValue(tempString);
 
-                Intent i = new Intent();
-                i.putExtra("changedListing",listing);
-                setResult(4444, i);
+
+                sold_button.setVisibility(View.GONE);
+                GlobalHelper.justSoldItem = true;
+                GlobalHelper.soldItem = listing;
                 finish();
+//                Intent i = new Intent();
+//                i.putExtra("changedListing",listing);
+//                setResult(4444, i);
+//                finish();
                 break;
 
             default:

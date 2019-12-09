@@ -173,4 +173,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/other_city_name" />
 
+    <Spinner
+        android:id="@+id/respond_spinner"
+        android:layout_width="57dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#FFFFFF"
+        android:backgroundTintMode="multiply"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/other_description" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
