@@ -99,6 +99,7 @@ public class MainActivity extends Activity {
                 FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
             }
             else if(GlobalHelper.getUser().getNotificationTokens().get(GlobalHelper.userToken) == NULL) {
+
                 GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, GlobalHelper.userToken);
                 Map<String, Object> userValues = GlobalHelper.getUser().toMap();
                 FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
