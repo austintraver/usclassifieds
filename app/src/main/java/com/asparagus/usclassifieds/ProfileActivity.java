@@ -56,6 +56,12 @@ public class ProfileActivity extends Activity {
 
         textView = findViewById(R.id.description);
         textView.setText(user.description);
+
+        textView = findViewById(R.id.sold_metric);
+        textView.setText(user.sold);
+
+        textView = findViewById(R.id.bought_metric);
+        textView.setText(user.bought);
     }
 
     public void onClick(View v) {

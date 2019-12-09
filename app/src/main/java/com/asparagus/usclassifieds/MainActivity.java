@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
@@ -91,8 +92,14 @@ public class MainActivity extends Activity {
             startActivityForResult(createUserIntent, RC_START2);
         }
         else {
-            if(GlobalHelper.getUser().getNotificationTokens().get(GlobalHelper.userToken) == NULL) {
-                GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, "true");
+            if(GlobalHelper.getUser().getNotificationTokens() == null) {
+                GlobalHelper.getUser().notificationTokens = new HashMap<>();
+                GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, GlobalHelper.userToken);
+                Map<String, Object> userValues = GlobalHelper.getUser().toMap();
+                FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
+            }
+            else if(GlobalHelper.getUser().getNotificationTokens().get(GlobalHelper.userToken) == NULL) {
+                GlobalHelper.getUser().getNotificationTokens().put(GlobalHelper.userToken, GlobalHelper.userToken);
                 Map<String, Object> userValues = GlobalHelper.getUser().toMap();
                 FirebaseDatabase.getInstance().getReference("users").child(GlobalHelper.getUserID()).setValue(userValues);
             }

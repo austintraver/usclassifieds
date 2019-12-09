@@ -54,7 +54,7 @@ public class User implements Serializable {
         this.incomingFriendRequests = new HashMap<>(friends);
         this.notificationTokens = new HashMap<String, String>() {{
             put(userID, userID);
-            put(GlobalHelper.userToken, "true");
+            put(GlobalHelper.userToken, GlobalHelper.userToken);
         }};
         this.bought = "0";
         this.sold = "0";

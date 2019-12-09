@@ -51,10 +51,10 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
         if(user.getIncomingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 1;   //user has incoming friend request from other
             respondSpinner.setVisibility(View.VISIBLE);
-            friendButton.setText("Respond to Request");
+            friendButton.setText("Respond");
         } else if(user.getOutgoingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 2;   //user has outgoing friend request to other
-            friendButton.setText("Cancel Friend Request");
+            friendButton.setText("Cancel Request");
         } else if(user.getFriends().containsKey(otherUser.userID)) {
             friendshipStatus = 3;   //user and other are friends
             friendButton.setText("Remove Friend");
@@ -194,6 +194,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                         GlobalHelper.setUser(user);
                         friendshipStatus = 3;
                         friendButton.setText("Remove Friend");
+                        respondSpinner.setVisibility(View.GONE);
                     } else {
                         //remove friend request from other
                         final Map<String, String> reqType = new HashMap<String, String>() {{

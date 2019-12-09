@@ -229,6 +229,9 @@ public class GlobalHelper {
                         if(!activeUsers.contains(u) && !u.userID.equals(user.userID)) {
                             activeUsers.add(u);
                             userNames.add(u.firstName + " " + u.lastName);
+                        } else if(u.userID.equals(user.userID)) {
+                            System.out.println("Updating the Global user now");
+                            GlobalHelper.setUser(u);
                         }
                     }
 
