@@ -40,7 +40,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         // Check if message contains a notification payload.
+        String otherUser = "";
+        String message = "";
         if (remoteMessage.getNotification() != null) {
+            otherUser = remoteMessage.getNotification().getTitle();
+            message = remoteMessage.getNotification().getBody();
+            if(message.contains("sent")) {
+                System.out.println("onMessageReceived: " + "adding incoming friend request");
+                GlobalHelper.getUser().getIncomingFriendRequests().put(otherUser, "true");
+            } else if(message.contains("cancelled")) {
+                System.out.println("onMessageReceived: " + "removing incoming friend request");
+                GlobalHelper.getUser().getIncomingFriendRequests().remove(otherUser);
+            } else if(message.contains("accepted")) {
+                System.out.println("onMessageReceived: " + "removing friend");
+                GlobalHelper.getUser().getFriends().put(otherUser, "true");
+            } else if(message.contains("rejected")) {
+                System.out.println("onMessageReceived: " + "removing outgoing friend request");
+                GlobalHelper.getUser().getOutgoingFriendRequests().remove(otherUser);
+            } else if(message.contains("removed")) {
+                System.out.println("onMessageReceived: " + "removing friend");
+                GlobalHelper.getUser().getFriends().remove(otherUser);
+            }
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
         }

@@ -248,7 +248,6 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == DASHBOARD) {
             if (resultCode == RESULT_CANCELED) {
-                System.out.println("Home --> Signing out");
                 Intent signOut = new Intent();
                 setResult(RESULT_CANCELED, signOut);
                 finish();
@@ -262,15 +261,12 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
 
         }
         else if (resultCode == 4444) {
-            System.out.println("With Res code 444");
             Toast.makeText(HomeActivity.this, "Item marked as sold.", Toast.LENGTH_SHORT)
                     .show();
             Intent temp = getIntent();
             Listing tempListing = (Listing)temp.getSerializableExtra("changedListing");
-            System.out.println("new listing: " + tempListing);
 
             if(listings.contains(tempListing)) {
-                System.out.println("Removing listing: " + tempListing);
                 listings.remove(tempListing);
                 populateListings();
             }

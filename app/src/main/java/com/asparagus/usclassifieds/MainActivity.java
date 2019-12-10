@@ -37,8 +37,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
-        System.out.println("onCreate() MAIN ");
-
         // Used to get client token and set that for logged in person
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -52,7 +50,6 @@ public class MainActivity extends Activity {
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         GlobalHelper.setUserToken(token);
-                        System.out.println("token: " + token);
 
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
@@ -65,28 +62,22 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("onStart() MAIN ");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("onResume() MAIN ");
         if(GlobalHelper.getDebug()){
-            System.out.println("start sign in intent");
             GlobalHelper.setTestUser();
             mAuth.signInAnonymously();
-            System.out.println("Start home page intent: " + GlobalHelper.getUser());
             Intent homePageIntent = new Intent(this, HomeActivity.class);
             startActivityForResult(homePageIntent, RC_STOP);
 
         } else if (GlobalHelper.getEmail().equals("")) {
-            System.out.println("start sign in intent");
             Intent signInIntent = new Intent(this, SignInActivity.class);
             signInIntent.putExtra("emailError", emailError);
             startActivityForResult(signInIntent, RC_START);
         } else if (GlobalHelper.getUser() == null) {
-            System.out.println("In second if statement: null");
             Intent createUserIntent = new Intent(this, EditProfileActivity.class);
             startActivityForResult(createUserIntent, RC_START2);
         }
@@ -119,20 +110,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("onPause() MAIN ");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        System.out.println("onStop() MAIN ");
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        System.out.println("onActivityResult() MAIN ");
 
         if(resultCode == Activity.RESULT_OK) {
             System.out.println("User successfully logged in!!!");

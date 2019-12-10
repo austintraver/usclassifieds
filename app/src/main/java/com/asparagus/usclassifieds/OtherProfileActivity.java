@@ -183,9 +183,8 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                         System.out.println("aren't friends: " + user.userID);
                         FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(reqType);
                     }
-                    //Map<String, Object> userValues = user.toMap();
-                    //FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
 
+                    user.getOutgoingFriendRequests().put(otherUser.userID, "true");
                     friendButton.setText("Cancel Request");
                     friendshipStatus = 2;
                 } else if (friendshipStatus == 1) {
