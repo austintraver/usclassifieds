@@ -2,6 +2,7 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -60,6 +61,7 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
         userSpinner = findViewById(R.id.user_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, GlobalHelper.getUserNames());
         userSpinner.setAdapter(adapter);
+        userSpinner.setBackgroundColor(Color.WHITE);
         userSpinner.setOnItemSelectedListener(this);
 
         userSpinner.setVisibility(View.GONE);

@@ -2,6 +2,7 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -59,9 +60,21 @@ public class ProfileActivity extends Activity {
 
         textView = findViewById(R.id.sold_metric);
         textView.setText(user.sold);
+        textView.setTextColor(Color.WHITE);
 
         textView = findViewById(R.id.bought_metric);
         textView.setText(user.bought);
+        textView.setTextColor(Color.WHITE);
+
+        textView = findViewById(R.id.textView3);
+        textView.setText("Sold");
+        textView.setTextColor(Color.WHITE);
+
+        textView = findViewById(R.id.bought);
+        textView.setText("Bought");
+        textView.setTextColor(Color.WHITE);
+
+
     }
 
     public void onClick(View v) {
