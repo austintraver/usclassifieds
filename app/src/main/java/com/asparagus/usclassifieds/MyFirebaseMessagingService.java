@@ -51,12 +51,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 System.out.println("onMessageReceived: " + "adding incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().put(otherUser, "true");
                 System.out.println(GlobalHelper.getUser().getIncomingFriendRequests());
-
             } else if(message.contains("cancelled")) {
                 System.out.println("onMessageReceived: " + "removing incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().remove(otherUser);
             } else if(message.contains("accepted")) {
-                System.out.println("onMessageReceived: " + "removing friend");
+                System.out.println("onMessageReceived: " + "adding friend");
                 GlobalHelper.getUser().getFriends().put(otherUser, "true");
             } else if(message.contains("rejected")) {
                 System.out.println("onMessageReceived: " + "removing outgoing friend request");
