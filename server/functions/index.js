@@ -140,6 +140,7 @@ exports.createUser = functions.database.ref('/users/{userid}')
 });
 
 
+
 /**
  * Triggers when a user gets a new friend request and sends a notification.
  *
@@ -152,7 +153,6 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       const requested = context.params.requested;
       // If un-follow we exit the function.
       if (!change.after.val()) {
-        
         // remove user request list
         requestingRef = admin.database().ref(`/users/${requesting}/outgoingFriendRequests/${requested}`);
         requestingRef.remove();
@@ -161,7 +161,47 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
         requestingRef = admin.database().ref(`/users/${requested}/incomingFriendRequests/${requesting}`);
         requestingRef.remove();
         
-        return console.log('Friend Request from ', requesting, 'to the following person has been removed: ', requested);
+        console.log('Friend Request from ', requesting, 'to the following person has been removed: ', requested);
+        const getDeviceTokensPromise = admin.database()
+        .ref(`/users/${requested}/notificationTokens`).once('value');
+            const results = await Promise.all([getDeviceTokensPromise]);
+          tokensSnapshot = results[0];
+            // Notification details.
+          const payload = {
+            notification: {
+              title: requesting,
+              body: "Someone has cancelled their friend request to you.",
+            }
+          };
+
+          tokens = Object.values(tokensSnapshot.val());
+      console.log('There are this many token vals: ', tokensSnapshot.numChildren());
+      tokens.forEach(function(token) {
+        console.log('token: ', token );
+      });
+
+          const response = await admin.messaging().sendToDevice(tokens, payload);
+      // For each message check if there was an error.
+      const tokensToRemove = [];
+      response.results.forEach((result, index) => {
+        console.log('response received with following message: ',response);
+        console.log('success count: ',response.successCount);
+        console.log('canonical reg token: ',result.canonicalRegistrationToken);
+
+        const error = result.error;
+        if (error) {
+          console.error('Failure sending notification to', tokens[index], error);
+          // Cleanup the tokens who are not registered anymore.
+          if (error.code === 'messaging/invalid-registration-token' ||
+              error.code === 'messaging/registration-token-not-registered') {
+            tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+          }
+        }
+      });
+      return Promise.all(tokensToRemove);
+    
+        
+        
       }
       console.log('We have a new friend request from:', requesting, 'for user:', requested);
 
@@ -203,10 +243,10 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       }
       else {
         console.log('There are', tokensSnapshot.numChildren(), 'tokens to send notifications to.');
-        let children = tokensSnapshot.children;
-        children.forEach(function(token) {
-          console.log('token: ', token );
-        });
+        //let children = tokensSnapshot.children;
+        //children.forEach(function(token) {
+        //  console.log('token: ', token );
+        //});
       }
       
       console.log('Fetched requester profile', requester);
@@ -265,7 +305,7 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       }
 
       else if (friendRequestType === 'reject') {
-
+        messageBody = `${requester.displayName} has rejected your friend request.`;
 
         // remove user request list
         requestingRef = admin.database().ref(`/users/${requested}/outgoingFriendRequests/${requesting}`);
@@ -292,7 +332,7 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       // Notification details.
       const payload = {
         notification: {
-          title: 'You have a new friend request!',
+          title: requesting,
           body: messageBody,
         }
       };
@@ -324,4 +364,53 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       });
       return Promise.all(tokensToRemove); 
 
+    });
+
+    exports.sendFriendChangeNotification = functions.database.ref('/users/{loggedin}/friends/{friend}')
+    .onWrite(async (change, context) => {
+      const loggedin = context.params.loggedin;
+      const friend = context.params.friend;
+      if (!change.after.val()) {
+      
+      const getDeviceTokensPromise = admin.database()
+        .ref(`/users/${friend}/notificationTokens`).once('value');
+
+      const results = await Promise.all([getDeviceTokensPromise]);
+      tokensSnapshot = results[0];
+        // Notification details.
+      const payload = {
+        notification: {
+          title: loggedin,
+          body: "Someone has removed you from their friends list.",
+        }
+      };
+
+      // Listing all tokens as an array.
+      tokens = Object.values(tokensSnapshot.val());
+      console.log('There are this many token vals: ', tokensSnapshot.numChildren());
+      tokens.forEach(function(token) {
+        console.log('token: ', token );
+      });
+      // Send notifications to all tokens.
+      const response = await admin.messaging().sendToDevice(tokens, payload);
+      // For each message check if there was an error.
+      const tokensToRemove = [];
+      response.results.forEach((result, index) => {
+        console.log('response received with following message: ',response);
+        console.log('success count: ',response.successCount);
+        console.log('canonical reg token: ',result.canonicalRegistrationToken);
+
+        const error = result.error;
+        if (error) {
+          console.error('Failure sending notification to', tokens[index], error);
+          // Cleanup the tokens who are not registered anymore.
+          if (error.code === 'messaging/invalid-registration-token' ||
+              error.code === 'messaging/registration-token-not-registered') {
+            tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
+          }
+        }
+      });
+      return Promise.all(tokensToRemove);
+      }
+      return console.log("friends were added");
     });
