@@ -8,6 +8,20 @@
 * [John Tanner](https://github.com/johntannerofficial)
 * [Julian Zhang](https://github.com/julianzhang98)
 
+
+## New Features and Bug Fixes
+
+After finishing project testing, we have added new features to the application
+to fulfill customer requests. Below are the changes in app functionality:
+
+* Allow users to search only the listings from friends
+* Add bought and sold metrics on user profiles
+* Fixed bugs to allow users to add and cancel friend requests
+* Mark items as sold allows seller to select who bought the item
+* Allow better text readability on listing, profile, and home pages
+* Fixed bugs where the **Back** button signed out users
+* Fixed map loading bug causing **Map View** to crash when clicked
+
 ## Getting Started
 
 In order to run the application in an emulator, you will need to send John Tanner the value of the `SHA1` portion returned by the following command. This is necessary in order to whitelist your key as the application is not running in a production environment. Once he has whitelisted the key, the application will allow you to sign in.
