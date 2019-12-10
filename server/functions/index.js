@@ -324,7 +324,7 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
 
         requestingRef = admin.database().ref(`/friendrequests/${requesting}`);
         requestingRef.remove();
-        return console.log('finished reject function');
+        console.log('finished reject function');
       }
       
         console.log('body ', messageBody);
