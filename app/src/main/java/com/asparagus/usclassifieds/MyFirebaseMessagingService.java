@@ -50,6 +50,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if(message.contains("sent")) {
                 System.out.println("onMessageReceived: " + "adding incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().put(otherUser, "true");
+                System.out.println(GlobalHelper.getUser().getIncomingFriendRequests());
+
             } else if(message.contains("cancelled")) {
                 System.out.println("onMessageReceived: " + "removing incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().remove(otherUser);

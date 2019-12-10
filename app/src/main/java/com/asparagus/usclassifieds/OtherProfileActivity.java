@@ -53,6 +53,13 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
 
 
         friendshipStatus = 0;   //no friendship between users
+
+        System.out.println("Before GIFR w/ otherUser: " + otherUser.userID + " " + otherUser.getFirstName());
+        System.out.println("Inc: " + user.getIncomingFriendRequests());
+        System.out.println("Out: " + user.getOutgoingFriendRequests());
+        System.out.println("Friends: " + user.getFriends());
+
+
         if(user.getIncomingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 1;   //user has incoming friend request from other
             respondSpinner.setVisibility(View.VISIBLE);

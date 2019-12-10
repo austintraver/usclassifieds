@@ -233,8 +233,8 @@ public class GlobalHelper {
                             activeUsers.add(u);
                             userNames.add(u.firstName + " " + u.lastName);
                         } else if(u.userID.equals(user.userID)) {
-                            System.out.println("Updating the Global user now");
-                            GlobalHelper.setUser(u);
+//                            System.out.println("Updating the Global user now");
+//                            GlobalHelper.setUser(u);
                         }
                     }
 
