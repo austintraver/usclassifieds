@@ -83,7 +83,6 @@ public class ProfileActivity extends Activity {
                 Intent signOut = new Intent();
                 setResult(Activity.RESULT_CANCELED, signOut);
                 finish();
-                // returns to HomeActivity.java in onActivityResult() callback with resultCode = 0
                 break;
             case R.id.my_listings_button:
                 setResult(25);
@@ -99,11 +98,6 @@ public class ProfileActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_CANCELED) {
-//            Intent signOut = new Intent();
-//            setResult(Activity.RESULT_CANCELED);
-//            finish();
-        }
     }
 
     @Override

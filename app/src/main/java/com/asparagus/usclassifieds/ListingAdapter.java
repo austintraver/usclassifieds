@@ -47,7 +47,6 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
                 Intent intent = new Intent(view.getContext(), SingleListingActivity.class);
                 intent.putExtra("listing", listing);
                 view.getContext().startActivity(intent);
-                //view.getContext().startActivityForResult(intent, searching);
             }
         };
         bTitle.setOnClickListener(onClickListener);

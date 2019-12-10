@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -53,12 +52,6 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
 
 
         friendshipStatus = 0;   //no friendship between users
-
-        System.out.println("Before GIFR w/ otherUser: " + otherUser.userID + " " + otherUser.getFirstName());
-        System.out.println("Inc: " + user.getIncomingFriendRequests());
-        System.out.println("Out: " + user.getOutgoingFriendRequests());
-        System.out.println("Friends: " + user.getFriends());
-
 
         if(user.getIncomingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 1;   //user has incoming friend request from other
@@ -127,57 +120,12 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
 
         textView = findViewById(R.id.other_description);
         textView.setText(otherUser.getDescription());
-
-        //case 1
-
-        /*
-         TODO
-         1. If the two users are not friends AND there is NOT an outstanding friend request
-
-            a) The button should display the string "Add Friend"
-            b) Clicking on the button should submit a friend request
-                i) change the button's string to display "Cancel Friend Request"
-                ii) add that person as a friend
-
-
-
-         2. If the two users are not friends AND there IS an outstanding friend request
-
-            a) If the friend request was submit by the currently logged-in person,
-                i) then button should display the string "Cancel Friend Request"
-
-            b) If the friend request was submit by the person whose profile we are viewing
-                i) then the button should display the string "Respond to Friend Request"
-                ii) clicking on the button should prompt a dialogue with three choices
-                    一) "Accept"
-                        *) close the dialogue box
-                        *) change the button's string to "Remove Friend"
-                        *) store an existing relationship among the two friends in the database
-                    二) "Reject" which will... closes the dialogue box and
-                        *) close the dialogue box
-                        *) change the button's string to "Add Friend"
-                        *) delete the outstanding friend request from the database
-                    三) "Cancel" which will...
-                        *) close the dialogue box
-                        *) and do nothing else
-
-         3. If the two users are already friends,
-            a) The button should display the string "Remove Friend"
-            b) Clicking on the button should
-                i) change the button's string to display "Add Friend"
-                ii) delete that person as a member of the friends list array
-                iii) remove the entry from the database that was storing their friendship
-
-         */
     }
 
     public void onClick(View v) {
-        System.out.println("clicked");
         switch (v.getId()) {
             case R.id.friend_button:
                 if(friendshipStatus == 0) {
-                    System.out.println("user id: " + user.userID);
-
                     final Map<String, String> reqType = new HashMap<String, String>() {{
                         put(otherUser.userID, "request");
                     }};
@@ -185,9 +133,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                         put(user.userID, reqType);
                     }};
                     // If not friends
-                    System.out.println("user status: " + user.friends.get(otherUser.userID));
                     if (Objects.equals(user.friends.get(otherUser.userID), null)) {
-                        System.out.println("aren't friends: " + user.userID);
                         FirebaseDatabase.getInstance().getReference("friendrequests").child(user.userID).setValue(reqType);
                     }
 

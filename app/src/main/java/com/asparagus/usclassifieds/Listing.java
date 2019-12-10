@@ -38,7 +38,6 @@ public class Listing implements Serializable {
 
     Listing(JSONObject object) {
         try {
-            System.out.println(object);
             title = object.getString("title");
             description = object.getString("description");
             price = object.getDouble("price");

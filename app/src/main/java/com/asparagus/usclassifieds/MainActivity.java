@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -50,11 +49,6 @@ public class MainActivity extends Activity {
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         GlobalHelper.setUserToken(token);
-
-                        // Log and toast
-                        //String msg = getString(R.string.msg_token_fmt, token);
-                        // Log.d(TAG, msg);
-                        // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -108,7 +108,7 @@ public class SignInActivity extends Activity {
     }
 
     public void updateUI(GoogleSignInAccount account) {
-        if (account == null) { //|| account.getEmail() == null || account.getId() == null
+        if (account == null) {
             startActivity(getIntent());
             return;
         }
@@ -128,7 +128,6 @@ public class SignInActivity extends Activity {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     User u = dataSnapshot.getValue(User.class);
-//                    User newU = new User(u);
                     GlobalHelper.setUser(u);
                     GlobalHelper.userQueryDone = true;
                 }

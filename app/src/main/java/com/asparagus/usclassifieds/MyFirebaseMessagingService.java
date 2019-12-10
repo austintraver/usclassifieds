@@ -8,12 +8,10 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -47,23 +45,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null && GlobalHelper.getUser() != null) {
             otherUser = remoteMessage.getNotification().getTitle();
             message = remoteMessage.getNotification().getBody();
-            System.out.println("message: " + message);
             if(message.contains("sent")) {
-                System.out.println("onMessageReceived: " + "adding incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().put(otherUser, "true");
-                System.out.println(GlobalHelper.getUser().getIncomingFriendRequests());
             } else if(message.contains("cancelled")) {
-                System.out.println("onMessageReceived: " + "removing incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().remove(otherUser);
             } else if(message.contains("accepted")) {
-                System.out.println("onMessageReceived: " + "adding friend");
                 GlobalHelper.getUser().getFriends().put(otherUser, "true");
                 GlobalHelper.getUser().getOutgoingFriendRequests().remove(otherUser);
             } else if(message.contains("rejected")) {
-                System.out.println("onMessageReceived: " + "removing outgoing friend request");
                 GlobalHelper.getUser().getOutgoingFriendRequests().remove(otherUser);
             } else if(message.contains("removed")) {
-                System.out.println("onMessageReceived: " + "removing friend");
                 GlobalHelper.getUser().getFriends().remove(otherUser);
             }
 

@@ -2,9 +2,7 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -41,7 +39,6 @@ import static android.R.layout.simple_spinner_dropdown_item;
 import static android.widget.ArrayAdapter.createFromResource;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ADMIN_KEY;
 import static com.asparagus.usclassifieds.GlobalHelper.ALGOLIA_ID;
-import static com.asparagus.usclassifieds.GlobalHelper.getUser;
 import static com.asparagus.usclassifieds.R.array.search_choices;
 import static com.asparagus.usclassifieds.R.array.sort_choices;
 import static com.asparagus.usclassifieds.R.id.sort_spinner;
@@ -77,7 +74,6 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                     if (!array.isNull(i) && !array.getJSONObject(i).isNull("ownerID")) {
                         Listing l = new Listing(array.getJSONObject((i)));
                         boolean isFriend = GlobalHelper.getUser().getFriends().containsKey(l.getOwnerID()) && (!l.getOwnerID().equals(GlobalHelper.getUserID()));
-//                        Log.d(TAG,"Item: " + l.getTitle() + " From Friend? " + Boolean.toString(isFriend) + " restrict? " + Boolean.toString(restrictToFriendsOnly) + " adding ? " + Boolean.toString((!restrictToFriendsOnly || isFriend)));
                         if(l.sold == false && (!restrictToFriendsOnly || isFriend)) {
                             listings.add(new Listing(array.getJSONObject(i)));
                         }
@@ -253,8 +249,6 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
                 finish();
             }
             else if (resultCode == 25) {
-//                fillArray("thisUser");
-//                populateListings();
                 Query q = FirebaseDatabase.getInstance().getReference("item_listings").child(GlobalHelper.getUserID()).limitToFirst(GlobalHelper.QUERY_RESULTS_LENGTH);
                 getListings(q);
             }

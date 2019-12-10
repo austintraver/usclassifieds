@@ -1,7 +1,6 @@
 package com.asparagus.usclassifieds;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -57,16 +56,13 @@ public class GlobalHelper {
 
     public static void setUserToken(String token) { userToken = token; }
 
-
     public static void setEmail(String newEmail) {
         email = newEmail;
-        System.out.println("Email set to: " + email);
         return;
     }
 
     public static void setID(String id) {
         userID = id;
-        System.out.println("UserID set to: " + userID);
         return;
     }
 
@@ -232,9 +228,6 @@ public class GlobalHelper {
                         if(!activeUsers.contains(u) && !u.userID.equals(user.userID)) {
                             activeUsers.add(u);
                             userNames.add(u.firstName + " " + u.lastName);
-                        } else if(u.userID.equals(user.userID)) {
-//                            System.out.println("Updating the Global user now");
-//                            GlobalHelper.setUser(u);
                         }
                     }
 

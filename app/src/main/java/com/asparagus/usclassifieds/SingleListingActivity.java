@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,10 +31,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import static android.widget.ArrayAdapter.createFromResource;
-import static com.asparagus.usclassifieds.R.array.search_choices;
-import static com.asparagus.usclassifieds.R.id.sort_spinner;
-import static com.asparagus.usclassifieds.R.layout.spinner_item;
 import static java.lang.String.format;
 import static java.util.Locale.getDefault;
 
@@ -88,7 +83,6 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
                 sold_button.setVisibility(View.VISIBLE);
                 sold_button.setEnabled(false);
                 userSpinner.setVisibility(View.VISIBLE);
-                //sold_button.setOnClickListener(listener);
                 Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
             }
         }
@@ -176,10 +170,6 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
                 GlobalHelper.justSoldItem = true;
                 GlobalHelper.soldItem = listing;
                 finish();
-//                Intent i = new Intent();
-//                i.putExtra("changedListing",listing);
-//                setResult(4444, i);
-//                finish();
                 break;
 
             default:
