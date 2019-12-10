@@ -2,6 +2,7 @@ package com.asparagus.usclassifieds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -40,13 +41,16 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
 
         response = "accept";
         respondSpinner = findViewById(R.id.respond_spinner);
-        respondSpinner.setVisibility(View.GONE);
+        respondSpinner.setBackgroundColor(Color.WHITE);
         options.add("accept");
         options.add("reject");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, options);
         respondSpinner.setAdapter(adapter);
         respondSpinner.setOnItemSelectedListener(this);
+
+        respondSpinner.setVisibility(View.GONE);
+
 
         friendshipStatus = 0;   //no friendship between users
         if(user.getIncomingFriendRequests().containsKey(otherUser.userID)) {

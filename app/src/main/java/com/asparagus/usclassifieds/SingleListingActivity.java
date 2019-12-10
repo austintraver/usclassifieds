@@ -90,7 +90,6 @@ public class SingleListingActivity extends Activity implements OnItemSelectedLis
                 userSpinner.setVisibility(View.VISIBLE);
                 //sold_button.setOnClickListener(listener);
                 Log.d(TAG, format("onCreate()\nListing: %s\n Description: %s\n", listing.title, listing.description));
-
             }
         }
         populatePageData();

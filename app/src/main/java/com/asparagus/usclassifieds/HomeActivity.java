@@ -360,4 +360,10 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
             friendsOnlyBtn.setText("Toggle: all");
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        System.out.println("BAck button pressed");
+    }
 }
