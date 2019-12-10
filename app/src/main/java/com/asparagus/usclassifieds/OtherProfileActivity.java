@@ -31,6 +31,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GlobalHelper.updateUserList();
         setContentView(R.layout.activity_other_profile);
         Intent intent = getIntent();
         otherUser = (User) intent.getSerializableExtra("other_user");
@@ -51,6 +52,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
         if(user.getIncomingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 1;   //user has incoming friend request from other
             respondSpinner.setVisibility(View.VISIBLE);
+            friendButton.setEnabled(false);
             friendButton.setText("Respond");
         } else if(user.getOutgoingFriendRequests().containsKey(otherUser.userID)) {
             friendshipStatus = 2;   //user has outgoing friend request to other
@@ -64,7 +66,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         response = parent.getItemAtPosition(pos).toString();
-
+        friendButton.setEnabled(true);
     }
 
     public void onNothingSelected(AdapterView<?> parent) {}
@@ -180,7 +182,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                     //Map<String, Object> userValues = user.toMap();
                     //FirebaseDatabase.getInstance().getReference("users").child(user.userID).setValue(userValues);
 
-                    friendButton.setText("Cancel Friend Request");
+                    friendButton.setText("Cancel Request");
                     friendshipStatus = 2;
                 } else if (friendshipStatus == 1) {
                     if(response.equals("accept")) {
@@ -194,7 +196,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                         GlobalHelper.setUser(user);
                         friendshipStatus = 3;
                         friendButton.setText("Remove Friend");
-                        respondSpinner.setVisibility(View.GONE);
+
                     } else {
                         //remove friend request from other
                         final Map<String, String> reqType = new HashMap<String, String>() {{
@@ -206,6 +208,7 @@ public class OtherProfileActivity extends Activity implements AdapterView.OnItem
                         friendshipStatus = 0;
                         friendButton.setText("Add Friend");
                     }
+                    respondSpinner.setVisibility(View.GONE);
                 } else if (friendshipStatus == 2) {
                     final Map<String, String> reqType = new HashMap<String, String>() {{
                         put(otherUser.userID, "reject");

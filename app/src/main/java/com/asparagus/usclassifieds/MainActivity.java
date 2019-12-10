@@ -60,7 +60,6 @@ public class MainActivity extends Activity {
                         // Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 
     @Override

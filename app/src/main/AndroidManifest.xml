@@ -52,11 +52,8 @@
         </activity>
 
         <activity
-            android:name=".HomeActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:name=".HomeActivity">
+
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
