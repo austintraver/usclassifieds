@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -62,7 +64,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 GlobalHelper.getUser().getFriends().remove(otherUser);
             }
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            if(!GlobalHelper.getUserID().equals(otherUser)) {
+                sendNotification(remoteMessage.getNotification().getBody());
+            }
         }
 
         /* Also if you intend on generating your own notifications as a result
