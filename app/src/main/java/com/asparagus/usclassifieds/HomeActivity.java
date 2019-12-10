@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -352,11 +353,11 @@ public class HomeActivity extends Activity implements OnItemSelectedListener {
 
     private void toggleFriendsOnlySearch(){
         restrictToFriendsOnly = !restrictToFriendsOnly;
-        View friendsOnlyBtn = findViewById(R.id.friends_only);
+        TextView friendsOnlyBtn = (TextView) findViewById(R.id.friends_only);
         if(restrictToFriendsOnly){
-            friendsOnlyBtn.setBackgroundColor(Color.DKGRAY);
+            friendsOnlyBtn.setText("Toggle: friends");
         } else {
-            friendsOnlyBtn.setBackgroundColor(Color.TRANSPARENT);
+            friendsOnlyBtn.setText("Toggle: all");
         }
     }
 }
