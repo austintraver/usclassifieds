@@ -153,16 +153,15 @@ exports.sendFriendRequestNotification = functions.database.ref('/friendrequests/
       const requested = context.params.requested;
       // If un-follow we exit the function.
       if (!change.after.val()) {
-        // remove user request list
-        return console.log("in cancelled");
-      //   requestingRef = admin.database().ref(`/users/${requesting}/outgoingFriendRequests/${requested}`);
-      //   requestingRef.remove();
+          requestingRef = admin.database().ref(`/users/${requesting}/outgoingFriendRequests/${requested}`);
+        requestingRef.remove();
 
-      //   // remove user request list
-      //   requestingRef = admin.database().ref(`/users/${requested}/incomingFriendRequests/${requesting}`);
-      //   requestingRef.remove();
+        // remove user request list
+        requestingRef = admin.database().ref(`/users/${requested}/incomingFriendRequests/${requesting}`);
+        requestingRef.remove();
         
-      //   console.log('Friend Request from ', requesting, 'to the following person has been removed: ', requested);
+        return console.log('Friend Request from ', requesting, 'to the following person has been removed: ', requested);
+      
       //   const getDeviceTokensPromise = admin.database()
       //   .ref(`/users/${requested}/notificationTokens`).once('value');
       //       const results = await Promise.all([getDeviceTokensPromise]);
