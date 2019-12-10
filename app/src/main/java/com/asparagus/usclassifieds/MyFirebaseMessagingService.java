@@ -44,9 +44,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         String otherUser = "";
         String message = "";
-        if (remoteMessage.getNotification() != null) {
+        if (remoteMessage.getNotification() != null && GlobalHelper.getUser() != null) {
             otherUser = remoteMessage.getNotification().getTitle();
             message = remoteMessage.getNotification().getBody();
+            System.out.println("message: " + message);
             if(message.contains("sent")) {
                 System.out.println("onMessageReceived: " + "adding incoming friend request");
                 GlobalHelper.getUser().getIncomingFriendRequests().put(otherUser, "true");
@@ -57,6 +58,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else if(message.contains("accepted")) {
                 System.out.println("onMessageReceived: " + "adding friend");
                 GlobalHelper.getUser().getFriends().put(otherUser, "true");
+                GlobalHelper.getUser().getOutgoingFriendRequests().remove(otherUser);
             } else if(message.contains("rejected")) {
                 System.out.println("onMessageReceived: " + "removing outgoing friend request");
                 GlobalHelper.getUser().getOutgoingFriendRequests().remove(otherUser);
@@ -64,6 +66,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 System.out.println("onMessageReceived: " + "removing friend");
                 GlobalHelper.getUser().getFriends().remove(otherUser);
             }
+
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             if(!GlobalHelper.getUserID().equals(otherUser)) {
                 sendNotification(remoteMessage.getNotification().getBody());
