@@ -217,6 +217,9 @@ public class GlobalHelper {
 
     public static void updateUserList() {
 
+        activeUsers.clear();
+        userNames.clear();
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         Query query = databaseReference.child("users");
         OnGetDataListener listener = new OnGetDataListener() {
